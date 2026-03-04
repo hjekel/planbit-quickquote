@@ -25,14 +25,19 @@ const COL_ALIASES = {
   qty:     ['qty', 'quantity', 'count', 'units'],
 };
 
-// Keywords used to detect model columns in headerless files
 const MODEL_KEYWORDS = [
   'hp', 'dell', 'lenovo', 'apple', 'thinkpad', 'elitebook', 'latitude',
   'macbook', 'probook', 'optiplex', 'toshiba', 'portege', 'xps', 'ideapad',
   'thinkcentre', 'zbook', 'vostro', 'fujitsu', 'asus', 'acer', 'surface',
   'notebook', 'laptop', 'desktop', 'workstation', 'precision', 'inspiron',
   'pavilion', 'folio', 'revolve', 'spectre', 'envy', 'elite', 'book',
+  'iphone', 'ipad', 'samsung', 'galaxy',
 ];
+
+const PRODUCT_TYPES = new Set([
+  'notebook', 'desktop', 'all-in-one', 'allinone', 'mobile', 'mobile phone',
+  'tablet', 'workstation', 'server', 'monitor',
+]);
 
 const SERIAL_RE = /^[A-Z0-9]{6,}$/i;
 const RAM_RE    = /^(\d+)\s*gb?$/i;
@@ -49,32 +54,133 @@ function looksLikeModel(v) {
   return MODEL_KEYWORDS.some(k => s.includes(k));
 }
 
-function resolveCol(headers, field) {
-  const aliases = COL_ALIASES[field] || [field];
-  for (const alias of aliases) {
-    const found = headers.find(h =>
-      h.toLowerCase().replace(/[\s_\-\.]/g, '') === alias.replace(/[\s_\-\.]/g, '')
-    );
-    if (found) return found;
-  }
-  return null;
+function isProductType(v) {
+  return PRODUCT_TYPES.has(cellStr(v).toLowerCase().replace(/[\s\-\/]/g, '').replace('allone','allinone'));
 }
 
+// ─── PARSE SPECS FROM PROCESSOR STRING ─────────────────────────────────────
+// e.g. "INTEL CORE I7-1265U 4.80GHZ - SSD 512GB - 16GB"  or  "M1 - SSD 512GB - 16GB"
+function parseProcessorString(proc) {
+  const s = cellStr(proc);
+  const result = { cpu: '', ram: '', ssd: '' };
+
+  // CPU: take first meaningful segment
+  const cpuMatch = s.match(/^([^-]+)/);
+  if (cpuMatch) result.cpu = cpuMatch[1].trim();
+
+  // RAM: look for \d+GB not preceded by SSD/storage context
+  const ramMatch = s.match(/(?:^|[\s\-])(\d+)\s*GB(?!\s*SSD)(?=[\s\-,]|$)/i);
+  if (ramMatch) result.ram = ramMatch[1] + 'GB';
+
+  // SSD: look for SSD \d+GB or \d+GB SSD
+  const ssdMatch = s.match(/SSD\s*(\d+)\s*GB|(\d+)\s*GB\s*SSD/i);
+  if (ssdMatch) result.ssd = (ssdMatch[1] || ssdMatch[2]) + 'GB';
+
+  // For Apple M-series: "M1 - SSD 512GB - 16GB"
+  if (!result.ram) {
+    const parts = s.split(/\s*-\s*/);
+    for (const p of parts) {
+      const m = p.trim().match(/^(\d+)\s*GB$/i);
+      if (m && !result.ssd?.includes(m[1])) { result.ram = m[1] + 'GB'; }
+    }
+  }
+
+  return result;
+}
+
+// ─── DETECT PlanBit ARS FORMAT ──────────────────────────────────────────────
+// ARS has sheet "Customer Inventory and Details" with cols:
+// Product | Brand | Model | Processor | Units | Sales Price | ...
+function isPlanBitARS(wb) {
+  return wb.SheetNames.some(n => n.toLowerCase().includes('inventory'));
+}
+
+function parseARS(wb) {
+  const sheetName = wb.SheetNames.find(n => n.toLowerCase().includes('inventory'));
+  const sheet = wb.Sheets[sheetName];
+  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+
+  // Find the summary block: rows where col[0] is a product type AND col[1] is a brand AND col[2] is a model
+  // This is the "quoted" section (rows 4-18 in example)
+  const summaryDevices = [];
+  const detailDevices  = [];
+
+  for (const row of rows) {
+    const col0 = cellStr(row[0]).toLowerCase();
+    const col1 = cellStr(row[1]);
+    const col2 = cellStr(row[2]);
+    const col3 = cellStr(row[3]); // processor or serial
+    const col4 = row[4];          // qty or category
+    const col5 = row[5];          // price or treatment
+
+    // Summary block: Product | Brand | Model | Processor | Qty | Price
+    if (PRODUCT_TYPES.has(col0.replace(/[\s\/\-]/g,'').replace('allone','allinone')) &&
+        col1.length > 0 && col2.length > 0 && typeof col4 === 'number' && col4 > 0) {
+      const specs = parseProcessorString(col3);
+      const qty   = parseInt(col4) || 1;
+      const joepPrice = typeof col5 === 'number' ? col5 : null;
+
+      // Expand qty into individual devices
+      for (let i = 0; i < qty; i++) {
+        summaryDevices.push({
+          model:     col1 + ' ' + col2,
+          cpu:       specs.cpu,
+          ram:       specs.ram,
+          ssd:       specs.ssd,
+          joepPrice, // Joep's actual price — store for comparison
+        });
+      }
+    }
+
+    // Detail block (below summary): Product | (empty) | Full model name | Serial
+    if (PRODUCT_TYPES.has(col0.replace(/[\s\/\-]/g,'').replace('allone','allinone')) &&
+        col1 === '' && looksLikeModel(col2) && col3.length > 0) {
+      detailDevices.push({
+        model:  col2,
+        serial: cellStr(col3),
+      });
+    }
+  }
+
+  // Merge: if we have both summary and detail, enrich summary with serials
+  if (summaryDevices.length > 0 && detailDevices.length > 0) {
+    detailDevices.forEach((d, i) => {
+      if (summaryDevices[i]) {
+        summaryDevices[i].serial = d.serial;
+        // Use more specific model name from detail block if available
+        if (d.model.length > summaryDevices[i].model.length) {
+          summaryDevices[i].model = d.model;
+        }
+      }
+    });
+    return summaryDevices;
+  }
+
+  // Fallback: return whichever block has more data
+  return summaryDevices.length >= detailDevices.length ? summaryDevices : detailDevices;
+}
+
+// ─── MAIN PARSE ENTRY POINT ─────────────────────────────────────────────────
 function parseExcel(buffer) {
   const wb = XLSX.read(buffer, { type: 'buffer' });
-  const results = [];
+
+  // PlanBit ARS format takes priority
+  if (isPlanBitARS(wb)) {
+    return parseARS(wb);
+  }
+
+  const results  = [];
   const aliasFlat = Object.values(COL_ALIASES).flat();
 
-  // Process ALL sheets
   for (const sheetName of wb.SheetNames) {
-    const sheet = wb.Sheets[sheetName];
+    const sheet   = wb.Sheets[sheetName];
     const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
     if (!rawRows.length) continue;
 
-    const nonEmptyRows = rawRows.filter(r => r.some(v => cellStr(v).length > 0));
-    if (nonEmptyRows.length < 2) continue;
+    const nonEmpty = rawRows.filter(r => r.some(v => cellStr(v).length > 0));
+    if (nonEmpty.length < 2) continue;
 
-    // Find header row: scan first 10 rows for one with known column aliases
+    // Find header row in first 10 rows
     let headerRowIdx = -1;
     for (let i = 0; i < Math.min(10, rawRows.length); i++) {
       const row = rawRows[i].map(cellStr);
@@ -84,11 +190,11 @@ function parseExcel(buffer) {
       if (matches >= 1) { headerRowIdx = i; break; }
     }
 
-    const sheetDevices = headerRowIdx >= 0
+    const devices = headerRowIdx >= 0
       ? parseWithHeaders(rawRows, headerRowIdx)
       : parseHeaderless(rawRows);
 
-    results.push(...sheetDevices);
+    results.push(...devices);
   }
 
   return results;
@@ -97,6 +203,7 @@ function parseExcel(buffer) {
 function parseWithHeaders(allRows, headerRowIdx) {
   const headerRow = allRows[headerRowIdx].map(cellStr);
   const dataRows  = allRows.slice(headerRowIdx + 1);
+  const aliasFlat = Object.values(COL_ALIASES).flat();
 
   const colMap = {};
   for (const field of Object.keys(COL_ALIASES)) {
@@ -157,7 +264,6 @@ function parseHeaderless(rawRows) {
 
   const modelCol  = pick('model');
   if (modelCol === -1) return [];
-
   const serialCol = pick('serial', [modelCol]);
   const ramCol    = pick('ram',    [modelCol, serialCol]);
   const ssdCol    = pick('ssd',    [modelCol, serialCol, ramCol]);
@@ -289,20 +395,15 @@ function generateReport(devices, summary, dealName) {
       <div class="sub">suggested offer</div>
     </div>
   </div>
-
   <div class="pills">
     <span class="pill" style="background:#00c85320;color:#00c853;border:1px solid #00c853">GO: ${summary.goCount || 0}</span>
     <span class="pill" style="background:#ffab0020;color:#ffab00;border:1px solid #ffab00">WATCH: ${summary.watchCount || 0}</span>
     <span class="pill" style="background:#d5000020;color:#d50000;border:1px solid #d50000">NO-GO: ${summary.nogoCount || 0}</span>
   </div>
-
   <div class="rec">💡 <strong>Recommendation:</strong> ${escHtml(summary.recommendation || '')}</div>
-
   <table>
     <thead>
-      <tr>
-        <th>Model</th><th>Gen</th><th>RAM</th><th>SSD</th><th>Grade</th><th>Status</th><th>ERP</th><th>Price Band</th>
-      </tr>
+      <tr><th>Model</th><th>Gen</th><th>RAM</th><th>SSD</th><th>Grade</th><th>Status</th><th>ERP</th><th>Price Band</th></tr>
     </thead>
     <tbody>${rows}</tbody>
     <tfoot>

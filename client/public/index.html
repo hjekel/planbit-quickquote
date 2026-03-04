@@ -65,6 +65,7 @@ input, select, button { font-family: inherit; }
 .header-left { display: flex; align-items: center; gap: 12px; flex: 1; }
 .logo { color: var(--accent); font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
 .logo-lobster { font-size: 20px; margin-right: 4px; }
+.logo-erp { color: #D4A017; font-weight: 900; font-size: 22px; margin-right: 1px; letter-spacing: -1px; }
 .logo-by { color: var(--muted); font-weight: 400; font-size: 14px; }
 .logo-planbit { color: var(--accent); font-weight: 700; font-size: 14px; }
 .badge {
@@ -336,7 +337,7 @@ tbody tr:last-child { border-bottom: none; }
 <!-- Header -->
 <div class="header">
   <div class="header-left">
-    <div class="logo"><span class="logo-lobster">🦞</span>ERPIE PriceFinder</div>
+    <div class="logo"><span class="logo-erp">ERP</span>IE PriceFinder</div>
     <span class="logo-by">by</span>
     <span class="logo-planbit">Incredible Projects</span>
     <div class="badge">v1.0</div>
@@ -394,31 +395,31 @@ tbody tr:last-child { border-bottom: none; }
         <div class="field">
           <label>Grade</label>
           <select id="q-grade">
-            <option value="A1">A1 â€” Mint</option>
-            <option value="A2">A2 â€” Excellent</option>
-            <option value="A3">A3 â€” Very Good</option>
-            <option value="A" selected>A â€” Good</option>
-            <option value="B">B â€” Fair</option>
-            <option value="B4">B4 â€” Below Fair</option>
-            <option value="C">C â€” Poor</option>
-            <option value="C6">C6 â€” Very Poor</option>
-            <option value="D">D â€” Parts Only</option>
+            <option value="A1">A1 – Mint</option>
+            <option value="A2">A2 – Excellent</option>
+            <option value="A3">A3 – Very Good</option>
+            <option value="A" selected>A – Good</option>
+            <option value="B">B – Fair</option>
+            <option value="B4">B4 – Below Fair</option>
+            <option value="C">C – Poor</option>
+            <option value="C6">C6 – Very Poor</option>
+            <option value="D">D – Parts Only</option>
           </select>
         </div>
         <div class="field">
           <label>Regio</label>
           <select id="q-region">
             <option value="EU" selected>EU</option>
-            <option value="UK">UK (âˆ’16%)</option>
-            <option value="INTL">INTL (âˆ’15%)</option>
+            <option value="UK">UK (−16%)</option>
+            <option value="INTL">INTL (−15%)</option>
           </select>
         </div>
         <div class="field">
           <label>Batterij</label>
           <select id="q-battery">
             <option value="good" selected>Good / OK</option>
-            <option value="bad">Bad / Poor (âˆ’€35)</option>
-            <option value="missing">Missing (âˆ’€50)</option>
+            <option value="bad">Bad / Poor (−€35)</option>
+            <option value="missing">Missing (−€50)</option>
           </select>
         </div>
       </div>
@@ -445,7 +446,7 @@ tbody tr:last-child { border-bottom: none; }
         </div>
         <div class="detail-item">
           <div class="label">CPU</div>
-          <div class="value" id="r-cpu" style="font-size:13px;word-break:break-all">â€”</div>
+          <div class="value" id="r-cpu" style="font-size:13px;word-break:break-all">–</div>
         </div>
         <div class="detail-item">
           <div class="label">RAM</div>
@@ -477,13 +478,13 @@ tbody tr:last-child { border-bottom: none; }
         <label>Regio:</label>
         <select id="b-region">
           <option value="EU" selected>EU</option>
-          <option value="UK">UK (âˆ’16%)</option>
-          <option value="INTL">INTL (âˆ’15%)</option>
+          <option value="UK">UK (−16%)</option>
+          <option value="INTL">INTL (−15%)</option>
         </select>
       </div>
 
       <div class="dropzone" id="dropzone">
-        <div class="dropzone-icon">ðŸ“‚</div>
+        <div class="dropzone-icon" style="font-size:48px">&#128194;</div>
         <h3>Sleep je bestand hier naartoe</h3>
         <p>Of klik om een bestand te selecteren</p>
         <div class="hint">Ondersteund: .xlsx, .xls, .csv</div>
@@ -597,7 +598,7 @@ document.getElementById('btn-example').addEventListener('click', () => {
   document.getElementById('q-battery').value  = 'good';
   document.getElementById('q-region').value   = 'EU';
   document.getElementById('q-cpu').value      = '';
-  // Show hardcoded example result directly â€” no API call needed
+  // Show hardcoded example result directly – no API call needed
   showQuoteResult({
     gen: 'Gen11', status: 'GO',
     advisedPrice: 275, priceLow: 234, priceHigh: 316,
@@ -662,7 +663,7 @@ function showQuoteResult(r, model) {
     cpuEl.textContent = r.knownCpus.join(' / ');
     cpuEl.style.fontSize = '12px';
   } else {
-    cpuEl.textContent = 'â€”';
+    cpuEl.textContent = '–';
     cpuEl.style.fontSize = '';
   }
 
@@ -672,7 +673,7 @@ function showQuoteResult(r, model) {
 
   document.getElementById('r-reasoning').textContent = r.reasoning.join('\n');
 
-  // Search links â€” include RAM + SSD in query for more precise results
+  // Search links – include RAM + SSD in query for more precise results
   const ramLabel = r.ramGb + 'GB';
   const ssdLabel = r.ssdGb >= 1024 ? (r.ssdGb / 1024) + 'TB' : r.ssdGb + 'GB';
   const fullQuery = `${model} ${ramLabel} ${ssdLabel} refurbished`;
@@ -750,10 +751,10 @@ function showBatchResults(results, summary) {
     <tr class="row-${r.status}">
       <td>${i + 1}</td>
       <td>${esc(r.model)}</td>
-      <td>${esc(r.gen || 'â€”')}</td>
-      <td>${r.ramGb ? r.ramGb + ' GB' : 'â€”'}</td>
-      <td>${r.ssdGb ? (r.ssdGb >= 1024 ? r.ssdGb / 1024 + ' TB' : r.ssdGb + ' GB') : 'â€”'}</td>
-      <td>${esc(r.grade || 'â€”')}</td>
+      <td>${esc(r.gen || '–')}</td>
+      <td>${r.ramGb ? r.ramGb + ' GB' : '–'}</td>
+      <td>${r.ssdGb ? (r.ssdGb >= 1024 ? r.ssdGb / 1024 + ' TB' : r.ssdGb + ' GB') : '–'}</td>
+      <td>${esc(r.grade || '–')}</td>
       <td><span class="pill-sm pill-${r.status}">${r.status}</span></td>
       <td>€${(r.advisedPrice || 0).toLocaleString('nl-NL')}</td>
       <td>€${(r.priceLow || 0).toLocaleString('nl-NL')} â€“ €${(r.priceHigh || 0).toLocaleString('nl-NL')}</td>
