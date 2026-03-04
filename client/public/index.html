@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDMzNjYiLz48dGV4dCB4PSIxNiIgeT0iMjEiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjExIiBmaWxsPSIjQ0MwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iLTAuNSI+RVJQPC90ZXh0Pjwvc3ZnPg==" type="image/svg+xml">
 <title>ERPIE PriceFinder – Incredible Projects</title>
 <style>
 /* â”€â”€ Reset & base â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -483,6 +484,19 @@ tbody tr:last-child { border-bottom: none; }
         </select>
       </div>
 
+      <!-- Input mode toggle -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button id="mode-file" onclick="setInputMode('file')" style="flex:1;padding:8px 0;border-radius:8px;border:2px solid var(--accent);background:var(--accent);color:#fff;font-weight:700;cursor:pointer;font-size:13px;">&#128194; Upload bestand</button>
+        <button id="mode-text" onclick="setInputMode('text')" style="flex:1;padding:8px 0;border-radius:8px;border:2px solid var(--border);background:transparent;color:var(--muted);font-weight:700;cursor:pointer;font-size:13px;">&#9997; Tekst plakken</button>
+      </div>
+
+      <!-- Text paste input -->
+      <div id="text-input-area" style="display:none;">
+        <textarea id="batch-text" placeholder="Plak hier een bid request of device lijst&#10;&#10;Voorbeelden:&#10;60x Dell Latitude 7430 / i7-12th / 32GB / 512GB&#10;LENOVO X1 Carbon G10, i7-1265U, 16GB, 512GB SSD&#10;3x Apple MacBook Pro 14 2021 M1 16GB 512GB" 
+          style="width:100%;height:160px;padding:16px;border-radius:12px;border:2px dashed var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:14px;resize:vertical;line-height:1.6;"></textarea>
+        <button onclick="analyzeText()" style="margin-top:10px;width:100%;padding:12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-weight:700;font-size:15px;cursor:pointer;">Analyseer tekst</button>
+      </div>
+
       <div class="dropzone" id="dropzone">
         <div class="dropzone-icon" style="font-size:48px">&#128194;</div>
         <h3>Sleep je bestand hier naartoe</h3>
@@ -647,7 +661,7 @@ function showQuoteResult(r, model) {
   statusEl.className = 'status-badge status-' + r.status;
 
   document.getElementById('r-price').textContent = '€' + r.advisedPrice.toLocaleString('nl-NL');
-  document.getElementById('r-band').textContent  = `Prijsband: €${r.priceLow.toLocaleString('nl-NL')} â€“ €${r.priceHigh.toLocaleString('nl-NL')}`;
+  document.getElementById('r-band').textContent  = `Prijsband: €${r.priceLow.toLocaleString('nl-NL')} – €${r.priceHigh.toLocaleString('nl-NL')}`;
 
   document.getElementById('r-gen').textContent   = r.gen;
   document.getElementById('r-ram').textContent   = r.ramGb + ' GB';
@@ -757,7 +771,7 @@ function showBatchResults(results, summary) {
       <td>${esc(r.grade || '–')}</td>
       <td><span class="pill-sm pill-${r.status}">${r.status}</span></td>
       <td>€${(r.advisedPrice || 0).toLocaleString('nl-NL')}</td>
-      <td>€${(r.priceLow || 0).toLocaleString('nl-NL')} â€“ €${(r.priceHigh || 0).toLocaleString('nl-NL')}</td>
+      <td>€${(r.priceLow || 0).toLocaleString('nl-NL')} – €${(r.priceHigh || 0).toLocaleString('nl-NL')}</td>
     </tr>`).join('');
 
   document.getElementById('batch-results').style.display = 'block';
@@ -805,6 +819,60 @@ function resetBatch() {
   document.getElementById('loading').style.display = 'none';
   dropzone.style.display = 'block';
   fileInput.value = '';
+}
+
+// ── Text input mode ──────────────────────────────────────────────────────────
+function setInputMode(mode) {
+  const fileBtn = document.getElementById('mode-file');
+  const textBtn = document.getElementById('mode-text');
+  const dropzone = document.getElementById('dropzone');
+  const textArea = document.getElementById('text-input-area');
+
+  if (mode === 'text') {
+    textBtn.style.border = '2px solid var(--accent)';
+    textBtn.style.background = 'var(--accent)';
+    textBtn.style.color = '#fff';
+    fileBtn.style.border = '2px solid var(--border)';
+    fileBtn.style.background = 'transparent';
+    fileBtn.style.color = 'var(--muted)';
+    dropzone.style.display = 'none';
+    textArea.style.display = 'block';
+  } else {
+    fileBtn.style.border = '2px solid var(--accent)';
+    fileBtn.style.background = 'var(--accent)';
+    fileBtn.style.color = '#fff';
+    textBtn.style.border = '2px solid var(--border)';
+    textBtn.style.background = 'transparent';
+    textBtn.style.color = 'var(--muted)';
+    dropzone.style.display = 'block';
+    textArea.style.display = 'none';
+  }
+}
+
+async function analyzeText() {
+  const text = document.getElementById('batch-text').value.trim();
+  if (!text) return alert('Voer eerst een device lijst in.');
+  const region = document.getElementById('b-region').value;
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('batch-results').style.display = 'none';
+
+  try {
+    const res  = await fetch('/api/analyze-text', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, region }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+    batchResults = data.results;
+    batchSummary = data.summary;
+    showBatchResults(data.results, data.summary);
+  } catch (err) {
+    alert('Fout bij verwerken: ' + err.message);
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+  }
 }
 </script>
 </body>

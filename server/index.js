@@ -89,10 +89,92 @@ function parseProcessorString(proc) {
 }
 
 // ─── DETECT PlanBit ARS FORMAT ──────────────────────────────────────────────
-// ARS has sheet "Customer Inventory and Details" with cols:
-// Product | Brand | Model | Processor | Units | Sales Price | ...
 function isPlanBitARS(wb) {
   return wb.SheetNames.some(n => n.toLowerCase().includes('inventory'));
+}
+
+// ─── DETECT PWC / LENOVO QUOTE FORMAT ────────────────────────────────────────
+// Row 0: Configuration header, Row 1: Product|Brand|Model|P/N|Processor|HDD|Mem|...|Quantity
+// Data rows have NOTEBOOK/DESKTOP in col0, Brand in col1, Model in col2
+function isPWCFormat(wb) {
+  for (const name of wb.SheetNames) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
+    for (let i = 0; i < Math.min(5, rows.length); i++) {
+      const row = rows[i].map(v => cellStr(v).toLowerCase());
+      if (row.includes('product') && row.includes('brand') && row.includes('model') &&
+          (row.includes('processor') || row.includes('p/n'))) {
+        return { sheet: name, headerRow: i };
+      }
+    }
+  }
+  return null;
+}
+
+function parsePWC(wb, sheetName, headerRowIdx) {
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: '' });
+  const header = rows[headerRowIdx].map(v => cellStr(v).toLowerCase());
+
+  const col = (names) => {
+    for (const n of names) {
+      const idx = header.findIndex(h => h.includes(n));
+      if (idx >= 0) return idx;
+    }
+    return -1;
+  };
+
+  const productCol  = col(['product']);
+  const brandCol    = col(['brand']);
+  const modelCol    = col(['model']);
+  const processorCol= col(['processor']);
+  const hddCol      = col(['hdd', 'storage', 'disk', 'ssd']);
+  const memCol      = col(['mem', 'ram', 'memory']);
+  const qtyCol      = col(['qty', 'quantity', 'units']);
+
+  const devices = [];
+  const PRODUCT_TYPES_PWC = new Set(['notebook','desktop','allinone','workstation','server','mobile','tablet']);
+
+  for (const row of rows.slice(headerRowIdx + 1)) {
+    const product = cellStr(row[productCol] ?? '').toLowerCase().replace(/[\s\/\-]/g,'');
+    if (!PRODUCT_TYPES_PWC.has(product.replace('allone','allinone').replace('phone',''))) continue;
+
+    const brand = cellStr(row[brandCol] ?? '');
+    const model = cellStr(row[modelCol] ?? '');
+    if (!brand && !model) continue;
+
+    // Parse CPU - extract just model number
+    const procRaw = cellStr(row[processorCol] ?? '');
+    const cpuMatch = procRaw.match(/([iI][3579]-\d{4,5}[A-Z0-9]*|Core [iI][3579]-\d{4,5}[A-Z0-9]*|Ryzen \d \d{4}[A-Z0-9]*)/);
+    const cpu = cpuMatch ? cpuMatch[1] : procRaw.split(' ').slice(0,2).join(' ');
+
+    // Parse SSD from HDD field: "512GB SSD M.2..." → "512GB"
+    const hddRaw = cellStr(row[hddCol] ?? '');
+    const ssdMatch = hddRaw.match(/(\d+)\s*(GB|TB)\s*SSD|SSD[^0-9]*(\d+)\s*(GB|TB)/i);
+    let ssd = '';
+    if (ssdMatch) {
+      const num = ssdMatch[1] || ssdMatch[3];
+      const unit = (ssdMatch[2] || ssdMatch[4] || 'GB').toUpperCase();
+      ssd = unit === 'TB' ? (parseInt(num) * 1024) + 'GB' : num + 'GB';
+    } else {
+      const numMatch = hddRaw.match(/(\d+)\s*(GB|TB)/i);
+      if (numMatch) ssd = numMatch[1] + (numMatch[2].toUpperCase() === 'TB' ? '000GB' : 'GB');
+    }
+
+    // RAM from Mem field: "32GB" or "16GB DDR4"
+    const memRaw = cellStr(row[memCol] ?? '');
+    const ramMatch = memRaw.match(/(\d+)\s*GB/i);
+    const ram = ramMatch ? ramMatch[1] + 'GB' : '';
+
+    // Quantity — cap at 500 to handle large vendor quotes (PWC = 6000 units)
+    const qtyRaw = qtyCol >= 0 ? row[qtyCol] : 1;
+    const qty = Math.min(parseInt(qtyRaw) || 1, 500);
+
+    // For large batches (qty > 10), just add one representative line
+    const expand = qty <= 10 ? qty : 1;
+    for (let i = 0; i < expand; i++) {
+      devices.push({ model: brand + ' ' + model, cpu, ram, ssd, qty: expand === 1 ? qty : 1 });
+    }
+  }
+  return devices;
 }
 
 function parseARS(wb) {
@@ -167,6 +249,12 @@ function parseExcel(buffer) {
   // PlanBit ARS format takes priority
   if (isPlanBitARS(wb)) {
     return parseARS(wb);
+  }
+
+  // PWC / vendor quote format
+  const pwcInfo = isPWCFormat(wb);
+  if (pwcInfo) {
+    return parsePWC(wb, pwcInfo.sheet, pwcInfo.headerRow);
   }
 
   const results  = [];
@@ -307,7 +395,70 @@ app.post('/api/analyze', upload.single('file'), (req, res) => {
   }
 });
 
-// ─── ROUTE 3: Generate HTML report ──────────────────────────────────────────
+
+// ─── ROUTE 3: Text input analysis ────────────────────────────────────────────
+app.post('/api/analyze-text', (req, res) => {
+  try {
+    const { text = '', region = 'EU' } = req.body;
+    if (!text.trim()) return res.status(400).json({ ok: false, error: 'No text provided' });
+
+    const devices = parseTextInput(text);
+    if (!devices.length) return res.status(400).json({ ok: false, error: 'Geen apparaten herkend in de tekst. Probeer: "60x Dell Latitude 7430 i7 32GB 512GB"' });
+
+    const { results, summary } = analyzeDevices(devices, region);
+    res.json({ ok: true, results, summary });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ─── TEXT INPUT PARSER ────────────────────────────────────────────────────────
+function parseTextInput(text) {
+  const lines = text.split(/[\n;,]+/).map(l => l.trim()).filter(l => l.length > 5);
+  const devices = [];
+
+  for (const line of lines) {
+    // Extract qty: "60x", "60 x", "3×", leading number
+    const qtyMatch = line.match(/^(\d+)\s*[xX×]/);
+    const qty = qtyMatch ? Math.min(parseInt(qtyMatch[1]), 500) : 1;
+    const rest = qtyMatch ? line.slice(qtyMatch[0].length).trim() : line;
+
+    // Must contain a recognisable brand/model keyword
+    const lrest = rest.toLowerCase();
+    const hasBrand = ['dell','hp','lenovo','apple','macbook','thinkpad','latitude','elitebook',
+                      'surface','asus','acer','fujitsu','toshiba','samsung','microsoft'].some(b => lrest.includes(b));
+    if (!hasBrand) continue;
+
+    // Extract RAM: 8GB, 16 GB, 32GB
+    const ramMatch = rest.match(/\b(4|8|16|32|64|128)\s*GB?\b/i);
+    const ram = ramMatch ? ramMatch[1] + 'GB' : '';
+
+    // Extract SSD: 256GB, 512 GB, 1TB — but not RAM value if already found
+    let ssd = '';
+    const ssdMatches = [...rest.matchAll(/\b(\d+)\s*(GB|TB)\b/gi)];
+    for (const m of ssdMatches) {
+      const num = m[1], unit = m[2].toUpperCase();
+      const gb = unit === 'TB' ? parseInt(num) * 1024 : parseInt(num);
+      if ([128,240,256,480,512,960,1024,2048].includes(gb)) { ssd = gb + 'GB'; break; }
+    }
+
+    // Extract CPU gen hint: i3/i5/i7/i9 + generation
+    const cpuMatch = rest.match(/[iI][3579][-\s]?(\d{2}|\d{4,5})[A-Za-z0-9]*/);
+    const cpu = cpuMatch ? cpuMatch[0] : '';
+
+    // Model: take up to first / or , or spec indicator
+    const modelRaw = rest.split(/[\/,]|\b(i[3579][-\s]|\d+GB|\d+TB|Gen\d|M[12]\b)/)[0].trim();
+    const model = modelRaw.replace(/^(\d+\s*[xX×]\s*)/, '').trim();
+
+    const expand = qty <= 10 ? qty : 1;
+    for (let i = 0; i < expand; i++) {
+      devices.push({ model, cpu, ram, ssd, qty: expand === 1 ? qty : 1 });
+    }
+  }
+  return devices;
+}
+
+// ─── ROUTE 4: Generate HTML report ──────────────────────────────────────────
 app.post('/api/report', (req, res) => {
   try {
     const { devices = [], summary = {}, dealName = 'ERPIE Deal' } = req.body;
