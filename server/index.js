@@ -15,8 +15,6 @@ app.use(express.static(path.join(__dirname, '../client/public')));
 
 'use strict';
 
-const XLSX = require('xlsx');
-
 // ═══════════════════════════════════════════════════════════════════════════
 // UNIVERSAL DEVICE PARSER v2.0
 // Handles: ARS Excel, PWC/Vendor Quote, Frankfurt CSV, Email text, Free text
