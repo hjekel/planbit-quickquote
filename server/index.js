@@ -12,364 +12,479 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
 
-// ─── COLUMN NAME ALIASES ────────────────────────────────────────────────────
-const COL_ALIASES = {
-  model:   ['model', 'device', 'devicename', 'product', 'description', 'item',
-            'name', 'assetname', 'computername', 'modelname', 'type'],
-  cpu:     ['cpu', 'processor', 'proc'],
-  ram:     ['ram', 'memory', 'mem'],
-  ssd:     ['ssd', 'storage', 'hdd', 'disk', 'drive'],
-  grade:   ['grade', 'condition', 'cond', 'quality'],
-  battery: ['battery', 'bat'],
-  serial:  ['serial', 'serialnumber', 'sn', 'asset', 'assettag', 'serialno'],
-  qty:     ['qty', 'quantity', 'count', 'units'],
+
+'use strict';
+
+const XLSX = require('xlsx');
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UNIVERSAL DEVICE PARSER v2.0
+// Handles: ARS Excel, PWC/Vendor Quote, Frankfurt CSV, Email text, Free text
+// ═══════════════════════════════════════════════════════════════════════════
+
+const BRANDS = ['apple','dell','hp','lenovo','microsoft','asus','acer',
+                'fujitsu','toshiba','samsung','sony','lg','panasonic',
+                'huawei','xiaomi','google','razer','msi','gigabyte'];
+
+const BRAND_MODELS = {
+  apple:     ['macbook','imac','mac mini','mac pro','mac studio','iphone','ipad','ipod'],
+  dell:      ['latitude','inspiron','xps','precision','vostro','optiplex','alienware'],
+  hp:        ['elitebook','probook','zbook','pavilion','envy','spectre','omen',
+               'elitedesk','prodesk','z-workstation','chromebook','folio','revolve'],
+  lenovo:    ['thinkpad','thinkcentre','ideapad','legion','yoga','tab'],
+  microsoft: ['surface'],
 };
 
-const MODEL_KEYWORDS = [
-  'hp', 'dell', 'lenovo', 'apple', 'thinkpad', 'elitebook', 'latitude',
-  'macbook', 'probook', 'optiplex', 'toshiba', 'portege', 'xps', 'ideapad',
-  'thinkcentre', 'zbook', 'vostro', 'fujitsu', 'asus', 'acer', 'surface',
-  'notebook', 'laptop', 'desktop', 'workstation', 'precision', 'inspiron',
-  'pavilion', 'folio', 'revolve', 'spectre', 'envy', 'elite', 'book',
-  'iphone', 'ipad', 'samsung', 'galaxy',
-];
-
 const PRODUCT_TYPES = new Set([
-  'notebook', 'desktop', 'all-in-one', 'allinone', 'mobile', 'mobile phone',
-  'mobilephone', 'tablet', 'workstation', 'server', 'monitor',
+  'notebook','laptop','desktop','allinone','all-in-one','workstation',
+  'mobilephone','mobile','tablet','server','monitor',
+  // with spaces stripped:
+  'mobilephone','allinone',
 ]);
-
-const SERIAL_RE = /^[A-Z0-9]{6,}$/i;
-const RAM_RE    = /^(\d+)\s*gb?$/i;
-const SSD_RE    = /^(\d+)\s*(gb?|tb?)$/i;
-const GRADE_RE  = /^[A-D]\d?$/i;
-const RAM_VALS  = new Set(['4','8','16','32','64','128']);
-const SSD_VALS  = new Set(['128','256','512','1024','2048','240','480','960']);
 
 function cellStr(v) { return String(v ?? '').trim(); }
 
-function looksLikeModel(v) {
-  const s = cellStr(v).toLowerCase();
-  if (s.length < 4) return false;
-  return MODEL_KEYWORDS.some(k => s.includes(k));
+function normalizeProductType(s) {
+  return s.toLowerCase().replace(/[\s\-\/]/g,'').replace('allone','allinone');
 }
 
 function isProductType(v) {
-  return PRODUCT_TYPES.has(cellStr(v).toLowerCase().replace(/[\s\-\/]/g, '').replace('allone','allinone'));
+  return PRODUCT_TYPES.has(normalizeProductType(cellStr(v)));
 }
 
-// ─── PARSE SPECS FROM PROCESSOR STRING ─────────────────────────────────────
-// e.g. "INTEL CORE I7-1265U 4.80GHZ - SSD 512GB - 16GB"  or  "M1 - SSD 512GB - 16GB"
-function parseProcessorString(proc) {
-  const s = cellStr(proc);
-  const result = { cpu: '', ram: '', ssd: '' };
+function looksLikeBrand(v) {
+  const s = cellStr(v).toLowerCase();
+  return BRANDS.some(b => s === b || s.startsWith(b));
+}
 
-  // CPU: take first meaningful segment
-  const cpuMatch = s.match(/^([^-]+)/);
-  if (cpuMatch) result.cpu = cpuMatch[1].trim();
+function looksLikeModel(v) {
+  const s = cellStr(v).toLowerCase();
+  if (s.length < 3) return false;
+  // Has a known brand keyword
+  for (const brand of BRANDS) {
+    if (s.includes(brand)) return true;
+  }
+  // Has known model keyword
+  const modelWords = ['latitude','elitebook','probook','thinkpad','thinkcentre',
+    'macbook','surface','optiplex','inspiron','precision','vostro','zbook',
+    'yoga','ideapad','legion','spectre','envy','pavilion','folio','revolve'];
+  return modelWords.some(m => s.includes(m));
+}
 
-  // RAM: look for \d+GB not preceded by SSD/storage context
-  const ramMatch = s.match(/(?:^|[\s\-])(\d+)\s*GB(?!\s*SSD)(?=[\s\-,]|$)/i);
-  if (ramMatch) result.ram = ramMatch[1] + 'GB';
+// ─── SPEC EXTRACTION ────────────────────────────────────────────────────────
 
-  // SSD: look for SSD \d+GB or \d+GB SSD
-  const ssdMatch = s.match(/SSD\s*(\d+)\s*GB|(\d+)\s*GB\s*SSD/i);
-  if (ssdMatch) result.ssd = (ssdMatch[1] || ssdMatch[2]) + 'GB';
+function extractRAM(s) {
+  // "32GB", "32 GB", "32GB DDR4", "Memory: 16GB"
+  const m = s.match(/\b(4|8|16|32|64|128)\s*GB(?!\s*SSD)/i);
+  return m ? m[1] + 'GB' : '';
+}
 
-  // For Apple M-series: "M1 - SSD 512GB - 16GB"
-  if (!result.ram) {
-    const parts = s.split(/\s*-\s*/);
-    for (const p of parts) {
-      const m = p.trim().match(/^(\d+)\s*GB$/i);
-      if (m && !result.ssd?.includes(m[1])) { result.ram = m[1] + 'GB'; }
+function extractSSD(s) {
+  // "512GB SSD", "SSD 512GB", "256 GB", "1TB SSD", "1024GB"
+  const ssdM = s.match(/(?:SSD\s*)?(\d+)\s*(GB|TB)\s*(?:SSD|M\.?2|NVMe|SATA)?/gi);
+  if (!ssdM) return '';
+  for (const match of ssdM) {
+    const numM = match.match(/(\d+)\s*(GB|TB)/i);
+    if (!numM) continue;
+    const num = parseInt(numM[1]);
+    const unit = numM[2].toUpperCase();
+    const gb = unit === 'TB' ? num * 1024 : num;
+    // Typical SSD sizes (not RAM)
+    if ([120,128,240,256,480,512,960,1024,2048,256000].includes(gb) || gb >= 100) {
+      return gb + 'GB';
     }
   }
-
-  return result;
+  return '';
 }
 
-// ─── DETECT PlanBit ARS FORMAT ──────────────────────────────────────────────
-function isPlanBitARS(wb) {
-  return wb.SheetNames.some(n => n.toLowerCase().includes('inventory'));
+function extractCPU(s) {
+  // Intel: i3/i5/i7/i9 + model, AMD Ryzen, Apple M1/M2/M3
+  const patterns = [
+    /\b(Core\s*)?[iI][3579][-\s]?\d{4,5}[A-Z0-9]*/,
+    /\bRyzen\s*[3579]\s*\d{4}[A-Z0-9]*/i,
+    /\bM[123]\s*(Pro|Max|Ultra)?/,
+    /\bCeleron\s*[A-Z0-9]+/i,
+    /\bPentium\s*[A-Z0-9]+/i,
+    /\bXeon\s*[A-Z0-9\-]+/i,
+  ];
+  for (const re of patterns) {
+    const m = s.match(re);
+    if (m) return m[0].trim();
+  }
+  // Gen hint: "I7-12th" → record as i7 gen12
+  const genHint = s.match(/[iI]([3579])[-\s]?(\d+)(th|rd|nd|st)/i);
+  if (genHint) return `i${genHint[1]}-${genHint[2]}th`;
+  return '';
 }
 
-// ─── DETECT PWC / LENOVO QUOTE FORMAT ────────────────────────────────────────
-// Row 0: Configuration header, Row 1: Product|Brand|Model|P/N|Processor|HDD|Mem|...|Quantity
-// Data rows have NOTEBOOK/DESKTOP in col0, Brand in col1, Model in col2
-function isPWCFormat(wb) {
+function extractGrade(s) {
+  const m = s.match(/\b(A1|A2|A3|A|B1|B2|B3|B4|B|C1|C2|C|D)\b/);
+  return m ? m[1] : '';
+}
+
+// ─── FORMAT DETECTORS ────────────────────────────────────────────────────────
+
+function detectFormat(wb) {
+  // 1. PlanBit ARS — has "Customer Inventory" tab
+  if (wb.SheetNames.some(n => n.toLowerCase().includes('inventory'))) {
+    return 'ARS';
+  }
+
+  // 2. Check first/main sheet
   for (const name of wb.SheetNames) {
     const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
-    for (let i = 0; i < Math.min(5, rows.length); i++) {
-      const row = rows[i].map(v => cellStr(v).toLowerCase());
-      if (row.includes('product') && row.includes('brand') && row.includes('model') &&
-          (row.includes('processor') || row.includes('p/n'))) {
-        return { sheet: name, headerRow: i };
+    const nonEmpty = rows.filter(r => r.some(v => cellStr(v).length > 0));
+    if (!nonEmpty.length) continue;
+
+    // 3. PWC/Vendor quote: has Product+Brand+Model+Processor in header row
+    for (let i = 0; i < Math.min(5, nonEmpty.length); i++) {
+      const cells = nonEmpty[i].map(v => cellStr(v).toLowerCase());
+      const hasProduct  = cells.some(c => c === 'product');
+      const hasBrandCol = cells.some(c => c === 'brand');
+      const hasModel    = cells.some(c => c === 'model');
+      const hasProc     = cells.some(c => c.includes('processor') || c === 'p/n');
+      if (hasProduct && hasBrandCol && hasModel && hasProc) {
+        return 'VENDOR_QUOTE';
       }
     }
+
+    // 4. Generic with headers (Frankfurt style, any CSV with model column)
+    for (let i = 0; i < Math.min(10, nonEmpty.length); i++) {
+      const cells = nonEmpty[i].map(v => cellStr(v).toLowerCase().replace(/[\s_\-]/g,''));
+      const score = ['model','device','modelname','computername','description'].filter(k => cells.includes(k)).length
+                  + ['serial','serialnumber','sn'].filter(k => cells.includes(k)).length;
+      if (score >= 1) return 'GENERIC_HEADERS';
+    }
+
+    // 5. Data rows with product type in col0 (simplified ARS without inventory tab)
+    const dataRows = nonEmpty.filter(r => isProductType(r[0]));
+    if (dataRows.length >= 2) return 'ARS_SIMPLE';
   }
-  return null;
+
+  return 'GENERIC_HEADERLESS';
 }
 
-function parsePWC(wb, sheetName, headerRowIdx) {
-  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: '' });
-  const header = rows[headerRowIdx].map(v => cellStr(v).toLowerCase());
-
-  const col = (names) => {
-    for (const n of names) {
-      const idx = header.findIndex(h => h.includes(n));
-      if (idx >= 0) return idx;
-    }
-    return -1;
-  };
-
-  const productCol  = col(['product']);
-  const brandCol    = col(['brand']);
-  const modelCol    = col(['model']);
-  const processorCol= col(['processor']);
-  const hddCol      = col(['hdd', 'storage', 'disk', 'ssd']);
-  const memCol      = col(['mem', 'ram', 'memory']);
-  const qtyCol      = col(['qty', 'quantity', 'units']);
-
-  const devices = [];
-  const PRODUCT_TYPES_PWC = new Set(['notebook','desktop','allinone','workstation','server','mobile','tablet']);
-
-  for (const row of rows.slice(headerRowIdx + 1)) {
-    const product = cellStr(row[productCol] ?? '').toLowerCase().replace(/[\s\/\-]/g,'');
-    if (!PRODUCT_TYPES_PWC.has(product.replace('allone','allinone').replace('phone',''))) continue;
-
-    const brand = cellStr(row[brandCol] ?? '');
-    const model = cellStr(row[modelCol] ?? '');
-    if (!brand && !model) continue;
-
-    // Parse CPU - extract just model number
-    const procRaw = cellStr(row[processorCol] ?? '');
-    const cpuMatch = procRaw.match(/([iI][3579]-\d{4,5}[A-Z0-9]*|Core [iI][3579]-\d{4,5}[A-Z0-9]*|Ryzen \d \d{4}[A-Z0-9]*)/);
-    const cpu = cpuMatch ? cpuMatch[1] : procRaw.split(' ').slice(0,2).join(' ');
-
-    // Parse SSD from HDD field: "512GB SSD M.2..." → "512GB"
-    const hddRaw = cellStr(row[hddCol] ?? '');
-    const ssdMatch = hddRaw.match(/(\d+)\s*(GB|TB)\s*SSD|SSD[^0-9]*(\d+)\s*(GB|TB)/i);
-    let ssd = '';
-    if (ssdMatch) {
-      const num = ssdMatch[1] || ssdMatch[3];
-      const unit = (ssdMatch[2] || ssdMatch[4] || 'GB').toUpperCase();
-      ssd = unit === 'TB' ? (parseInt(num) * 1024) + 'GB' : num + 'GB';
-    } else {
-      const numMatch = hddRaw.match(/(\d+)\s*(GB|TB)/i);
-      if (numMatch) ssd = numMatch[1] + (numMatch[2].toUpperCase() === 'TB' ? '000GB' : 'GB');
-    }
-
-    // RAM from Mem field: "32GB" or "16GB DDR4"
-    const memRaw = cellStr(row[memCol] ?? '');
-    const ramMatch = memRaw.match(/(\d+)\s*GB/i);
-    const ram = ramMatch ? ramMatch[1] + 'GB' : '';
-
-    // Quantity — strip commas ("6,000" → 6000), cap at 500 for display
-    const qtyRaw = qtyCol >= 0 ? String(row[qtyCol] ?? '').replace(/,/g, '') : '1';
-    const qty = Math.min(parseInt(qtyRaw) || 1, 500);
-
-    // For large batches (qty > 10), just add one representative line
-    const expand = qty <= 10 ? qty : 1;
-    for (let i = 0; i < expand; i++) {
-      devices.push({ model: brand + ' ' + model, cpu, ram, ssd, qty: expand === 1 ? qty : 1 });
-    }
-  }
-  return devices;
-}
+// ─── PARSERS ─────────────────────────────────────────────────────────────────
 
 function parseARS(wb) {
   const sheetName = wb.SheetNames.find(n => n.toLowerCase().includes('inventory'));
-  const sheet = wb.Sheets[sheetName];
-  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: '' });
+  return parseARSRows(rows);
+}
 
-  // Find the summary block: rows where col[0] is a product type AND col[1] is a brand AND col[2] is a model
-  // This is the "quoted" section (rows 4-18 in example)
+function parseARSSimple(wb) {
+  // Like ARS but no dedicated inventory tab
+  for (const name of wb.SheetNames) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
+    const devices = parseARSRows(rows);
+    if (devices.length) return devices;
+  }
+  return [];
+}
+
+function parseARSRows(rows) {
   const summaryDevices = [];
   const detailDevices  = [];
 
   for (const row of rows) {
-    const col0 = cellStr(row[0]).toLowerCase();
+    const col0 = cellStr(row[0]);
     const col1 = cellStr(row[1]);
     const col2 = cellStr(row[2]);
-    const col3 = cellStr(row[3]); // processor or serial
-    const col4 = row[4];          // qty or category
-    const col5 = row[5];          // price or treatment
+    const col3 = cellStr(row[3]);
+    const col4 = row[4];
+    const col5 = row[5];
 
-    // Summary block: Product | Brand | Model | Processor | Qty | Price
-    if (PRODUCT_TYPES.has(col0.replace(/[\s\/\-]/g,'').replace('allone','allinone')) &&
-        col1.length > 0 && col2.length > 0 && typeof col4 === 'number' && col4 > 0) {
-      const specs = parseProcessorString(col3);
-      const qty   = parseInt(col4) || 1;
+    // Summary: Product | Brand | Model | Processor | Qty | Price
+    if (isProductType(col0) && col1.length > 0 && col2.length > 0 &&
+        typeof col4 === 'number' && col4 >= 0) {
+      const procStr = col3 + ' ' + col2; // combine processor + model for spec extraction
+      const qty = Math.max(parseInt(col4) || 1, 1);
       const joepPrice = typeof col5 === 'number' ? col5 : null;
 
-      // Expand qty into individual devices
       for (let i = 0; i < qty; i++) {
         summaryDevices.push({
-          model:     col1 + ' ' + col2,
-          cpu:       specs.cpu,
-          ram:       specs.ram,
-          ssd:       specs.ssd,
-          joepPrice, // Joep's actual price — store for comparison
+          model:     (col1 + ' ' + col2).trim(),
+          cpu:       extractCPU(col3) || extractCPU(col2),
+          ram:       extractRAM(procStr) || extractRAM(col2),
+          ssd:       extractSSD(col3) || extractSSD(col2),
+          joepPrice,
         });
       }
     }
 
-    // Detail block (below summary): Product | (empty) | Full model name | Serial
-    if (PRODUCT_TYPES.has(col0.replace(/[\s\/\-]/g,'').replace('allone','allinone')) &&
-        col1 === '' && looksLikeModel(col2) && col3.length > 0) {
-      detailDevices.push({
-        model:  col2,
-        serial: cellStr(col3),
-      });
+    // Detail block: Product | (empty) | Full model | Serial
+    if (isProductType(col0) && col1 === '' && looksLikeModel(col2) && col3.length > 0) {
+      detailDevices.push({ model: col2, serial: col3 });
     }
   }
 
-  // Merge: if we have both summary and detail, enrich summary with serials
+  // Merge detail serials into summary devices
   if (summaryDevices.length > 0 && detailDevices.length > 0) {
     detailDevices.forEach((d, i) => {
       if (summaryDevices[i]) {
         summaryDevices[i].serial = d.serial;
-        // Use more specific model name from detail block if available
         if (d.model.length > summaryDevices[i].model.length) {
           summaryDevices[i].model = d.model;
         }
       }
     });
-    return summaryDevices;
   }
 
-  // Fallback: return whichever block has more data
-  return summaryDevices.length >= detailDevices.length ? summaryDevices : detailDevices;
+  return summaryDevices.length ? summaryDevices : detailDevices;
 }
 
-// ─── MAIN PARSE ENTRY POINT ─────────────────────────────────────────────────
-function parseExcel(buffer) {
-  const wb = XLSX.read(buffer, { type: 'buffer' });
+function parseVendorQuote(wb) {
+  for (const name of wb.SheetNames) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
 
-  // PlanBit ARS format takes priority
-  if (isPlanBitARS(wb)) {
-    return parseARS(wb);
-  }
-
-  // PWC / vendor quote format
-  const pwcInfo = isPWCFormat(wb);
-  if (pwcInfo) {
-    return parsePWC(wb, pwcInfo.sheet, pwcInfo.headerRow);
-  }
-
-  const results  = [];
-  const aliasFlat = Object.values(COL_ALIASES).flat();
-
-  for (const sheetName of wb.SheetNames) {
-    const sheet   = wb.Sheets[sheetName];
-    const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
-    if (!rawRows.length) continue;
-
-    const nonEmpty = rawRows.filter(r => r.some(v => cellStr(v).length > 0));
-    if (nonEmpty.length < 2) continue;
-
-    // Find header row in first 10 rows
+    // Find header row
     let headerRowIdx = -1;
-    for (let i = 0; i < Math.min(10, rawRows.length); i++) {
-      const row = rawRows[i].map(cellStr);
-      const matches = row.filter(h =>
-        aliasFlat.includes(h.toLowerCase().replace(/[\s_\-\.]/g, ''))
-      ).length;
-      if (matches >= 1) { headerRowIdx = i; break; }
+    for (let i = 0; i < Math.min(5, rows.length); i++) {
+      const cells = rows[i].map(v => cellStr(v).toLowerCase());
+      if (cells.some(c => c === 'product') && cells.some(c => c === 'brand') && cells.some(c => c === 'model')) {
+        headerRowIdx = i;
+        break;
+      }
+    }
+    if (headerRowIdx === -1) continue;
+
+    const header = rows[headerRowIdx].map(v => cellStr(v).toLowerCase());
+    const col = (...names) => {
+      for (const n of names) {
+        const idx = header.findIndex(h => h.includes(n));
+        if (idx >= 0) return idx;
+      }
+      return -1;
+    };
+
+    const productCol   = col('product');
+    const brandCol     = col('brand');
+    const modelCol     = col('model');
+    const processorCol = col('processor');
+    const hddCol       = col('hdd', 'storage', 'disk');
+    const memCol       = col('mem', 'ram', 'memory');
+    const qtyCol       = col('qty', 'quantity', 'units');
+
+    const devices = [];
+    for (const row of rows.slice(headerRowIdx + 1)) {
+      if (!row.some(v => cellStr(v).length > 0)) continue;
+      const product = cellStr(row[productCol] ?? '');
+      if (!isProductType(product)) continue;
+
+      const brand = cellStr(row[brandCol] ?? '');
+      const model = cellStr(row[modelCol] ?? '');
+      if (!brand && !model) continue;
+
+      const procRaw = cellStr(row[processorCol] ?? '');
+      const hddRaw  = cellStr(row[hddCol] ?? '');
+      const memRaw  = cellStr(row[memCol] ?? '');
+
+      // Qty: strip commas ("6,000" → 6000), cap for display
+      const qtyRaw = qtyCol >= 0 ? String(row[qtyCol] ?? '').replace(/,/g, '') : '1';
+      const qty = Math.min(parseInt(qtyRaw) || 1, 500);
+      const expand = qty <= 20 ? qty : 1;
+
+      const cpu = extractCPU(procRaw) || extractCPU(model);
+      const ram = extractRAM(memRaw) || extractRAM(procRaw);
+      const ssd = extractSSD(hddRaw) || extractSSD(procRaw);
+
+      for (let i = 0; i < expand; i++) {
+        devices.push({ model: (brand + ' ' + model).trim(), cpu, ram, ssd });
+      }
+    }
+    if (devices.length) return devices;
+  }
+  return [];
+}
+
+function parseGenericHeaders(wb) {
+  const results = [];
+
+  for (const name of wb.SheetNames) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
+    if (!rows.length) continue;
+
+    // Find header row
+    let headerRowIdx = -1;
+    const COL_KEYS = {
+      model:  ['model','device','modelname','computername','description','productname','name','item','assetname'],
+      cpu:    ['cpu','processor','proc'],
+      ram:    ['ram','memory','mem'],
+      ssd:    ['ssd','storage','hdd','disk','drive'],
+      grade:  ['grade','condition','quality'],
+      serial: ['serial','serialnumber','sn','assettag','asset'],
+      qty:    ['qty','quantity','count','units'],
+    };
+    const allKeys = Object.values(COL_KEYS).flat();
+
+    for (let i = 0; i < Math.min(10, rows.length); i++) {
+      const cells = rows[i].map(v => cellStr(v).toLowerCase().replace(/[\s_\-\.]/g,''));
+      if (cells.filter(c => allKeys.includes(c)).length >= 1) {
+        headerRowIdx = i;
+        break;
+      }
+    }
+    if (headerRowIdx === -1) continue;
+
+    const header = rows[headerRowIdx].map(v => cellStr(v).toLowerCase().replace(/[\s_\-\.]/g,''));
+    const colMap = {};
+    for (const [field, keys] of Object.entries(COL_KEYS)) {
+      colMap[field] = header.findIndex(h => keys.includes(h));
     }
 
-    const devices = headerRowIdx >= 0
-      ? parseWithHeaders(rawRows, headerRowIdx)
-      : parseHeaderless(rawRows);
+    const mappedIdxs = new Set(Object.values(colMap).filter(i => i >= 0));
 
-    results.push(...devices);
-  }
+    for (const row of rows.slice(headerRowIdx + 1)) {
+      if (!row.some(v => cellStr(v).length > 0)) continue;
+      const model = colMap.model >= 0 ? cellStr(row[colMap.model]) : '';
+      if (!model || !looksLikeModel(model)) continue;
 
-  return results;
-}
+      const d = { model };
+      if (colMap.cpu   >= 0) d.cpu   = cellStr(row[colMap.cpu]);
+      if (colMap.ram   >= 0) d.ram   = cellStr(row[colMap.ram]);
+      if (colMap.ssd   >= 0) d.ssd   = cellStr(row[colMap.ssd]);
+      if (colMap.grade >= 0) d.grade = cellStr(row[colMap.grade]);
 
-function parseWithHeaders(allRows, headerRowIdx) {
-  const headerRow = allRows[headerRowIdx].map(cellStr);
-  const dataRows  = allRows.slice(headerRowIdx + 1);
-  const aliasFlat = Object.values(COL_ALIASES).flat();
-
-  const colMap = {};
-  for (const field of Object.keys(COL_ALIASES)) {
-    const aliases = COL_ALIASES[field];
-    const idx = headerRow.findIndex(h =>
-      aliases.includes(h.toLowerCase().replace(/[\s_\-\.]/g, ''))
-    );
-    colMap[field] = idx;
-  }
-
-  const mappedIdxs = new Set(Object.values(colMap).filter(i => i >= 0));
-
-  return dataRows
-    .filter(row => row.some(v => cellStr(v).length > 0))
-    .map(row => {
-      const d = {};
-      for (const [field, idx] of Object.entries(colMap)) {
-        if (idx >= 0) d[field] = cellStr(row[idx]);
-      }
+      // Auto-detect serial from unmapped columns
       if (!d.serial) {
         row.forEach((v, i) => {
-          if (!mappedIdxs.has(i) && !d.serial && SERIAL_RE.test(cellStr(v))) {
+          if (!mappedIdxs.has(i) && !d.serial && /^[A-Z0-9]{6,}$/i.test(cellStr(v))) {
             d.serial = cellStr(v);
           }
         });
       }
-      return d;
-    })
-    .filter(d => d.model && looksLikeModel(d.model));
+
+      results.push(d);
+    }
+  }
+  return results;
 }
 
-function parseHeaderless(rawRows) {
-  const numCols = Math.max(...rawRows.map(r => r.length), 0);
-  if (numCols === 0) return [];
+function parseGenericHeaderless(wb) {
+  const results = [];
 
-  const scores = {};
-  for (let c = 0; c < numCols; c++) {
-    const vals = rawRows.map(r => cellStr(r[c])).filter(v => v.length > 0);
-    if (!vals.length) continue;
-    const r = n => n / vals.length;
-    scores[c] = {
-      model:  r(vals.filter(looksLikeModel).length),
-      ram:    r(vals.filter(v => RAM_VALS.has(v) || RAM_RE.test(v)).length),
-      ssd:    r(vals.filter(v => SSD_VALS.has(v) || SSD_RE.test(v)).length),
-      grade:  r(vals.filter(v => GRADE_RE.test(v)).length),
-      serial: r(vals.filter(v => SERIAL_RE.test(v)).length),
+  for (const name of wb.SheetNames) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
+    const nonEmpty = rows.filter(r => r.some(v => cellStr(v).length > 0));
+    if (nonEmpty.length < 2) continue;
+
+    const numCols = Math.max(...nonEmpty.map(r => r.length), 0);
+
+    // Score each column
+    const scores = {};
+    for (let c = 0; c < numCols; c++) {
+      const vals = nonEmpty.map(r => cellStr(r[c])).filter(v => v.length > 0);
+      if (!vals.length) continue;
+      const r = n => n / vals.length;
+      scores[c] = {
+        model:  r(vals.filter(looksLikeModel).length),
+        serial: r(vals.filter(v => /^[A-Z0-9]{6,}$/i.test(v)).length),
+        ram:    r(vals.filter(v => /^(4|8|16|32|64|128)\s*GB?$/i.test(v)).length),
+        ssd:    r(vals.filter(v => /^(128|240|256|480|512|960|1024|2048)\s*GB?$/i.test(v)).length),
+        grade:  r(vals.filter(v => /^[A-D]\d?$/i.test(v)).length),
+      };
+    }
+
+    const pick = (field, exclude = []) => {
+      let best = -1, bestScore = 0.12;
+      for (let c = 0; c < numCols; c++) {
+        if (exclude.includes(c) || !scores[c]) continue;
+        if ((scores[c][field] || 0) > bestScore) { best = c; bestScore = scores[c][field]; }
+      }
+      return best;
     };
+
+    const modelCol  = pick('model');
+    if (modelCol === -1) continue;
+    const serialCol = pick('serial', [modelCol]);
+    const ramCol    = pick('ram',    [modelCol, serialCol]);
+    const ssdCol    = pick('ssd',    [modelCol, serialCol, ramCol]);
+    const gradeCol  = pick('grade',  [modelCol, serialCol, ramCol, ssdCol]);
+
+    const sheetResults = nonEmpty
+      .filter(row => looksLikeModel(row[modelCol]))
+      .map(row => {
+        const d = { model: cellStr(row[modelCol]) };
+        if (serialCol >= 0) d.serial = cellStr(row[serialCol]);
+        if (ramCol    >= 0) d.ram    = cellStr(row[ramCol]);
+        if (ssdCol    >= 0) d.ssd    = cellStr(row[ssdCol]);
+        if (gradeCol  >= 0) d.grade  = cellStr(row[gradeCol]);
+        return d;
+      });
+
+    results.push(...sheetResults);
+  }
+  return results;
+}
+
+// ─── TEXT INPUT PARSER ────────────────────────────────────────────────────────
+function parseTextInput(text) {
+  // Line-by-line email header filter — safe, doesn't eat device lines
+  const EMAIL_JUNK = /^(summarize this email|inbox|re:|fwd:|from:|to me|to:|subject:|sent:|cc:|planbit|caas\s*[-–]?\s*$|feb |mar |jan |apr |may |jun |jul |aug |sep |oct |nov |dec |http)/i;
+  const HAS_DEVICE = /\b(dell|hp|hewlett|lenovo|apple|macbook|thinkpad|latitude|elitebook|surface|asus|acer|fujitsu|toshiba|samsung|microsoft|iphone|ipad|galaxy|yoga|optiplex|probook|zbook|spectre|envy|pavilion)\b/i;
+
+  const lines = text
+    .split(/[\n;]+/)
+    .map(l => l.trim())
+    .filter(l => l.length > 4)
+    .filter(l => !EMAIL_JUNK.test(l) || HAS_DEVICE.test(l));
+
+  const devices = [];
+
+  for (const line of lines) {
+    if (!HAS_DEVICE.test(line)) continue;
+
+    // Qty: "60x", "- 60x", "• 3×", "CAAS - 60x"
+    const qtyMatch = line.match(/(?:^|CAAS\s*[-–]\s*)[\-\*\•\·]?\s*(\d+)\s*[xX×]/i);
+    const qty = qtyMatch ? Math.min(parseInt(qtyMatch[1]), 999) : 1;
+    const rest = qtyMatch ? line.slice(line.indexOf(qtyMatch[0]) + qtyMatch[0].length).trim() : line;
+
+    // Model: everything before first / or , or spec keyword
+    const modelStop = /[\/,]|\b(i[3579][-\s]|\d+\s*GB|\d+\s*TB|Gen\s*\d|M[123]\b|FHD|UHD|4K|\d+"|\d+inch)/i;
+    const modelRaw = rest.split(modelStop)[0].trim().replace(/^[-\*\•\·\s]+/, '');
+
+    if (!HAS_DEVICE.test(modelRaw) || modelRaw.length < 4) continue;
+
+    const cpu   = extractCPU(rest);
+    const ram   = extractRAM(rest);
+    const ssd   = extractSSD(rest);
+    const grade = extractGrade(rest);
+
+    devices.push({ model: modelRaw, cpu, ram, ssd, grade });
   }
 
-  const pick = (field, exclude = []) => {
-    let best = -1, bestScore = 0.15;
-    for (let c = 0; c < numCols; c++) {
-      if (exclude.includes(c) || !scores[c]) continue;
-      if (scores[c][field] > bestScore) { best = c; bestScore = scores[c][field]; }
+  // Deduplicate: if same model appears twice (e.g. "- 60x Dell" + "60x Dell..."),
+  // merge into the one with most specs
+  const merged = [];
+  for (const d of devices) {
+    const existing = merged.find(m => m.model.toLowerCase() === d.model.toLowerCase());
+    if (existing) {
+      // Keep whichever has more specs filled
+      if (!existing.ram && d.ram) existing.ram = d.ram;
+      if (!existing.ssd && d.ssd) existing.ssd = d.ssd;
+      if (!existing.cpu && d.cpu) existing.cpu = d.cpu;
+      if (!existing.grade && d.grade) existing.grade = d.grade;
+    } else {
+      merged.push(d);
     }
-    return best;
-  };
-
-  const modelCol  = pick('model');
-  if (modelCol === -1) return [];
-  const serialCol = pick('serial', [modelCol]);
-  const ramCol    = pick('ram',    [modelCol, serialCol]);
-  const ssdCol    = pick('ssd',    [modelCol, serialCol, ramCol]);
-  const gradeCol  = pick('grade',  [modelCol, serialCol, ramCol, ssdCol]);
-
-  return rawRows
-    .filter(row => row.some(v => cellStr(v).length > 0))
-    .filter(row => looksLikeModel(row[modelCol]))
-    .map(row => {
-      const d = { model: cellStr(row[modelCol]) };
-      if (serialCol >= 0) d.serial = cellStr(row[serialCol]);
-      if (ramCol    >= 0) d.ram    = cellStr(row[ramCol]);
-      if (ssdCol    >= 0) d.ssd    = cellStr(row[ssdCol]);
-      if (gradeCol  >= 0) d.grade  = cellStr(row[gradeCol]);
-      return d;
-    })
-    .filter(d => d.model);
+  }
+  return merged;
 }
+
+// ─── MAIN ENTRY POINT ─────────────────────────────────────────────────────────
+function parseExcel(buffer) {
+  const wb = XLSX.read(buffer, { type: 'buffer' });
+  const format = detectFormat(wb);
+
+  switch (format) {
+    case 'ARS':             return parseARS(wb);
+    case 'ARS_SIMPLE':     return parseARSSimple(wb);
+    case 'VENDOR_QUOTE':   return parseVendorQuote(wb);
+    case 'GENERIC_HEADERS':return parseGenericHeaders(wb);
+    default:               return parseGenericHeaderless(wb);
+  }
+}
+
 
 // ─── ROUTE 1: Single quote ───────────────────────────────────────────────────
 app.post('/api/quote', (req, res) => {
