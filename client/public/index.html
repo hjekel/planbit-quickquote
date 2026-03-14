@@ -6,7 +6,7 @@
 <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDMzNjYiLz48dGV4dCB4PSIxNiIgeT0iMjEiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjExIiBmaWxsPSIjQ0MwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iLTAuNSI+RVJQPC90ZXh0Pjwvc3ZnPg==" type="image/svg+xml">
 <title>ERPIE PriceFinder – Incredible Projects</title>
 <style>
-/* â"€â"€ Reset & base â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ── Reset & base ─────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* Dark mode (default) */
@@ -23,6 +23,7 @@
   --watch:    #CC0000;
   --nogo:     #f44336;
   --radius:   12px;
+  --card-bg:  #242424;
 }
 
 /* Light mode */
@@ -39,6 +40,7 @@
   --watch:    #003366;
   --nogo:     #c62828;
   --radius:   12px;
+  --card-bg:  #ffffff;
 }
 
 html { font-size: 16px; }
@@ -53,7 +55,7 @@ body {
 }
 input, select, button { font-family: inherit; }
 
-/* â"€â"€ Header â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ── Header ──────────────────────────────────────────────────────── */
 .header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -79,7 +81,7 @@ input, select, button { font-family: inherit; }
   letter-spacing: .05em;
 }
 
-/* â"€â"€ Dark/Light toggle â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ── Dark/Light toggle ──────────────────────────────────────────── */
 .theme-toggle {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -96,7 +98,7 @@ input, select, button { font-family: inherit; }
 }
 .theme-toggle:hover { border-color: var(--accent); background: var(--surface2); }
 
-/* â"€â"€ Tabs â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ── Tabs ────────────────────────────────────────────────────────── */
 .tabs {
   display: flex;
   gap: 0;
@@ -117,23 +119,32 @@ input, select, button { font-family: inherit; }
 .tab:hover { color: var(--accent); }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-/* â"€â"€ Main layout â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ── Main layout ─────────────────────────────────────────────────── */
 .main { flex: 1; padding: 32px; max-width: 1200px; margin: 0 auto; width: 100%; }
 .panel { display: none; }
 .panel.active { display: block; }
 
-/* â"€â"€ Form grid â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
-.form-card {
-  background: var(--surface);
+/* ── Form sections ───────────────────────────────────────────────── */
+.form-section {
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px;
-  margin-bottom: 24px;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
 }
-.form-card h2 { font-size: 16px; font-weight: 600; margin-bottom: 20px; color: var(--accent); }
-.form-row { display: grid; gap: 16px; align-items: end; }
-.form-row-1 { grid-template-columns: 2fr 1fr 1fr; }
-.form-row-2 { grid-template-columns: 1fr 1fr 1fr 1fr; margin-top: 14px; }
+.form-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
 .field input, .field select {
@@ -149,8 +160,26 @@ input, select, button { font-family: inherit; }
 .field input:focus, .field select:focus { border-color: var(--accent); }
 .field input::placeholder { color: var(--muted); }
 
-/* â"€â"€ Buttons â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
-.btn-row { display: flex; gap: 12px; margin-top: 20px; }
+/* ── Keyboard warning ────────────────────────────────────────────── */
+.keyboard-warning {
+  display: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+.keyboard-warning.critical {
+  background: #ffebee;
+  color: #d50000;
+}
+.keyboard-warning.caution {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.button-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
 .btn {
   padding: 10px 20px;
   border-radius: 8px;
@@ -162,6 +191,8 @@ input, select, button { font-family: inherit; }
 }
 .btn-primary { background: var(--accent); color: #fff; }
 .btn-primary:hover { background: var(--accent2); }
+.btn-ai { background: #7c3aed; color: #fff; }
+.btn-ai:hover { background: #6d28d9; }
 .btn-ghost {
   background: transparent;
   color: var(--muted);
@@ -170,9 +201,16 @@ input, select, button { font-family: inherit; }
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
 .btn-sm { padding: 7px 14px; font-size: 13px; }
 
-/* ERP result card CSS removed – AI Analysis only */
+/* ── Batch upload ────────────────────────────────────────────────── */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.form-card h2 { font-size: 16px; font-weight: 600; margin-bottom: 20px; color: var(--accent); }
 
-/* â"€â"€ Batch upload â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
 .dropzone {
   border: 2px dashed var(--border);
   border-radius: var(--radius);
@@ -203,7 +241,7 @@ input, select, button { font-family: inherit; }
   outline: none;
 }
 
-/* â"€â"€ Spinner â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ── Spinner ─────────────────────────────────────────────────────── */
 #loading {
   display: none;
   text-align: center;
@@ -245,7 +283,7 @@ input, select, button { font-family: inherit; }
 }
 #loading p { color: var(--muted); margin-top: 16px; }
 
-/* â"€â"€ Summary bar â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ── Summary bar ─────────────────────────────────────────────────── */
 #batch-results { display: none; }
 .summary-cards {
   display: grid;
@@ -263,7 +301,7 @@ input, select, button { font-family: inherit; }
 .summary-card .s-value { font-size: 24px; font-weight: 700; margin-top: 4px; }
 .summary-card .s-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-/* â"€â"€ Results table â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ── Results table ───────────────────────────────────────────────── */
 .table-actions { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
 .table-wrapper { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -296,13 +334,24 @@ tbody tr:last-child { border-bottom: none; }
 .row-WATCH { border-left: 3px solid var(--watch); }
 .row-NO-GO { border-left: 3px solid var(--nogo); }
 
-/* â"€â"€ Footer â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ── Footer ──────────────────────────────────────────────────────── */
 .footer {
   padding: 20px 32px;
   border-top: 1px solid var(--border);
   font-size: 12px;
   color: var(--muted);
   text-align: center;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .header { padding: 0 16px; }
+  .main { padding: 16px; }
+  .form-section { padding: 12px 14px; }
+  .form-row { grid-template-columns: 1fr; }
+  .summary-cards { grid-template-columns: repeat(2, 1fr); }
+  .button-row { flex-direction: column; }
+  .button-row .btn { width: 100%; text-align: center; }
 }
 </style>
 </head>
@@ -314,9 +363,9 @@ tbody tr:last-child { border-bottom: none; }
     <div class="logo"><span class="logo-erp">ERP</span>IE PriceFinder</div>
     <span class="logo-by">by</span>
     <span class="logo-planbit">Incredible Projects</span>
-    <div class="badge">v1.0</div>
+    <div class="badge">v1.1</div>
   </div>
-  <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">🌙</button>
+  <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">&#127769;</button>
 </div>
 
 <!-- Tabs -->
@@ -328,37 +377,80 @@ tbody tr:last-child { border-bottom: none; }
 <!-- Main -->
 <div class="main">
 
-  <!-- â"€â"€ Quick Quote panel â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ -->
+  <!-- ── Quick Quote panel ──────────────────────────────────────── -->
   <div class="panel active" id="panel-quick">
-    <div class="form-card">
-      <h2>Device specificaties</h2>
-      <!-- Row 1: Model · CPU · RAM -->
-      <div class="form-row form-row-1">
+
+    <!-- DEVICE section -->
+    <div class="form-section">
+      <div class="form-section-title">Device</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Brand</label>
+          <select id="brand">
+            <option value="">Select brand...</option>
+          </select>
+        </div>
         <div class="field">
           <label>Model</label>
-          <input type="text" id="q-model" placeholder="bijv. HP EliteBook 840 G8">
+          <select id="model">
+            <option value="">Select brand first...</option>
+          </select>
         </div>
         <div class="field">
-          <label>CPU</label>
-          <input type="text" id="q-cpu" list="cpu-hints" placeholder="bijv. i5-1145G7" autocomplete="off">
-          <datalist id="cpu-hints"></datalist>
-        </div>
-        <div class="field">
-          <label>RAM</label>
-          <select id="q-ram">
-            <option value="4">4 GB</option>
-            <option value="8" selected>8 GB</option>
-            <option value="16">16 GB</option>
-            <option value="32">32 GB</option>
-            <option value="64">64 GB</option>
+          <label>Device Type</label>
+          <select id="deviceType">
+            <option value="notebook">Notebook / Laptop</option>
+            <option value="desktop">Desktop</option>
+            <option value="aio">All-in-One</option>
+            <option value="workstation">Workstation</option>
+            <option value="tablet">Tablet</option>
+            <option value="mini">Mini PC / Tiny</option>
           </select>
         </div>
       </div>
-      <!-- Row 2: SSD · Grade · Regio · Batterij -->
-      <div class="form-row form-row-2">
+    </div>
+
+    <!-- CPU section -->
+    <div class="form-section">
+      <div class="form-section-title">CPU</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Familie</label>
+          <select id="cpuFamily">
+            <option value="">Select CPU family...</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Generatie</label>
+          <select id="cpuGen">
+            <option value="">Select CPU first...</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Full Model (optional)</label>
+          <input type="text" id="cpuModel" placeholder="e.g. i5-1345U">
+        </div>
+      </div>
+    </div>
+
+    <!-- SPECS section -->
+    <div class="form-section">
+      <div class="form-section-title">Specs</div>
+      <div class="form-row">
+        <div class="field">
+          <label>RAM</label>
+          <select id="ram">
+            <option value="4">4 GB</option>
+            <option value="8">8 GB</option>
+            <option value="16" selected>16 GB</option>
+            <option value="32">32 GB</option>
+            <option value="64">64 GB</option>
+            <option value="128">128 GB</option>
+          </select>
+        </div>
         <div class="field">
           <label>SSD</label>
-          <select id="q-ssd">
+          <select id="ssd">
             <option value="128">128 GB</option>
             <option value="256" selected>256 GB</option>
             <option value="512">512 GB</option>
@@ -368,43 +460,72 @@ tbody tr:last-child { border-bottom: none; }
         </div>
         <div class="field">
           <label>Grade</label>
-          <select id="q-grade">
-            <option value="A1">A1 – Mint</option>
-            <option value="A2">A2 – Excellent</option>
-            <option value="A3">A3 – Very Good</option>
-            <option value="A" selected>A – Good</option>
-            <option value="B">B – Fair</option>
-            <option value="B4">B4 – Below Fair</option>
-            <option value="C">C – Poor</option>
-            <option value="C6">C6 – Very Poor</option>
-            <option value="D">D – Parts Only</option>
+          <select id="grade">
+            <option value="A" selected>A &ndash; Excellent</option>
+            <option value="B">B &ndash; Good</option>
+            <option value="C">C &ndash; Fair</option>
+            <option value="D">D &ndash; Poor</option>
+            <option value="unknown">Unknown</option>
           </select>
         </div>
         <div class="field">
-          <label>Regio</label>
-          <select id="q-region">
-            <option value="EU" selected>EU</option>
-            <option value="UK">UK (−16%)</option>
-            <option value="INTL">INTL (−15%)</option>
+          <label>Keyboard</label>
+          <select id="keyboard">
+            <option value="qwerty-eu">QWERTY EU (International)</option>
+            <option value="qwerty-uk">QWERTY UK</option>
+            <option value="qwerty-us">QWERTY US</option>
+            <option value="qwerty-nl">QWERTY NL (Dutch)</option>
+            <option value="azerty-fr">AZERTY FR (French)</option>
+            <option value="azerty-be">AZERTY BE (Belgian)</option>
+            <option value="qwertz-de">QWERTZ DE (German)</option>
+            <option value="qwertz-ch">QWERTZ CH (Swiss)</option>
+            <option value="nordic">Nordic (Swedish/Danish/Norwegian)</option>
+            <option value="other">Other / Unknown</option>
           </select>
+          <div id="keyboard-warning" class="keyboard-warning"></div>
         </div>
-        <div class="field">
-          <label>Batterij</label>
-          <select id="q-battery">
-            <option value="good" selected>Good / OK</option>
-            <option value="bad">Bad / Poor (−€35)</option>
-            <option value="missing">Missing (−€50)</option>
-          </select>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" id="btn-ai-quote" style="background:#7c3aed;">Get AI Analysis</button>
-        <button class="btn btn-ghost" id="btn-example">Show Example</button>
       </div>
     </div>
 
+    <!-- CONTEXT section -->
+    <div class="form-section">
+      <div class="form-section-title">Context</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Region</label>
+          <select id="region">
+            <option value="EU" selected>EU</option>
+            <option value="UK">UK (+16% Brexit factor)</option>
+            <option value="CH">Switzerland</option>
+            <option value="US">US</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Battery (notebook)</label>
+          <select id="battery">
+            <option value="good" selected>Good / OK</option>
+            <option value="degraded">Degraded (70-85%)</option>
+            <option value="replace">Needs Replacement</option>
+            <option value="dead">Dead / Missing</option>
+            <option value="na">N/A (Desktop)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Quantity</label>
+          <input type="number" id="quantity" value="1" min="1" max="9999">
+        </div>
+      </div>
+    </div>
+
+    <!-- Button row -->
+    <div class="button-row">
+      <button class="btn btn-ghost" onclick="clearForm()">Clear Form</button>
+      <button class="btn btn-ghost" onclick="showExample()">Show Example</button>
+      <button class="btn btn-ai" id="btn-ai-quote">&#129302; Get AI Analysis</button>
+    </div>
+
     <!-- AI Result card -->
-    <div id="ai-result-card" style="display:none;background:var(--surface);border:2px solid #7c3aed;border-radius:var(--radius);padding:28px;margin-bottom:24px;">
+    <div id="ai-result-card" style="display:none;background:var(--surface);border:2px solid #7c3aed;border-radius:var(--radius);padding:28px;margin-top:24px;margin-bottom:24px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
         <span style="font-size:20px;">&#129302;</span>
         <h2 style="font-size:16px;font-weight:700;color:#7c3aed;margin:0;">AI Analysis</h2>
@@ -417,19 +538,17 @@ tbody tr:last-child { border-bottom: none; }
       <div id="ai-result-error" style="display:none;background:#f4433620;border:1px solid var(--nogo);border-radius:8px;padding:14px;font-size:13px;color:var(--nogo);margin-top:12px;"></div>
     </div>
 
-    <!-- Result card -->
-    <!-- ERP result card removed – AI Analysis only -->
   </div>
 
-  <!-- â"€â"€ Batch Upload panel â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ -->
+  <!-- ── Batch Upload panel ─────────────────────────────────────── -->
   <div class="panel" id="panel-batch">
     <div class="form-card">
       <div class="batch-options">
         <label>Regio:</label>
         <select id="b-region">
           <option value="EU" selected>EU</option>
-          <option value="UK">UK (−16%)</option>
-          <option value="INTL">INTL (−15%)</option>
+          <option value="UK">UK (&minus;16%)</option>
+          <option value="INTL">INTL (&minus;15%)</option>
         </select>
       </div>
 
@@ -441,7 +560,7 @@ tbody tr:last-child { border-bottom: none; }
 
       <!-- Text paste input -->
       <div id="text-input-area" style="display:none;">
-        <textarea id="batch-text" placeholder="Plak hier een bid request of device lijst&#10;&#10;Voorbeelden:&#10;60x Dell Latitude 7430 / i7-12th / 32GB / 512GB&#10;LENOVO X1 Carbon G10, i7-1265U, 16GB, 512GB SSD&#10;3x Apple MacBook Pro 14 2021 M1 16GB 512GB" 
+        <textarea id="batch-text" placeholder="Plak hier een bid request of device lijst&#10;&#10;Voorbeelden:&#10;60x Dell Latitude 7430 / i7-12th / 32GB / 512GB&#10;LENOVO X1 Carbon G10, i7-1265U, 16GB, 512GB SSD&#10;3x Apple MacBook Pro 14 2021 M1 16GB 512GB"
           style="width:100%;height:160px;padding:16px;border-radius:12px;border:2px dashed var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:14px;resize:vertical;line-height:1.6;"></textarea>
         <button onclick="analyzeText()" style="margin-top:10px;width:100%;padding:12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-weight:700;font-size:15px;cursor:pointer;">Analyseer tekst</button>
       </div>
@@ -457,7 +576,7 @@ tbody tr:last-child { border-bottom: none; }
 
     <!-- Loading -->
     <div id="loading">
-      <div class="spinner-emoji">🦞</div>
+      <div class="spinner-emoji">&#129438;</div>
       <p>Analyseren... even geduld</p>
     </div>
 
@@ -471,12 +590,12 @@ tbody tr:last-child { border-bottom: none; }
         </div>
         <div class="summary-card">
           <div class="s-label">Advised Value</div>
-          <div class="s-value" id="s-value">€0</div>
+          <div class="s-value" id="s-value">&euro;0</div>
           <div class="s-sub">totaal ERP</div>
         </div>
         <div class="summary-card">
           <div class="s-label">Gemiddeld</div>
-          <div class="s-value" id="s-avg">€0</div>
+          <div class="s-value" id="s-avg">&euro;0</div>
           <div class="s-sub">per apparaat</div>
         </div>
         <div class="summary-card">
@@ -522,24 +641,379 @@ tbody tr:last-child { border-bottom: none; }
 
 <!-- Footer -->
 <div class="footer">
-  ERPIE PriceFinder · Incredible Projects · Prijzen zijn indicatief op basis van Rule Book v8.4
+  ERPIE PriceFinder &middot; Made by Incredible Projects / Henk Jekel
 </div>
 
 <script>
-// â"€â"€ Theme toggle â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+// ══════════════════════════════════════════════════════════════════════
+// DATA DEFINITIONS
+// ══════════════════════════════════════════════════════════════════════
+
+const BRANDS = [
+  { value: 'dell', label: 'Dell' },
+  { value: 'hp', label: 'HP' },
+  { value: 'lenovo', label: 'Lenovo' },
+  { value: 'apple', label: 'Apple' },
+  { value: 'microsoft', label: 'Microsoft' },
+  { value: 'asus', label: 'Asus' },
+  { value: 'acer', label: 'Acer' },
+  { value: 'fujitsu', label: 'Fujitsu' },
+  { value: 'other', label: 'Other' }
+];
+
+const MODELS = {
+  dell: [
+    { value: 'latitude-5xxx', label: 'Latitude 5xxx Series' },
+    { value: 'latitude-7xxx', label: 'Latitude 7xxx Series' },
+    { value: 'latitude-9xxx', label: 'Latitude 9xxx Series' },
+    { value: 'precision-3xxx', label: 'Precision 3xxx' },
+    { value: 'precision-5xxx', label: 'Precision 5xxx' },
+    { value: 'precision-7xxx', label: 'Precision 7xxx' },
+    { value: 'optiplex-micro', label: 'OptiPlex Micro' },
+    { value: 'optiplex-sff', label: 'OptiPlex SFF' },
+    { value: 'optiplex-tower', label: 'OptiPlex Tower' },
+    { value: 'xps-13', label: 'XPS 13' },
+    { value: 'xps-15', label: 'XPS 15' },
+    { value: 'xps-17', label: 'XPS 17' },
+    { value: 'other', label: 'Other Dell' }
+  ],
+  hp: [
+    { value: 'elitebook-8xx', label: 'EliteBook 8xx Series' },
+    { value: 'elitebook-1040', label: 'EliteBook 1040' },
+    { value: 'elitebook-x360', label: 'EliteBook x360' },
+    { value: 'elitebook-dragonfly', label: 'Elite Dragonfly' },
+    { value: 'probook-4xx', label: 'ProBook 4xx Series' },
+    { value: 'probook-6xx', label: 'ProBook 6xx Series' },
+    { value: 'zbook-firefly', label: 'ZBook Firefly' },
+    { value: 'zbook-power', label: 'ZBook Power' },
+    { value: 'zbook-studio', label: 'ZBook Studio' },
+    { value: 'zbook-fury', label: 'ZBook Fury' },
+    { value: 'elitedesk', label: 'EliteDesk' },
+    { value: 'prodesk', label: 'ProDesk' },
+    { value: 'other', label: 'Other HP' }
+  ],
+  lenovo: [
+    { value: 'thinkpad-t', label: 'ThinkPad T Series' },
+    { value: 'thinkpad-x', label: 'ThinkPad X Series' },
+    { value: 'thinkpad-x1', label: 'ThinkPad X1 Carbon/Yoga' },
+    { value: 'thinkpad-l', label: 'ThinkPad L Series' },
+    { value: 'thinkpad-e', label: 'ThinkPad E Series' },
+    { value: 'thinkpad-p', label: 'ThinkPad P Series (Workstation)' },
+    { value: 'thinkcentre-m', label: 'ThinkCentre M Series' },
+    { value: 'thinkcentre-tiny', label: 'ThinkCentre Tiny' },
+    { value: 'ideapad', label: 'IdeaPad' },
+    { value: 'yoga', label: 'Yoga' },
+    { value: 'other', label: 'Other Lenovo' }
+  ],
+  apple: [
+    { value: 'macbook-air', label: 'MacBook Air' },
+    { value: 'macbook-pro-13', label: 'MacBook Pro 13"' },
+    { value: 'macbook-pro-14', label: 'MacBook Pro 14"' },
+    { value: 'macbook-pro-15', label: 'MacBook Pro 15"' },
+    { value: 'macbook-pro-16', label: 'MacBook Pro 16"' },
+    { value: 'imac-21', label: 'iMac 21.5"' },
+    { value: 'imac-24', label: 'iMac 24"' },
+    { value: 'imac-27', label: 'iMac 27"' },
+    { value: 'mac-mini', label: 'Mac Mini' },
+    { value: 'mac-studio', label: 'Mac Studio' },
+    { value: 'mac-pro', label: 'Mac Pro' },
+    { value: 'other', label: 'Other Apple' }
+  ],
+  microsoft: [
+    { value: 'surface-pro', label: 'Surface Pro' },
+    { value: 'surface-laptop', label: 'Surface Laptop' },
+    { value: 'surface-book', label: 'Surface Book' },
+    { value: 'surface-go', label: 'Surface Go' },
+    { value: 'surface-studio', label: 'Surface Studio' },
+    { value: 'other', label: 'Other Surface' }
+  ],
+  asus: [
+    { value: 'zenbook', label: 'ZenBook' },
+    { value: 'vivobook', label: 'VivoBook' },
+    { value: 'expertbook', label: 'ExpertBook' },
+    { value: 'rog', label: 'ROG (Gaming)' },
+    { value: 'other', label: 'Other Asus' }
+  ],
+  acer: [
+    { value: 'aspire', label: 'Aspire' },
+    { value: 'swift', label: 'Swift' },
+    { value: 'travelmate', label: 'TravelMate' },
+    { value: 'other', label: 'Other Acer' }
+  ],
+  fujitsu: [
+    { value: 'lifebook', label: 'LIFEBOOK' },
+    { value: 'esprimo', label: 'ESPRIMO' },
+    { value: 'other', label: 'Other Fujitsu' }
+  ],
+  other: [
+    { value: 'other', label: 'Specify in notes' }
+  ]
+};
+
+const CPU_FAMILIES = [
+  { value: 'i3', label: 'Intel Core i3', brand: 'intel' },
+  { value: 'i5', label: 'Intel Core i5', brand: 'intel' },
+  { value: 'i7', label: 'Intel Core i7', brand: 'intel' },
+  { value: 'i9', label: 'Intel Core i9', brand: 'intel' },
+  { value: 'celeron', label: 'Intel Celeron', brand: 'intel' },
+  { value: 'pentium', label: 'Intel Pentium', brand: 'intel' },
+  { value: 'xeon', label: 'Intel Xeon', brand: 'intel' },
+  { value: 'm1', label: 'Apple M1', brand: 'apple' },
+  { value: 'm2', label: 'Apple M2', brand: 'apple' },
+  { value: 'm3', label: 'Apple M3', brand: 'apple' },
+  { value: 'm4', label: 'Apple M4', brand: 'apple' },
+  { value: 'ryzen3', label: 'AMD Ryzen 3', brand: 'amd' },
+  { value: 'ryzen5', label: 'AMD Ryzen 5', brand: 'amd' },
+  { value: 'ryzen7', label: 'AMD Ryzen 7', brand: 'amd' },
+  { value: 'ryzen9', label: 'AMD Ryzen 9', brand: 'amd' },
+  { value: 'unknown', label: 'Unknown / Other', brand: 'other' }
+];
+
+const INTEL_GENS = [
+  { value: '14', label: 'Gen 14 (2024)' },
+  { value: '13', label: 'Gen 13 (2023)' },
+  { value: '12', label: 'Gen 12 (2022)' },
+  { value: '11', label: 'Gen 11 (2021)' },
+  { value: '10', label: 'Gen 10 (2020)' },
+  { value: '9', label: 'Gen 9 (2019)' },
+  { value: '8', label: 'Gen 8 (2018)' },
+  { value: '7', label: 'Gen 7 (2017)' },
+  { value: '6', label: 'Gen 6 (2016)' },
+  { value: 'older', label: 'Gen 5 or older' }
+];
+
+const AMD_SERIES = [
+  { value: '7000', label: '7000 Series (2023)' },
+  { value: '6000', label: '6000 Series (2022)' },
+  { value: '5000', label: '5000 Series (2021)' },
+  { value: '4000', label: '4000 Series (2020)' },
+  { value: '3000', label: '3000 Series (2019)' },
+  { value: 'older', label: 'Older' }
+];
+
+const CPU_GENERATIONS = {
+  i3: INTEL_GENS,
+  i5: INTEL_GENS,
+  i7: INTEL_GENS,
+  i9: INTEL_GENS,
+  m1: [
+    { value: 'base', label: 'M1 (Base)' },
+    { value: 'pro', label: 'M1 Pro' },
+    { value: 'max', label: 'M1 Max' },
+    { value: 'ultra', label: 'M1 Ultra' }
+  ],
+  m2: [
+    { value: 'base', label: 'M2 (Base)' },
+    { value: 'pro', label: 'M2 Pro' },
+    { value: 'max', label: 'M2 Max' },
+    { value: 'ultra', label: 'M2 Ultra' }
+  ],
+  m3: [
+    { value: 'base', label: 'M3 (Base)' },
+    { value: 'pro', label: 'M3 Pro' },
+    { value: 'max', label: 'M3 Max' }
+  ],
+  m4: [
+    { value: 'base', label: 'M4 (Base)' },
+    { value: 'pro', label: 'M4 Pro' },
+    { value: 'max', label: 'M4 Max' }
+  ],
+  ryzen3: AMD_SERIES,
+  ryzen5: AMD_SERIES,
+  ryzen7: AMD_SERIES,
+  ryzen9: AMD_SERIES,
+  celeron: [{ value: 'any', label: 'Any Generation' }],
+  pentium: [{ value: 'any', label: 'Any Generation' }],
+  xeon: [{ value: 'any', label: 'Any Generation' }],
+  unknown: [{ value: 'unknown', label: 'Unknown' }]
+};
+
+const KEYBOARDS = [
+  { value: 'qwerty-eu', label: 'QWERTY EU (International)', warning: false },
+  { value: 'qwerty-uk', label: 'QWERTY UK', warning: false },
+  { value: 'qwerty-us', label: 'QWERTY US', warning: false },
+  { value: 'qwerty-nl', label: 'QWERTY NL (Dutch)', warning: false },
+  { value: 'azerty-fr', label: 'AZERTY FR (French)', warning: false },
+  { value: 'azerty-be', label: 'AZERTY BE (Belgian)', warning: false },
+  { value: 'qwertz-de', label: 'QWERTZ DE (German)', warning: true, warningText: '\u26a0\ufe0f Limited market' },
+  { value: 'qwertz-ch', label: 'QWERTZ CH (Swiss)', warning: true, warningText: '\ud83d\udeab NO RESALE VALUE (\u20ac0)' },
+  { value: 'nordic', label: 'Nordic (Swedish/Danish/Norwegian)', warning: true, warningText: '\u26a0\ufe0f Limited market' },
+  { value: 'other', label: 'Other / Unknown', warning: false }
+];
+
+// ══════════════════════════════════════════════════════════════════════
+// INIT — Populate brand and CPU family dropdowns
+// ══════════════════════════════════════════════════════════════════════
+(function init() {
+  const brandSel = document.getElementById('brand');
+  BRANDS.forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b.value;
+    opt.textContent = b.label;
+    brandSel.appendChild(opt);
+  });
+
+  const cpuSel = document.getElementById('cpuFamily');
+  CPU_FAMILIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.value;
+    opt.textContent = c.label;
+    cpuSel.appendChild(opt);
+  });
+})();
+
+// ══════════════════════════════════════════════════════════════════════
+// CASCADE LOGIC
+// ══════════════════════════════════════════════════════════════════════
+
+// Brand → Model cascade
+document.getElementById('brand').addEventListener('change', function() {
+  const brand = this.value;
+  const modelSelect = document.getElementById('model');
+  modelSelect.innerHTML = '<option value="">Select model...</option>';
+
+  if (MODELS[brand]) {
+    MODELS[brand].forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.value;
+      opt.textContent = m.label;
+      modelSelect.appendChild(opt);
+    });
+  }
+
+  // Auto-set device type for known desktop models
+  const modelVal = modelSelect.value;
+  autoSetDeviceType(brand, modelVal);
+});
+
+// Model change → auto device type
+document.getElementById('model').addEventListener('change', function() {
+  const brand = document.getElementById('brand').value;
+  autoSetDeviceType(brand, this.value);
+});
+
+function autoSetDeviceType(brand, model) {
+  const desktopModels = ['optiplex-micro', 'optiplex-sff', 'optiplex-tower', 'elitedesk', 'prodesk', 'thinkcentre-m', 'thinkcentre-tiny', 'mac-mini', 'mac-pro', 'esprimo'];
+  const aioModels = ['imac-21', 'imac-24', 'imac-27', 'surface-studio'];
+  const tabletModels = ['surface-pro', 'surface-go'];
+  const miniModels = ['optiplex-micro', 'thinkcentre-tiny', 'mac-mini'];
+  const wsModels = ['precision-3xxx', 'precision-5xxx', 'precision-7xxx', 'zbook-firefly', 'zbook-power', 'zbook-studio', 'zbook-fury', 'thinkpad-p', 'mac-studio'];
+
+  if (miniModels.includes(model)) {
+    document.getElementById('deviceType').value = 'mini';
+  } else if (aioModels.includes(model)) {
+    document.getElementById('deviceType').value = 'aio';
+  } else if (tabletModels.includes(model)) {
+    document.getElementById('deviceType').value = 'tablet';
+  } else if (wsModels.includes(model)) {
+    document.getElementById('deviceType').value = 'workstation';
+  } else if (desktopModels.includes(model)) {
+    document.getElementById('deviceType').value = 'desktop';
+  }
+}
+
+// CPU Familie → Generatie cascade
+document.getElementById('cpuFamily').addEventListener('change', function() {
+  const family = this.value;
+  const genSelect = document.getElementById('cpuGen');
+  genSelect.innerHTML = '<option value="">Select generation...</option>';
+
+  const gens = CPU_GENERATIONS[family] || CPU_GENERATIONS['unknown'];
+  if (gens) {
+    gens.forEach(g => {
+      const opt = document.createElement('option');
+      opt.value = g.value;
+      opt.textContent = g.label;
+      genSelect.appendChild(opt);
+    });
+  }
+});
+
+// Keyboard warning
+document.getElementById('keyboard').addEventListener('change', function() {
+  const kbd = KEYBOARDS.find(k => k.value === this.value);
+  const warningEl = document.getElementById('keyboard-warning');
+
+  if (kbd && kbd.warning) {
+    warningEl.textContent = kbd.warningText;
+    warningEl.style.display = 'block';
+    if (kbd.value === 'qwertz-ch') {
+      warningEl.className = 'keyboard-warning critical';
+    } else {
+      warningEl.className = 'keyboard-warning caution';
+    }
+  } else {
+    warningEl.style.display = 'none';
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════
+// CLEAR FORM
+// ══════════════════════════════════════════════════════════════════════
+function clearForm() {
+  document.getElementById('brand').value = '';
+  document.getElementById('model').innerHTML = '<option value="">Select brand first...</option>';
+  document.getElementById('deviceType').value = 'notebook';
+  document.getElementById('cpuFamily').value = '';
+  document.getElementById('cpuGen').innerHTML = '<option value="">Select CPU first...</option>';
+  document.getElementById('cpuModel').value = '';
+  document.getElementById('ram').value = '16';
+  document.getElementById('ssd').value = '256';
+  document.getElementById('grade').value = 'A';
+  document.getElementById('keyboard').value = 'qwerty-eu';
+  document.getElementById('region').value = 'EU';
+  document.getElementById('battery').value = 'good';
+  document.getElementById('quantity').value = '1';
+  document.getElementById('keyboard-warning').style.display = 'none';
+  document.getElementById('ai-result-card').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// SHOW EXAMPLE
+// ══════════════════════════════════════════════════════════════════════
+function showExample() {
+  document.getElementById('brand').value = 'dell';
+  document.getElementById('brand').dispatchEvent(new Event('change'));
+
+  setTimeout(() => {
+    document.getElementById('model').value = 'latitude-7xxx';
+    document.getElementById('deviceType').value = 'notebook';
+    document.getElementById('cpuFamily').value = 'i5';
+    document.getElementById('cpuFamily').dispatchEvent(new Event('change'));
+
+    setTimeout(() => {
+      document.getElementById('cpuGen').value = '13';
+      document.getElementById('cpuModel').value = 'i5-1345U';
+      document.getElementById('ram').value = '16';
+      document.getElementById('ssd').value = '256';
+      document.getElementById('grade').value = 'A';
+      document.getElementById('keyboard').value = 'qwerty-eu';
+      document.getElementById('region').value = 'EU';
+      document.getElementById('battery').value = 'good';
+      document.getElementById('quantity').value = '1';
+      document.getElementById('keyboard-warning').style.display = 'none';
+    }, 50);
+  }, 50);
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// THEME TOGGLE
+// ══════════════════════════════════════════════════════════════════════
 const themeToggle = document.getElementById('theme-toggle');
 const savedTheme  = localStorage.getItem('erpie-theme') || 'dark';
 if (savedTheme === 'light') {
   document.documentElement.classList.add('light');
-  themeToggle.textContent = '☀️';
+  themeToggle.textContent = '\u2600\ufe0f';
 }
 themeToggle.addEventListener('click', () => {
   const isLight = document.documentElement.classList.toggle('light');
-  themeToggle.textContent = isLight ? '☀️' : '🌙';
+  themeToggle.textContent = isLight ? '\u2600\ufe0f' : '\ud83c\udf19';
   localStorage.setItem('erpie-theme', isLight ? 'light' : 'dark');
 });
 
-// â"€â"€ Tab switching â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+// ══════════════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════════════════════════════════════
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -549,33 +1023,42 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-// â"€â"€ Quick Quote â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-document.getElementById('q-model').addEventListener('keydown', e => { if (e.key === 'Enter') doAiQuote(); });
-
-document.getElementById('btn-example').addEventListener('click', () => {
-  document.getElementById('q-model').value    = 'HP EliteBook 840 G8';
-  document.getElementById('q-ram').value      = '16';
-  document.getElementById('q-ssd').value      = '256';
-  document.getElementById('q-grade').value    = 'A';
-  document.getElementById('q-battery').value  = 'good';
-  document.getElementById('q-region').value   = 'EU';
-  document.getElementById('q-cpu').value      = '';
-});
-
-// â"€â"€ Batch Upload â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-// ── AI Quote ────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// AI QUOTE
+// ══════════════════════════════════════════════════════════════════════
 document.getElementById('btn-ai-quote').addEventListener('click', doAiQuote);
 
 async function doAiQuote() {
-  const model     = document.getElementById('q-model').value.trim();
-  const cpu       = document.getElementById('q-cpu').value.trim();
-  const ram       = document.getElementById('q-ram').value + ' GB';
-  const storage   = document.getElementById('q-ssd').value + ' GB SSD';
-  const condition = document.getElementById('q-grade').value;
+  const brandVal      = document.getElementById('brand').value;
+  const modelVal      = document.getElementById('model').value;
+  const deviceTypeVal = document.getElementById('deviceType').value;
+  const cpuFamilyVal  = document.getElementById('cpuFamily').value;
+  const cpuGenVal     = document.getElementById('cpuGen').value;
+  const cpuModelVal   = document.getElementById('cpuModel').value.trim();
+  const ramVal        = document.getElementById('ram').value;
+  const ssdVal        = document.getElementById('ssd').value;
+  const gradeVal      = document.getElementById('grade').value;
+  const keyboardVal   = document.getElementById('keyboard').value;
+  const regionVal     = document.getElementById('region').value;
+  const batteryVal    = document.getElementById('battery').value;
+  const quantityVal   = parseInt(document.getElementById('quantity').value) || 1;
 
-  if (!model) { alert('Vul een model in.'); return; }
+  if (!brandVal) { alert('Please select a brand.'); return; }
+  if (!modelVal) { alert('Please select a model.'); return; }
 
-  const brand = model.split(/\s+/)[0];
+  // Build human-readable labels for the prompt
+  const brandLabel = BRANDS.find(b => b.value === brandVal)?.label || brandVal;
+  const modelLabel = (MODELS[brandVal] || []).find(m => m.value === modelVal)?.label || modelVal;
+  const cpuFamilyLabel = CPU_FAMILIES.find(c => c.value === cpuFamilyVal)?.label || cpuFamilyVal;
+  const cpuGenLabel = (CPU_GENERATIONS[cpuFamilyVal] || []).find(g => g.value === cpuGenVal)?.label || cpuGenVal;
+  const kbdLabel = KEYBOARDS.find(k => k.value === keyboardVal)?.label || keyboardVal;
+
+  // Construct the model string for backwards compat with server
+  const model = brandLabel + ' ' + modelLabel;
+  const cpu = cpuFamilyLabel + (cpuGenVal ? ' ' + cpuGenLabel : '') + (cpuModelVal ? ' (' + cpuModelVal + ')' : '');
+  const ram = ramVal + ' GB';
+  const storage = ssdVal >= 1024 ? (ssdVal / 1024) + ' TB SSD' : ssdVal + ' GB SSD';
+  const condition = gradeVal;
 
   const card    = document.getElementById('ai-result-card');
   const textEl  = document.getElementById('ai-result-text');
@@ -593,7 +1076,22 @@ async function doAiQuote() {
     const res = await fetch('/erpie/api/ai-quote', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ brand, model, cpu, ram, storage, condition }),
+      body: JSON.stringify({
+        brand: brandLabel,
+        model: model,
+        deviceType: deviceTypeVal,
+        cpuFamily: cpuFamilyLabel,
+        cpuGen: cpuGenLabel,
+        cpuModel: cpuModelVal,
+        cpu: cpu,
+        ram: ram,
+        storage: storage,
+        condition: condition,
+        keyboard: kbdLabel,
+        region: regionVal,
+        battery: batteryVal,
+        quantity: quantityVal
+      }),
     });
     const data = await res.json();
 
@@ -609,6 +1107,9 @@ async function doAiQuote() {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// BATCH UPLOAD
+// ══════════════════════════════════════════════════════════════════════
 let batchResults = null;
 let batchSummary = null;
 
@@ -657,8 +1158,8 @@ async function uploadFile(file) {
 
 function showBatchResults(results, summary) {
   document.getElementById('s-total').textContent = summary.total;
-  document.getElementById('s-value').textContent = '€' + summary.totalValue.toLocaleString('nl-NL');
-  document.getElementById('s-avg').textContent   = '€' + summary.avgValue.toLocaleString('nl-NL');
+  document.getElementById('s-value').textContent = '\u20ac' + summary.totalValue.toLocaleString('nl-NL');
+  document.getElementById('s-avg').textContent   = '\u20ac' + summary.avgValue.toLocaleString('nl-NL');
   document.getElementById('s-go').textContent    = summary.goCount;
   document.getElementById('s-watch').textContent = summary.watchCount;
 
@@ -667,13 +1168,13 @@ function showBatchResults(results, summary) {
     <tr class="row-${r.status}">
       <td>${i + 1}</td>
       <td>${esc(r.model)}</td>
-      <td>${esc(r.gen || '–')}</td>
-      <td>${r.ramGb ? r.ramGb + ' GB' : '–'}</td>
-      <td>${r.ssdGb ? (r.ssdGb >= 1024 ? r.ssdGb / 1024 + ' TB' : r.ssdGb + ' GB') : '–'}</td>
-      <td>${esc(r.grade || '–')}</td>
+      <td>${esc(r.gen || '\u2013')}</td>
+      <td>${r.ramGb ? r.ramGb + ' GB' : '\u2013'}</td>
+      <td>${r.ssdGb ? (r.ssdGb >= 1024 ? r.ssdGb / 1024 + ' TB' : r.ssdGb + ' GB') : '\u2013'}</td>
+      <td>${esc(r.grade || '\u2013')}</td>
       <td><span class="pill-sm pill-${r.status}">${r.status}</span></td>
-      <td>€${(r.advisedPrice || 0).toLocaleString('nl-NL')}</td>
-      <td>€${(r.priceLow || 0).toLocaleString('nl-NL')} – €${(r.priceHigh || 0).toLocaleString('nl-NL')}</td>
+      <td>\u20ac${(r.advisedPrice || 0).toLocaleString('nl-NL')}</td>
+      <td>\u20ac${(r.priceLow || 0).toLocaleString('nl-NL')} \u2013 \u20ac${(r.priceHigh || 0).toLocaleString('nl-NL')}</td>
     </tr>`).join('');
 
   document.getElementById('batch-results').style.display = 'block';
@@ -723,7 +1224,7 @@ function resetBatch() {
   fileInput.value = '';
 }
 
-// ── Text input mode ──────────────────────────────────────────────────────────
+// ── Text input mode ──────────────────────────────────────────────
 function setInputMode(mode) {
   const fileBtn = document.getElementById('mode-file');
   const textBtn = document.getElementById('mode-text');
