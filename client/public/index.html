@@ -3487,6 +3487,7 @@ async function askPtolemeus() {
 const ZELFSTUDIE_DATA = [
   {
     id: 'scholar_3hgXhB_Wy2U',
+    url: 'https://www.youtube.com/watch?v=3hgXhB_Wy2U',
     title: '11 AI Agents Running 24/7 — Autonomous App Factory',
     creator: 'Doobie',
     icon: '🏭',
@@ -3505,6 +3506,7 @@ const ZELFSTUDIE_DATA = [
   },
   {
     id: 'scholar_esuPIJeRotI',
+    url: 'https://www.youtube.com/watch?v=esuPIJeRotI',
     title: 'Multi-Agent Systems in OpenClaw — Route vs Terminal Method',
     creator: 'OpenClaw Community',
     icon: '🤖',
@@ -3523,6 +3525,7 @@ const ZELFSTUDIE_DATA = [
   },
   {
     id: 'scholar_oN__gKJnPls',
+    url: 'https://www.youtube.com/watch?v=oN__gKJnPls',
     title: 'OpenClaw Memory Architecture Deep Dive — Meta Incident',
     creator: 'OpenClaw Maintainer',
     icon: '🧠',
@@ -3541,6 +3544,7 @@ const ZELFSTUDIE_DATA = [
   },
   {
     id: 'scholar_Nt03hgxv5TE',
+    url: 'https://www.youtube.com/watch?v=Nt03hgxv5TE',
     title: 'OpenClaw Memory is a Junk Drawer — How I Fixed It',
     creator: 'Software Engineer',
     icon: '🗂️',
@@ -3559,6 +3563,7 @@ const ZELFSTUDIE_DATA = [
   },
   {
     id: 'scholar_QvfqAMUJTT4',
+    url: 'https://www.youtube.com/watch?v=QvfqAMUJTT4',
     title: 'OpenClaw Setup Guide — From Limited to Powerful',
     creator: 'OpenClaw Tutorial',
     icon: '⚡',
@@ -3577,6 +3582,7 @@ const ZELFSTUDIE_DATA = [
   },
   {
     id: 'scholar_v2cPHF5oXcI',
+    url: 'https://www.youtube.com/watch?v=v2cPHF5oXcI',
     title: 'AI Agent Companies — 85 Apps in One Weekend',
     creator: 'AI Business Analysis',
     icon: '💼',
@@ -3594,6 +3600,7 @@ const ZELFSTUDIE_DATA = [
   },
   {
     id: 'scholar_HSgqj6ERpSg',
+    url: 'https://www.youtube.com/watch?v=HSgqj6ERpSg',
     title: 'OpenClaw Security — API Keys Threat',
     creator: 'Security Engineer',
     icon: '🔒',
@@ -3611,6 +3618,7 @@ const ZELFSTUDIE_DATA = [
   },
   {
     id: 'scholar_mXmCihp50M0',
+    url: 'https://www.youtube.com/watch?v=mXmCihp50M0',
     title: 'OpenClaw Security Implementation Guide',
     creator: 'DevOps Engineer',
     icon: '🛡️',
@@ -3628,6 +3636,7 @@ const ZELFSTUDIE_DATA = [
   },
   {
     id: 'scholar_42DR-n-XFYc',
+    url: 'https://www.youtube.com/watch?v=42DR-n-XFYc',
     title: '3 Free Tools Every Claude Code User Needs',
     creator: 'Claude Code Tips',
     icon: '🔧',
@@ -3643,6 +3652,7 @@ const ZELFSTUDIE_DATA = [
   },
   {
     id: 'scholar_ueD7YNPDNXg',
+    url: 'https://www.youtube.com/watch?v=ueD7YNPDNXg',
     title: 'Claude Code + Obsidian — Memory Cheat Code',
     creator: 'Obsidian + AI',
     icon: '🗃️',
@@ -3723,9 +3733,10 @@ function renderZelfstudie(filter) {
             <strong>🥇 Golden Nuggets (${item.nuggets?.length || 0}):</strong>
             <pre style="margin-top:6px;white-space:pre-wrap;font-family:inherit;">${nuggetsHtml}</pre>
           </div>
-          <div style="margin-top:10px;font-size:12px;color:var(--muted);">
-            <strong>Creator:</strong> ${esc(item.creator)} · <strong>Relevantie:</strong> ${'⭐'.repeat(item.relevance)}
-            ${item.id.startsWith('scholar_') ? ' · <strong>ID:</strong> ' + item.id : ''}
+          <div style="margin-top:10px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span><strong>Creator:</strong> ${esc(item.creator)}</span>
+            <span><strong>Relevantie:</strong> ${'⭐'.repeat(item.relevance)}</span>
+            ${item.url ? `<a href="${esc(item.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:#7c3aed;color:#fff;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;">🔗 Bekijk Bron</a>` : ''}
           </div>
         </div>
       </div>
