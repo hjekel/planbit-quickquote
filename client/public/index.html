@@ -489,7 +489,7 @@ tbody tr:last-child { border-bottom: none; }
   .help-content { padding: 20px; }
 }
 
-/* ── Batch Upload v2.1 ─────────────────────────────────────── */
+/* ── Batch Upload v2.2 ─────────────────────────────────────── */
 .batch-textarea {
   width: 100%;
   min-height: 160px;
@@ -940,6 +940,123 @@ tbody tr:last-child { border-bottom: none; }
   .training-feedback-row { flex-direction: column; }
   .feedback-btn { width: 100%; text-align: center; }
 }
+
+/* ── PTOLEMEUS Tab ─────────────────────────────────────────────── */
+.ptol-tag {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ptol-tag:hover { border-color: #7c3aed; color: #7c3aed; background: #7c3aed15; }
+
+.ptolemeus-kb-item {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.ptolemeus-kb-item:hover { border-left-color: #7c3aed; }
+.ptolemeus-kb-item .kb-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.ptolemeus-kb-item .kb-type { font-size: 16px; }
+.ptolemeus-kb-item .kb-title { font-weight: 600; font-size: 14px; flex: 1; }
+.ptolemeus-kb-item .kb-date { font-size: 11px; color: var(--muted); }
+.ptolemeus-kb-item .kb-stars { font-size: 12px; }
+.ptolemeus-kb-item .kb-meta {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ptolemeus-kb-item .kb-tag {
+  background: var(--surface2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+.ptolemeus-kb-item .kb-detail {
+  display: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.ptolemeus-kb-item.expanded .kb-detail { display: block; }
+.ptolemeus-kb-item .kb-nugget-count {
+  font-size: 11px;
+  color: var(--muted);
+}
+.ptolemeus-kb-item .kb-status {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.ptolemeus-kb-item .kb-status.implemented { background: #22c55e20; color: #22c55e; }
+.ptolemeus-kb-item .kb-status.partial { background: #f59e0b20; color: #f59e0b; }
+.ptolemeus-kb-item .kb-status.pending { background: var(--surface2); color: var(--muted); }
+
+.ptolemeus-answer-card {
+  background: var(--surface);
+  border: 2px solid #7c3aed;
+  border-radius: var(--radius);
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.ptolemeus-answer-card .answer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #7c3aed;
+}
+.ptolemeus-answer-card .answer-body { white-space: pre-wrap; }
+.ptolemeus-answer-card .answer-sources {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ptolemeus-search-result {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.ptolemeus-search-result .sr-file {
+  font-weight: 600;
+  color: #7c3aed;
+  font-size: 12px;
+}
+.ptolemeus-search-result .sr-match {
+  color: var(--text);
+  margin-top: 4px;
+}
+.ptolemeus-search-result .sr-match mark {
+  background: #7c3aed30;
+  color: var(--text);
+  padding: 0 2px;
+  border-radius: 2px;
+}
 </style>
 </head>
 <body>
@@ -950,7 +1067,7 @@ tbody tr:last-child { border-bottom: none; }
     <div class="logo"><span class="logo-lobster">🦞</span><span class="logo-erp">ERP</span>IE PriceFinder</div>
     <span class="logo-by" data-i18n="madeBy">by</span>
     <span class="logo-planbit">Incredible Projects</span>
-    <div class="badge">v2.1</div>
+    <div class="badge">v2.2</div>
   </div>
   <div class="header-right">
     <div class="lang-switch">
@@ -968,6 +1085,7 @@ tbody tr:last-child { border-bottom: none; }
   <div class="tab active" data-tab="quick" data-i18n="quickQuote">Quick Quote</div>
   <div class="tab" data-tab="batch" data-i18n="batchUpload">Batch Upload</div>
   <div class="tab" data-tab="training" data-i18n="training">🎓 Training</div>
+  <div class="tab" data-tab="ptolemeus" data-i18n="ptolemeus">📚 PTOLEMEUS</div>
 </div>
 
 <!-- Main -->
@@ -1359,12 +1477,102 @@ Voorbeelden:
     </div>
   </div>
 
+  <!-- ── PTOLEMEUS panel ──────────────────────────────────────── -->
+  <div class="panel" id="panel-ptolemeus">
+    <div class="form-card">
+
+      <!-- Search Section -->
+      <div class="form-section">
+        <div class="form-section-title">🔍 Zoeken in Knowledge Base</div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="ptolemeus-search" placeholder="Zoek in pricing rules, FEED nuggets, deals..."
+                 style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font-size:14px;"
+                 onkeydown="if(event.key==='Enter')searchKnowledge()">
+          <button type="button" class="btn btn-ai" onclick="searchKnowledge()" style="white-space:nowrap;">🔍 Zoek</button>
+        </div>
+        <div class="ptolemeus-suggestions" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="ptol-tag" onclick="quickSearch('Apple pricing')">Apple pricing</button>
+          <button class="ptol-tag" onclick="quickSearch('Dell Latitude')">Dell Latitude</button>
+          <button class="ptol-tag" onclick="quickSearch('Grade system')">Grade system</button>
+          <button class="ptol-tag" onclick="quickSearch('RAM premium')">RAM premium</button>
+          <button class="ptol-tag" onclick="quickSearch('corrections')">Corrections</button>
+        </div>
+        <div id="ptolemeus-search-results" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- Add New Source -->
+      <div class="form-section">
+        <div class="form-section-title">➕ Nieuwe Bron Toevoegen</div>
+        <div class="form-row">
+          <div class="field">
+            <label>Type</label>
+            <select id="ptolemeus-source-type">
+              <option value="video">🎬 YouTube Video</option>
+              <option value="article">📄 Article</option>
+              <option value="pdf">📑 PDF Document</option>
+              <option value="note">📝 Notitie</option>
+            </select>
+          </div>
+          <div class="field" style="flex:2;">
+            <label>URL of Titel</label>
+            <input type="text" id="ptolemeus-source-url" placeholder="https://youtu.be/... of titel">
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:8px;">
+          <div class="field" style="flex:2;">
+            <label>Tags (komma-gescheiden)</label>
+            <input type="text" id="ptolemeus-source-tags" placeholder="memory, pricing, sub-agents...">
+          </div>
+          <div class="field">
+            <label>Relevantie</label>
+            <select id="ptolemeus-source-relevance">
+              <option value="5">⭐⭐⭐⭐⭐</option>
+              <option value="4" selected>⭐⭐⭐⭐</option>
+              <option value="3">⭐⭐⭐</option>
+              <option value="2">⭐⭐</option>
+              <option value="1">⭐</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Samenvatting / Nuggets</label>
+          <textarea id="ptolemeus-source-notes" rows="3" placeholder="Beschrijf de golden nuggets..."
+                    style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font-size:13px;resize:vertical;"></textarea>
+        </div>
+        <div style="margin-top:10px;">
+          <button type="button" class="btn btn-ai" onclick="addKnowledgeSource()">📥 Toevoegen aan Knowledge Base</button>
+        </div>
+      </div>
+
+      <!-- Recent Knowledge -->
+      <div class="form-section">
+        <div class="form-section-title">📂 Knowledge Base <span id="ptolemeus-kb-count" style="font-size:11px;color:var(--muted);font-weight:400;"></span></div>
+        <div id="ptolemeus-kb-list"></div>
+      </div>
+
+      <!-- Q&A Section -->
+      <div class="form-section">
+        <div class="form-section-title">💬 Vraag aan PTOLEMEUS</div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="ptolemeus-question" placeholder="Wat weet je over Apple Silicon pricing?"
+                 style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font-size:14px;"
+                 onkeydown="if(event.key==='Enter')askPtolemeus()">
+          <button type="button" class="btn btn-ai" onclick="askPtolemeus()" style="background:#7c3aed;white-space:nowrap;">📚 Vraag</button>
+        </div>
+        <div id="ptolemeus-answer" style="margin-top:12px;display:none;">
+          <div class="ptolemeus-answer-card" id="ptolemeus-answer-card"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <!-- Footer -->
 <div class="footer">
   <span data-i18n="footer">ERPIE PriceFinder · Made by Incredible Projects / Henk Jekel</span>
-  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.1</span>
+  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.2</span>
 </div>
 
 <!-- Help Modal -->
@@ -1397,6 +1605,7 @@ Voorbeelden:
     <p>Enter a serial number to check warranty status and device specs on the manufacturer's support site.</p>
     <h3>Version History</h3>
     <ul class="version-history">
+      <li><strong>v2.2</strong> — PTOLEMEUS Knowledge Base: browser, search, Q&A, source management</li>
       <li><strong>v2.1</strong> — Training Tab: deal feedback, per-asset pricing corrections, DEAL_HISTORY</li>
       <li><strong>v2.0</strong> — Batch Upload v2.0: Universal Parser, Historical Pricing, Live Validation, CSV/Excel Export</li>
       <li><strong>v1.3</strong> — Help button, language switch, URL fixes, RefurbMe, BVA Auctions</li>
@@ -1981,7 +2190,7 @@ function esc(str) {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// BATCH UPLOAD v2.1 — Universal Parser + Historical + Live Validation
+// BATCH UPLOAD v2.2 — Universal Parser + Historical + Live Validation
 // ══════════════════════════════════════════════════════════════════════
 
 // ── Pattern definitions ──────────────────────────────────────────
@@ -2779,6 +2988,7 @@ const TRANSLATIONS = {
     quickQuote: 'Quick Quote',
     batchUpload: 'Batch Upload',
     training: '🎓 Training',
+    ptolemeus: '📚 PTOLEMEUS',
     device: 'APPARAAT', brand: 'MERK', model: 'MODEL', deviceType: 'TYPE',
     cpu: 'CPU', family: 'FAMILIE', generation: 'GENERATIE', fullModel: 'VOLLEDIG MODEL (OPTIONEEL)',
     specs: 'SPECIFICATIES', ram: 'RAM', ssd: 'SSD', grade: 'CONDITIE', keyboard: 'TOETSENBORD',
@@ -2802,6 +3012,7 @@ const TRANSLATIONS = {
     quickQuote: 'Quick Quote',
     batchUpload: 'Batch Upload',
     training: '🎓 Training',
+    ptolemeus: '📚 PTOLEMEUS',
     device: 'DEVICE', brand: 'BRAND', model: 'MODEL', deviceType: 'DEVICE TYPE',
     cpu: 'CPU', family: 'FAMILY', generation: 'GENERATION', fullModel: 'FULL MODEL (OPTIONAL)',
     specs: 'SPECS', ram: 'RAM', ssd: 'SSD', grade: 'GRADE', keyboard: 'KEYBOARD',
@@ -2883,10 +3094,295 @@ function updateSelectTranslations(lang) {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PTOLEMEUS TAB — Knowledge Base Browser + Q&A
+// ══════════════════════════════════════════════════════════════════════
+
+const PTOLEMEUS_KB_KEY = 'erpie-knowledge-base';
+
+// Hardcoded FEED items (seed data)
+const SEED_KNOWLEDGE = [
+  {
+    id: 'feed-2026-02-25-larue-10x',
+    type: 'video',
+    title: 'How to Make OpenClaw 10x More Powerful',
+    creator: 'Larue (@larue_ai)',
+    url: 'https://youtu.be/n0Q_yLKixKU',
+    dateAdded: '2026-02-25',
+    relevance: 5,
+    tags: ['memory', 'sub-agents', 'morning-brief', 'memory-flush'],
+    nuggets: 6,
+    status: 'implemented',
+    notes: '1. Memory Flush Config — voorkom context overflow\n2. 3-Layer Memory Architecture (hot/context/archive)\n3. Sub-agents voor specialisatie\n4. Morning Brief cron job\n5. Self-improving protocol\n6. Session initialization optimalisatie'
+  },
+  {
+    id: 'feed-2026-02-25-larue-90cheaper',
+    type: 'video',
+    title: 'How to Make AI Agents 90% Cheaper',
+    creator: 'Larue (@larue_ai)',
+    url: 'https://youtu.be/example1',
+    dateAdded: '2026-02-25',
+    relevance: 4,
+    tags: ['cost', 'token-optimization', 'rate-limits'],
+    nuggets: 4,
+    status: 'implemented',
+    notes: '1. Rate limits per message/session\n2. Prefer Flash over Pro for simple lookups\n3. Session init — load only essentials\n4. Never run unlimited loops'
+  },
+  {
+    id: 'feed-2026-02-25-ganzak',
+    type: 'video',
+    title: 'Token Optimization & Cost Control',
+    creator: 'Matt Ganzak (@mattganzak)',
+    url: 'https://youtu.be/example2',
+    dateAdded: '2026-02-25',
+    relevance: 5,
+    tags: ['cost', 'rate-limits', 'session-init', 'token-optimization'],
+    nuggets: 7,
+    status: 'implemented',
+    notes: '1. Per-message limits (3 web searches)\n2. Per-session limits (50 searches, 100 tool calls)\n3. Cost awareness — Flash vs Pro\n4. Session init — 5 files only\n5. Memory compaction thresholds\n6. Avoid loading full conversation history\n7. Citation rule for learned rules'
+  },
+  {
+    id: 'feed-2026-02-19-berman',
+    type: 'video',
+    title: '21 AI Agent Use Cases for Business',
+    creator: 'Matthew Berman (@mberman84)',
+    url: 'https://youtu.be/example3',
+    dateAdded: '2026-02-19',
+    relevance: 4,
+    tags: ['crm', 'knowledge-base', 'security', 'use-cases'],
+    nuggets: 12,
+    status: 'partial',
+    notes: '1. CRM integration\n2. Knowledge base Q&A (→ PTOLEMEUS)\n3. Email monitoring (→ TSUNAMI)\n4. Security governance (→ SHIELD.md)\n5-12. Various business automation patterns'
+  },
+  {
+    id: 'pricing-rules-hot',
+    type: 'note',
+    title: 'PRICING_RULES.md — Hot Memory',
+    creator: 'ERPIE System',
+    url: '',
+    dateAdded: '2026-03-15',
+    relevance: 5,
+    tags: ['pricing', 'rules', 'apple', 'intel', 'keyboard', 'grade'],
+    nuggets: 4,
+    status: 'implemented',
+    notes: 'Hard Rules:\n1. Intel Gen 7 or older = €0 (no Win11)\n2. Swiss QWERTZ = Scrap/€0\n3. Apple Silicon minimums: M1 €375, M1 Pro €475, M1 Max €575\n4. Grade D = Parts value only\n\nCorrection Factors:\n- Brexit UK: -16%\n- 32GB RAM: +50%\n- Notebook factor: 0.65'
+  },
+  {
+    id: 'apple-silicon-context',
+    type: 'note',
+    title: 'Apple Silicon Pricing Guide',
+    creator: 'ERPIE System',
+    url: '',
+    dateAdded: '2026-03-15',
+    relevance: 5,
+    tags: ['apple', 'pricing', 'M1', 'M2', 'M3', 'macbook'],
+    nuggets: 3,
+    status: 'implemented',
+    notes: 'M1 Series: Air €375, Pro 13" €425, Pro 14" €575, Pro 16" €625, Max €725\nM2 Series: Air €475, Pro 13" €525, Pro 14" €725, Pro 16" €775, Max €875\nM3 Series: Air €625, Pro 14" €825, Pro €975, Max €1,125\n\nRAM Premiums: 16→24GB +€75, 16→32GB +€150, 16→64GB +€300'
+  }
+];
+
+function getKnowledgeBase() {
+  const stored = JSON.parse(localStorage.getItem(PTOLEMEUS_KB_KEY) || '[]');
+  // Merge seed data with stored (don't duplicate)
+  const ids = new Set(stored.map(i => i.id));
+  const merged = [...stored];
+  SEED_KNOWLEDGE.forEach(s => { if (!ids.has(s.id)) merged.push(s); });
+  return merged.sort((a, b) => b.relevance - a.relevance || b.dateAdded?.localeCompare(a.dateAdded));
+}
+
+function saveKnowledgeBase(kb) {
+  localStorage.setItem(PTOLEMEUS_KB_KEY, JSON.stringify(kb));
+}
+
+// ── Render Knowledge Base List ──────────────────────────────────
+function renderKnowledgeBase(filter) {
+  const kb = getKnowledgeBase();
+  const list = document.getElementById('ptolemeus-kb-list');
+  const count = document.getElementById('ptolemeus-kb-count');
+  if (!list) return;
+
+  let items = kb;
+  if (filter) {
+    const f = filter.toLowerCase();
+    items = kb.filter(i =>
+      i.title.toLowerCase().includes(f) ||
+      i.tags.some(t => t.toLowerCase().includes(f)) ||
+      (i.notes || '').toLowerCase().includes(f) ||
+      (i.creator || '').toLowerCase().includes(f)
+    );
+  }
+
+  count.textContent = `(${items.length} items)`;
+
+  if (items.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px;">Geen items gevonden.</div>';
+    return;
+  }
+
+  const typeIcons = { video: '🎬', article: '📄', pdf: '📑', note: '📝' };
+  const statusLabels = { implemented: 'Implemented', partial: 'Partial', pending: 'Pending' };
+
+  list.innerHTML = items.map((item, i) => `
+    <div class="ptolemeus-kb-item" onclick="toggleKBDetail(this)">
+      <div class="kb-header">
+        <span class="kb-type">${typeIcons[item.type] || '📄'}</span>
+        <span class="kb-title">${esc(item.title)}</span>
+        <span class="kb-stars">${'⭐'.repeat(item.relevance || 0)}</span>
+        <span class="kb-date">${item.dateAdded || ''}</span>
+      </div>
+      <div class="kb-meta">
+        ${item.creator ? '<span>' + esc(item.creator) + '</span>' : ''}
+        ${item.tags.map(t => '<span class="kb-tag">' + esc(t) + '</span>').join('')}
+        <span class="kb-nugget-count">${item.nuggets || 0} nuggets</span>
+        <span class="kb-status ${item.status || ''}">${statusLabels[item.status] || item.status || ''}</span>
+      </div>
+      <div class="kb-detail">${esc(item.notes || 'Geen details beschikbaar.')}</div>
+    </div>
+  `).join('');
+}
+
+function toggleKBDetail(el) {
+  el.classList.toggle('expanded');
+}
+
+// ── Search Knowledge ────────────────────────────────────────────
+function searchKnowledge() {
+  const query = document.getElementById('ptolemeus-search').value.trim();
+  if (!query) { renderKnowledgeBase(null); return; }
+
+  const kb = getKnowledgeBase();
+  const q = query.toLowerCase();
+  const results = [];
+
+  kb.forEach(item => {
+    const searchText = [item.title, item.notes, item.creator, ...item.tags].join(' ').toLowerCase();
+    if (searchText.includes(q)) {
+      // Find matching lines
+      const lines = (item.notes || '').split('\n');
+      const matchingLines = lines.filter(l => l.toLowerCase().includes(q));
+      results.push({ item, matchingLines });
+    }
+  });
+
+  const container = document.getElementById('ptolemeus-search-results');
+  if (results.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:13px;">Geen resultaten voor "' + esc(query) + '"</div>';
+    return;
+  }
+
+  container.innerHTML = results.map(r => {
+    const highlighted = r.matchingLines.slice(0, 3).map(l =>
+      l.replace(new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark>$1</mark>')
+    ).join('<br>');
+    return `
+      <div class="ptolemeus-search-result">
+        <div class="sr-file">${esc(r.item.title)}</div>
+        ${highlighted ? '<div class="sr-match">' + highlighted + '</div>' : ''}
+      </div>
+    `;
+  }).join('');
+
+  // Also filter the list
+  renderKnowledgeBase(query);
+}
+
+function quickSearch(term) {
+  document.getElementById('ptolemeus-search').value = term;
+  searchKnowledge();
+}
+
+// ── Add Knowledge Source ────────────────────────────────────────
+function addKnowledgeSource() {
+  const type = document.getElementById('ptolemeus-source-type').value;
+  const url = document.getElementById('ptolemeus-source-url').value.trim();
+  const tagsStr = document.getElementById('ptolemeus-source-tags').value.trim();
+  const relevance = parseInt(document.getElementById('ptolemeus-source-relevance').value);
+  const notes = document.getElementById('ptolemeus-source-notes').value.trim();
+
+  if (!url && !notes) { alert('Vul minimaal een URL/titel of samenvatting in.'); return; }
+
+  const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const title = url.startsWith('http') ? url : url;
+
+  const item = {
+    id: 'kb-' + Date.now(),
+    type,
+    title: title || 'Untitled',
+    creator: '',
+    url: url.startsWith('http') ? url : '',
+    dateAdded: new Date().toISOString().slice(0, 10),
+    relevance,
+    tags,
+    nuggets: (notes.match(/^\d+\./gm) || []).length || 1,
+    status: 'pending',
+    notes
+  };
+
+  const kb = getKnowledgeBase();
+  kb.unshift(item);
+  saveKnowledgeBase(kb);
+
+  // Clear form
+  document.getElementById('ptolemeus-source-url').value = '';
+  document.getElementById('ptolemeus-source-tags').value = '';
+  document.getElementById('ptolemeus-source-notes').value = '';
+
+  renderKnowledgeBase(null);
+  alert('✅ "' + item.title.substring(0, 40) + '..." toegevoegd aan Knowledge Base!');
+}
+
+// ── Ask PTOLEMEUS (Q&A via API) ─────────────────────────────────
+async function askPtolemeus() {
+  const question = document.getElementById('ptolemeus-question').value.trim();
+  if (!question) return;
+
+  const answerDiv = document.getElementById('ptolemeus-answer');
+  const card = document.getElementById('ptolemeus-answer-card');
+  answerDiv.style.display = 'block';
+  card.innerHTML = '<div class="answer-header">📚 PTOLEMEUS denkt na...</div><div class="answer-body" style="color:var(--muted);">Even geduld...</div>';
+
+  // Gather context from knowledge base
+  const kb = getKnowledgeBase();
+  const q = question.toLowerCase();
+  const relevant = kb.filter(i => {
+    const text = [i.title, i.notes, ...i.tags].join(' ').toLowerCase();
+    return q.split(' ').some(w => w.length > 2 && text.includes(w));
+  }).slice(0, 5);
+
+  const context = relevant.map(r => `[${r.title}]: ${r.notes || ''}`).join('\n\n');
+
+  try {
+    const res = await fetch('/erpie/api/ai-quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        brand: 'PTOLEMEUS_QUERY',
+        model: `PTOLEMEUS KNOWLEDGE QUERY:\n\nQuestion: ${question}\n\nRelevant Knowledge Base Context:\n${context}\n\nInstructions: Answer the question using ONLY the provided knowledge base context. Cite sources. If info is incomplete, say so. Format with markdown.`,
+        cpu: '', ram: '', storage: '', condition: '', keyboard: '', region: 'EU', battery: 'good', quantity: 1
+      })
+    });
+    const data = await res.json();
+    if (data.analysis) {
+      const sources = relevant.map(r => `📄 ${r.title}`).join('\n');
+      card.innerHTML = `
+        <div class="answer-header">📚 PTOLEMEUS:</div>
+        <div class="answer-body">${data.analysis.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+        ${sources ? '<div class="answer-sources"><strong>Bronnen:</strong><br>' + sources.replace(/\n/g, '<br>') + '</div>' : ''}
+      `;
+    } else {
+      card.innerHTML = '<div class="answer-header">📚 PTOLEMEUS:</div><div class="answer-body">Geen antwoord ontvangen. Probeer het opnieuw.</div>';
+    }
+  } catch (err) {
+    card.innerHTML = `<div class="answer-header">📚 PTOLEMEUS:</div><div class="answer-body" style="color:#ef4444;">Fout: ${err.message}</div>`;
+  }
+}
+
 // Apply language on load
 document.addEventListener('DOMContentLoaded', function() {
   setLanguage(currentLang);
   loadTrainingDeals();
+  renderKnowledgeBase(null);
   // Set today's date as default for training
   document.getElementById('training-date').value = new Date().toISOString().slice(0, 10);
 });
