@@ -674,7 +674,7 @@ tbody tr:last-child { border-bottom: none; }
         <button type="button" class="search-btn b2c" onclick="openBackMarket()">📦 Back Market</button>
         <button type="button" class="search-btn b2c" onclick="openRefurbed()">♻️ Refurbed</button>
         <button type="button" class="search-btn b2c" onclick="openAmazonRenewed()">🛒 Amazon Renewed</button>
-        <button type="button" class="search-btn apple" onclick="openFoxwayApple()">🍎 Foxway Apple</button>
+        <button type="button" class="search-btn apple" onclick="openRefurbMe()">🍎 RefurbMe</button>
       </div>
     </div>
 
@@ -839,7 +839,7 @@ tbody tr:last-child { border-bottom: none; }
     <ul>
       <li><strong>B2B (green)</strong> — IT Gigant, BVA Auctions — wholesale prices</li>
       <li><strong>B2C (blue)</strong> — Back Market, Refurbed, Amazon — consumer reference prices</li>
-      <li><strong>Apple (purple)</strong> — Foxway Apple — Apple-specific B2B pricing</li>
+      <li><strong>Apple (purple)</strong> — RefurbMe — Apple refurbished price comparison</li>
     </ul>
     <h3>Keyboard Warnings</h3>
     <ul>
@@ -851,7 +851,7 @@ tbody tr:last-child { border-bottom: none; }
     <p>Enter a serial number to check warranty status and device specs on the manufacturer's support site.</p>
     <h3>Version History</h3>
     <ul class="version-history">
-      <li><strong>v1.3</strong> — Help button, language switch, URL fixes, Foxway Apple, BVA Auctions</li>
+      <li><strong>v1.3</strong> — Help button, language switch, URL fixes, RefurbMe, BVA Auctions</li>
       <li><strong>v1.2</strong> — Live price check, serial number lookup</li>
       <li><strong>v1.1</strong> — Structured dropdowns, cascading selects</li>
       <li><strong>v1.0</strong> — Initial release with AI analysis</li>
@@ -1215,8 +1215,9 @@ function openRefurbed() {
 function openAmazonRenewed() {
   window.open(`https://www.amazon.de/s?k=${buildSearchQuery()}+renewed`, '_blank');
 }
-function openFoxwayApple() {
-  window.open(`https://www.foxway.com/en/shop/?q=${buildSearchQuery()}`, '_blank');
+function openRefurbMe() {
+  const query = buildSearchQuery();
+  window.open(`https://www.refurb.me/en/search?q=${query}`, '_blank');
 }
 
 // ══════════════════════════════════════════════════════════════════════
