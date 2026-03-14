@@ -489,7 +489,7 @@ tbody tr:last-child { border-bottom: none; }
   .help-content { padding: 20px; }
 }
 
-/* ── Batch Upload v2.0 ─────────────────────────────────────── */
+/* ── Batch Upload v2.1 ─────────────────────────────────────── */
 .batch-textarea {
   width: 100%;
   min-height: 160px;
@@ -728,6 +728,218 @@ tbody tr:last-child { border-bottom: none; }
   .results-summary-bar { flex-direction: column; gap: 8px; }
   .card-price-label { min-width: 80px; }
 }
+
+/* ── Training Tab ──────────────────────────────────────────────── */
+.training-status-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+}
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text);
+}
+.radio-label input[type="radio"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+/* Training Asset Cards */
+.training-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  border-left: 4px solid var(--border);
+  animation: cardSlideIn 0.3s ease;
+}
+.training-card.feedback-correct { border-left-color: #22c55e; }
+.training-card.feedback-too-low { border-left-color: #f59e0b; }
+.training-card.feedback-too-high { border-left-color: #ef4444; }
+.training-card.feedback-unknown { border-left-color: var(--muted); }
+.training-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.training-card-qty {
+  background: var(--surface2);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 13px;
+}
+.training-card-model {
+  font-weight: 600;
+  font-size: 15px;
+  flex: 1;
+}
+.training-card-status { font-size: 18px; }
+.training-card-specs {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.training-card-pricing {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.training-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.training-price-label {
+  color: var(--muted);
+  min-width: 120px;
+}
+.training-price-value { font-weight: 600; }
+.training-price-total {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.training-price-total .training-price-value {
+  color: var(--accent);
+  font-size: 16px;
+}
+.training-actual-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.training-actual-row input {
+  width: 100px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 14px;
+}
+.training-feedback-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.feedback-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.feedback-btn:hover { border-color: var(--accent); }
+.feedback-btn.active-correct { border-color: #22c55e; background: #22c55e20; color: #22c55e; font-weight: 700; }
+.feedback-btn.active-too-low { border-color: #f59e0b; background: #f59e0b20; color: #f59e0b; font-weight: 700; }
+.feedback-btn.active-too-high { border-color: #ef4444; background: #ef444420; color: #ef4444; font-weight: 700; }
+.feedback-btn.active-unknown { border-color: var(--muted); background: var(--surface2); font-weight: 700; }
+.training-suggest-row {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.training-suggest-row.visible { display: flex; }
+.training-suggest-row input {
+  width: 100px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 14px;
+}
+.training-card-warnings {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #f59e0b;
+}
+.training-delta {
+  font-size: 13px;
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+.training-delta.positive { background: #22c55e15; color: #22c55e; }
+.training-delta.negative { background: #ef444415; color: #ef4444; }
+.training-delta.neutral { background: var(--surface2); color: var(--muted); }
+
+/* Training Summary Box */
+.training-summary-box {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.training-summary-box strong { color: var(--text); }
+.training-summary-box .summary-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.training-summary-box .summary-line:last-child { border-bottom: none; }
+
+/* Previous Deals List */
+.training-deal-item {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.training-deal-item .deal-status {
+  font-size: 16px;
+}
+.training-deal-item .deal-info { flex: 1; }
+.training-deal-item .deal-info strong { display: block; font-size: 14px; }
+.training-deal-item .deal-amount {
+  font-weight: 700;
+  font-size: 14px;
+}
+.training-deal-item .deal-actions { display: flex; gap: 6px; }
+.training-deal-item .deal-actions button {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+}
+.training-deal-item .deal-actions button:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .training-status-row { flex-direction: column; gap: 8px; }
+  .training-feedback-row { flex-direction: column; }
+  .feedback-btn { width: 100%; text-align: center; }
+}
 </style>
 </head>
 <body>
@@ -738,7 +950,7 @@ tbody tr:last-child { border-bottom: none; }
     <div class="logo"><span class="logo-lobster">🦞</span><span class="logo-erp">ERP</span>IE PriceFinder</div>
     <span class="logo-by" data-i18n="madeBy">by</span>
     <span class="logo-planbit">Incredible Projects</span>
-    <div class="badge">v2.0</div>
+    <div class="badge">v2.1</div>
   </div>
   <div class="header-right">
     <div class="lang-switch">
@@ -755,6 +967,7 @@ tbody tr:last-child { border-bottom: none; }
 <div class="tabs">
   <div class="tab active" data-tab="quick" data-i18n="quickQuote">Quick Quote</div>
   <div class="tab" data-tab="batch" data-i18n="batchUpload">Batch Upload</div>
+  <div class="tab" data-tab="training" data-i18n="training">🎓 Training</div>
 </div>
 
 <!-- Main -->
@@ -1046,12 +1259,112 @@ Of sleep een bestand hierheen (Excel, CSV, TXT)" rows="8"></textarea>
   </div>
 </div>
 
+  <!-- ── Training panel ──────────────────────────────────────── -->
+  <div class="panel" id="panel-training">
+    <div class="form-card">
+
+      <!-- Upload / Paste Section -->
+      <div class="form-section">
+        <div class="form-section-title">📁 UPLOAD ARS / BID REQUEST</div>
+        <div class="batch-dropzone" id="training-dropzone">
+          <span style="font-size:32px">📁</span>
+          <span>Sleep bestand hierheen of klik om te uploaden</span>
+          <span style="font-size:11px;color:var(--muted)">Ondersteund: .xlsx, .csv, .txt</span>
+          <input type="file" id="training-file-input" accept=".xlsx,.xls,.csv,.txt" hidden>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">OF plak tekst:</div>
+        <textarea id="training-input" class="batch-textarea" placeholder="Plak hier een bid request of asset lijst...
+
+Voorbeelden:
+• 50x Dell Latitude 5530 i5-1245U 16GB 256GB Grade B
+• HP EliteBook 840 G9, i5-1245U, 16GB, 512GB SSD, A-grade
+• 25 stuks Lenovo T14 Gen 2, mix i5/i7, 16GB" rows="5"></textarea>
+      </div>
+
+      <!-- Deal Details Section -->
+      <div class="form-section">
+        <div class="form-section-title">📋 DEAL DETAILS</div>
+        <div class="form-row">
+          <div class="field">
+            <label>Klant</label>
+            <input type="text" id="training-customer" placeholder="Klantnaam...">
+          </div>
+          <div class="field">
+            <label>Deal Naam</label>
+            <input type="text" id="training-dealname" placeholder="Deal naam...">
+          </div>
+          <div class="field">
+            <label>Datum</label>
+            <input type="date" id="training-date" value="">
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:12px;">
+          <div class="field" style="flex:2;">
+            <label>Status</label>
+            <div class="training-status-row">
+              <label class="radio-label"><input type="radio" name="training-status" value="open" checked> Open</label>
+              <label class="radio-label"><input type="radio" name="training-status" value="won"> ✅ Gewonnen</label>
+              <label class="radio-label"><input type="radio" name="training-status" value="lost"> ❌ Verloren</label>
+              <label class="radio-label"><input type="radio" name="training-status" value="rejected"> 🚫 Afgewezen</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:12px;">
+          <div class="field">
+            <label>Werkelijke Prijs — Totaal (optioneel)</label>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <span style="color:var(--muted)">€</span>
+              <input type="number" id="training-actual-total" placeholder="0" min="0" step="1">
+            </div>
+          </div>
+          <div class="field">
+            <label>Notities</label>
+            <input type="text" id="training-notes" placeholder="Eventuele opmerkingen...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Parse button -->
+      <div class="batch-actions">
+        <button type="button" class="btn btn-ghost" onclick="clearTraining()">🗑️ Wissen</button>
+        <button type="button" class="btn btn-ghost" onclick="loadTrainingExample()">📝 Voorbeeld</button>
+        <button type="button" class="btn btn-ai" onclick="processTraining()">🔍 Parse & Analyseer</button>
+      </div>
+
+      <!-- ERPIE Analysis Results -->
+      <div id="training-results" style="display:none;">
+        <div class="form-section" style="margin-top:20px;">
+          <div class="form-section-title">📊 ERPIE's ANALYSE</div>
+          <div id="training-cards"></div>
+        </div>
+
+        <!-- Summary -->
+        <div class="form-section" id="training-summary" style="display:none;">
+          <div class="form-section-title">📈 SAMENVATTING</div>
+          <div class="training-summary-box" id="training-summary-box"></div>
+          <div class="batch-actions" style="margin-top:16px;">
+            <button type="button" class="btn btn-ghost" onclick="exportTrainingCSV()">📥 Export CSV</button>
+            <button type="button" class="btn btn-ai" onclick="saveTrainingDeal()">💾 Opslaan in DEAL_HISTORY</button>
+            <button type="button" class="btn btn-ai" style="background:#7c3aed;" onclick="trainERPIE()">📤 Train ERPIE</button>
+          </div>
+        </div>
+
+        <!-- Previous Deals -->
+        <div class="form-section" style="margin-top:20px;">
+          <div class="form-section-title">📚 OPGESLAGEN DEALS <span id="training-deal-count" style="font-size:11px;color:var(--muted);font-weight:400;"></span></div>
+          <div id="training-deals-list"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <!-- Footer -->
 <div class="footer">
   <span data-i18n="footer">ERPIE PriceFinder · Made by Incredible Projects / Henk Jekel</span>
-  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.0</span>
+  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.1</span>
 </div>
 
 <!-- Help Modal -->
@@ -1084,6 +1397,7 @@ Of sleep een bestand hierheen (Excel, CSV, TXT)" rows="8"></textarea>
     <p>Enter a serial number to check warranty status and device specs on the manufacturer's support site.</p>
     <h3>Version History</h3>
     <ul class="version-history">
+      <li><strong>v2.1</strong> — Training Tab: deal feedback, per-asset pricing corrections, DEAL_HISTORY</li>
       <li><strong>v2.0</strong> — Batch Upload v2.0: Universal Parser, Historical Pricing, Live Validation, CSV/Excel Export</li>
       <li><strong>v1.3</strong> — Help button, language switch, URL fixes, RefurbMe, BVA Auctions</li>
       <li><strong>v1.2</strong> — Live price check, serial number lookup</li>
@@ -1667,7 +1981,7 @@ function esc(str) {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// BATCH UPLOAD v2.0 — Universal Parser + Historical + Live Validation
+// BATCH UPLOAD v2.1 — Universal Parser + Historical + Live Validation
 // ══════════════════════════════════════════════════════════════════════
 
 // ── Pattern definitions ──────────────────────────────────────────
@@ -2464,6 +2778,7 @@ const TRANSLATIONS = {
     madeBy: 'door',
     quickQuote: 'Quick Quote',
     batchUpload: 'Batch Upload',
+    training: '🎓 Training',
     device: 'APPARAAT', brand: 'MERK', model: 'MODEL', deviceType: 'TYPE',
     cpu: 'CPU', family: 'FAMILIE', generation: 'GENERATIE', fullModel: 'VOLLEDIG MODEL (OPTIONEEL)',
     specs: 'SPECIFICATIES', ram: 'RAM', ssd: 'SSD', grade: 'CONDITIE', keyboard: 'TOETSENBORD',
@@ -2486,6 +2801,7 @@ const TRANSLATIONS = {
     madeBy: 'by',
     quickQuote: 'Quick Quote',
     batchUpload: 'Batch Upload',
+    training: '🎓 Training',
     device: 'DEVICE', brand: 'BRAND', model: 'MODEL', deviceType: 'DEVICE TYPE',
     cpu: 'CPU', family: 'FAMILY', generation: 'GENERATION', fullModel: 'FULL MODEL (OPTIONAL)',
     specs: 'SPECS', ram: 'RAM', ssd: 'SSD', grade: 'GRADE', keyboard: 'KEYBOARD',
@@ -2570,7 +2886,500 @@ function updateSelectTranslations(lang) {
 // Apply language on load
 document.addEventListener('DOMContentLoaded', function() {
   setLanguage(currentLang);
+  loadTrainingDeals();
+  // Set today's date as default for training
+  document.getElementById('training-date').value = new Date().toISOString().slice(0, 10);
 });
+
+// ══════════════════════════════════════════════════════════════════════
+// TRAINING TAB — Phase 1 (UI) + Phase 2 (Feedback System)
+// ══════════════════════════════════════════════════════════════════════
+
+let trainingAssets = [];
+const DEAL_HISTORY_KEY = 'erpie-deal-history';
+
+// ── Drop zone for training ──────────────────────────────────────
+const trainingDropzone = document.getElementById('training-dropzone');
+const trainingFileInput = document.getElementById('training-file-input');
+
+trainingDropzone.addEventListener('click', () => trainingFileInput.click());
+trainingFileInput.addEventListener('change', e => {
+  if (e.target.files[0]) handleTrainingFile(e.target.files[0]);
+});
+trainingDropzone.addEventListener('dragover', e => { e.preventDefault(); trainingDropzone.classList.add('drag-over'); });
+trainingDropzone.addEventListener('dragleave', () => trainingDropzone.classList.remove('drag-over'));
+trainingDropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  trainingDropzone.classList.remove('drag-over');
+  if (e.dataTransfer.files[0]) handleTrainingFile(e.dataTransfer.files[0]);
+});
+
+async function handleTrainingFile(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (ext === 'csv' || ext === 'txt') {
+    const text = await file.text();
+    document.getElementById('training-input').value = text;
+  } else if ((ext === 'xlsx' || ext === 'xls') && typeof XLSX !== 'undefined') {
+    const data = await file.arrayBuffer();
+    const wb = XLSX.read(data);
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    document.getElementById('training-input').value = XLSX.utils.sheet_to_csv(ws);
+  }
+  // Auto-set deal name from filename
+  if (!document.getElementById('training-dealname').value) {
+    document.getElementById('training-dealname').value = file.name.replace(/\.[^/.]+$/, '');
+  }
+}
+
+// ── Example ─────────────────────────────────────────────────────
+function loadTrainingExample() {
+  document.getElementById('training-input').value = `50x Dell Latitude 5530 i5-1245U 16GB 256GB Grade B QWERTY
+25x HP EliteBook 840 G9 i5 16/512 A-grade
+10x Lenovo ThinkPad T14 Gen 3 i7 32GB 512GB Grade A
+8x Dell Latitude 5420 i5-1135G7 8GB 256GB C-grade
+12x HP ProBook 450 G8 i5-1135G7 16GB 512GB B-grade`;
+  document.getElementById('training-customer').value = 'Sedgwick';
+  document.getElementById('training-dealname').value = 'Sedgwick Amstelveen';
+  document.getElementById('training-date').value = '2026-03-12';
+  document.querySelector('input[name="training-status"][value="won"]').checked = true;
+  document.getElementById('training-actual-total').value = '22500';
+  document.getElementById('training-notes').value = 'Gewonnen bid, 105 stuks totaal';
+}
+
+function clearTraining() {
+  document.getElementById('training-input').value = '';
+  document.getElementById('training-customer').value = '';
+  document.getElementById('training-dealname').value = '';
+  document.getElementById('training-date').value = new Date().toISOString().slice(0, 10);
+  document.querySelector('input[name="training-status"][value="open"]').checked = true;
+  document.getElementById('training-actual-total').value = '';
+  document.getElementById('training-notes').value = '';
+  document.getElementById('training-results').style.display = 'none';
+  document.getElementById('training-cards').innerHTML = '';
+  document.getElementById('training-summary').style.display = 'none';
+  trainingAssets = [];
+}
+
+// ── Process Training ────────────────────────────────────────────
+async function processTraining() {
+  const input = document.getElementById('training-input').value.trim();
+  if (!input) { alert('Voer eerst asset data in of laad een voorbeeld.'); return; }
+
+  const lines = input.split('\n').filter(l => l.trim());
+  trainingAssets = [];
+  const cardsContainer = document.getElementById('training-cards');
+  cardsContainer.innerHTML = '';
+  document.getElementById('training-results').style.display = 'block';
+  document.getElementById('training-summary').style.display = 'none';
+
+  for (let i = 0; i < lines.length; i++) {
+    const asset = parseLine(lines[i]); // Reuse batch parser!
+    if (!asset) continue;
+    asset.index = trainingAssets.length;
+
+    // Historical pricing (reuse)
+    const hist = findHistoricalMatches(asset);
+    asset.historical = calculateHistoricalERP(hist);
+    asset.feedback = null;
+    asset.actualPrice = null;
+    asset.suggestedPrice = null;
+
+    trainingAssets.push(asset);
+    renderTrainingCard(asset, cardsContainer);
+    await new Promise(r => setTimeout(r, 60));
+  }
+
+  updateTrainingSummary();
+}
+
+// ── Render Training Card ────────────────────────────────────────
+function renderTrainingCard(asset, container) {
+  const h = asset.historical || {};
+  const specsStr = [
+    asset.cpuModel || asset.cpuTier,
+    asset.ram ? asset.ram + 'GB' : null,
+    asset.storage ? (asset.storage >= 1024 ? (asset.storage/1024) + 'TB' : asset.storage + 'GB') : null,
+    asset.grade ? 'Grade ' + asset.grade : null,
+    asset.keyboard || null,
+  ].filter(Boolean).join(' · ');
+
+  const unitERP = h.erp || 0;
+  const totalERP = unitERP * asset.quantity;
+  const idx = asset.index;
+
+  const card = document.createElement('div');
+  card.className = 'training-card';
+  card.id = `training-card-${idx}`;
+
+  card.innerHTML = `
+    <div class="training-card-header">
+      <span class="training-card-qty">${asset.quantity}×</span>
+      <span class="training-card-model">${esc(asset.brand)} ${esc(asset.model || '?')}</span>
+      <span class="training-card-status">${h.erp ? '✅' : '⚠️'}</span>
+    </div>
+    <div class="training-card-specs">${esc(specsStr) || '—'}</div>
+    ${asset.warnings.length > 0 ? `<div class="training-card-warnings">${asset.warnings.map(w => '⚠️ ' + esc(w)).join('<br>')}</div>` : ''}
+    <div class="training-card-pricing">
+      <div class="training-price-row">
+        <span class="training-price-label">ERPIE's ERP:</span>
+        <span class="training-price-value">${unitERP ? '€' + unitERP : 'Geen data'}</span>
+        ${h.matchLevel ? `<span class="match-badge match-${h.matchLevel}" style="margin-left:8px;">${h.matchLevel}</span>` : ''}
+      </div>
+      ${unitERP ? `<div class="training-price-row training-price-total">
+        <span class="training-price-label">Totaal (${asset.quantity}×):</span>
+        <span class="training-price-value">€${totalERP.toLocaleString('nl-NL')}</span>
+      </div>` : ''}
+    </div>
+    <div class="training-actual-row">
+      <span class="training-price-label">Werkelijk:</span>
+      <span style="color:var(--muted)">€</span>
+      <input type="number" id="training-actual-${idx}" placeholder="?" min="0" step="1"
+             onchange="updateTrainingActual(${idx}, this.value)">
+      <span style="font-size:12px;color:var(--muted)">per stuk</span>
+    </div>
+    <div class="training-delta" id="training-delta-${idx}" style="display:none;"></div>
+    <div class="training-feedback-row">
+      <button class="feedback-btn" onclick="setFeedback(${idx}, 'correct', this)">👍 Correct</button>
+      <button class="feedback-btn" onclick="setFeedback(${idx}, 'too_low', this)">📈 Te laag</button>
+      <button class="feedback-btn" onclick="setFeedback(${idx}, 'too_high', this)">📉 Te hoog</button>
+      <button class="feedback-btn" onclick="setFeedback(${idx}, 'unknown', this)">❓ Weet niet</button>
+    </div>
+    <div class="training-suggest-row" id="training-suggest-${idx}">
+      Wat zou beter zijn? €
+      <input type="number" id="training-suggested-${idx}" placeholder="?" min="0" step="1"
+             onchange="updateTrainingSuggested(${idx}, this.value)">
+      <span style="font-size:12px;color:var(--muted)">per stuk</span>
+    </div>
+  `;
+
+  container.appendChild(card);
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── Feedback Logic ──────────────────────────────────────────────
+function setFeedback(idx, feedback, btnEl) {
+  trainingAssets[idx].feedback = feedback;
+
+  // Update button styles
+  const row = btnEl.parentElement;
+  row.querySelectorAll('.feedback-btn').forEach(b => {
+    b.className = 'feedback-btn';
+  });
+  btnEl.classList.add(`active-${feedback.replace('_', '-')}`);
+
+  // Update card border
+  const card = document.getElementById(`training-card-${idx}`);
+  card.className = 'training-card';
+  if (feedback === 'correct') card.classList.add('feedback-correct');
+  else if (feedback === 'too_low') card.classList.add('feedback-too-low');
+  else if (feedback === 'too_high') card.classList.add('feedback-too-high');
+  else card.classList.add('feedback-unknown');
+
+  // Show/hide suggestion field
+  const suggestRow = document.getElementById(`training-suggest-${idx}`);
+  if (feedback === 'too_low' || feedback === 'too_high') {
+    suggestRow.classList.add('visible');
+  } else {
+    suggestRow.classList.remove('visible');
+  }
+
+  updateTrainingSummary();
+}
+
+function updateTrainingActual(idx, value) {
+  const price = parseFloat(value) || null;
+  trainingAssets[idx].actualPrice = price;
+
+  // Show delta
+  const h = trainingAssets[idx].historical;
+  const deltaEl = document.getElementById(`training-delta-${idx}`);
+  if (price && h && h.erp) {
+    const delta = price - h.erp;
+    const pct = ((delta / h.erp) * 100).toFixed(1);
+    deltaEl.style.display = 'block';
+    deltaEl.className = 'training-delta ' + (delta > 0 ? 'positive' : (delta < 0 ? 'negative' : 'neutral'));
+    deltaEl.innerHTML = `Delta: ${delta >= 0 ? '+' : ''}€${delta} (${delta >= 0 ? '+' : ''}${pct}%) per stuk`;
+  } else {
+    deltaEl.style.display = 'none';
+  }
+
+  updateTrainingSummary();
+}
+
+function updateTrainingSuggested(idx, value) {
+  trainingAssets[idx].suggestedPrice = parseFloat(value) || null;
+  updateTrainingSummary();
+}
+
+// ── Summary ─────────────────────────────────────────────────────
+function updateTrainingSummary() {
+  if (trainingAssets.length === 0) return;
+
+  const summaryEl = document.getElementById('training-summary');
+  const box = document.getElementById('training-summary-box');
+  summaryEl.style.display = 'block';
+
+  const customer = document.getElementById('training-customer').value || '—';
+  const dealName = document.getElementById('training-dealname').value || '—';
+  const date = document.getElementById('training-date').value || '—';
+  const status = document.querySelector('input[name="training-status"]:checked').value;
+  const statusLabel = { open: 'Open', won: 'Gewonnen ✅', lost: 'Verloren ❌', rejected: 'Afgewezen 🚫' }[status];
+
+  const totalQty = trainingAssets.reduce((s, a) => s + a.quantity, 0);
+  const erpieTotal = trainingAssets.reduce((s, a) => s + ((a.historical?.erp || 0) * a.quantity), 0);
+
+  // Calculate actual total from inputs or from the deal total
+  let actualTotal = 0;
+  let hasActual = false;
+  trainingAssets.forEach(a => {
+    if (a.actualPrice) {
+      actualTotal += a.actualPrice * a.quantity;
+      hasActual = true;
+    }
+  });
+  if (!hasActual) {
+    const dealActual = parseFloat(document.getElementById('training-actual-total').value);
+    if (dealActual) { actualTotal = dealActual; hasActual = true; }
+  }
+
+  const delta = hasActual ? actualTotal - erpieTotal : null;
+  const deltaPct = delta !== null && erpieTotal > 0 ? ((delta / erpieTotal) * 100).toFixed(1) : null;
+
+  // Count feedback
+  const fbCounts = { correct: 0, too_low: 0, too_high: 0, unknown: 0, none: 0 };
+  trainingAssets.forEach(a => { fbCounts[a.feedback || 'none']++; });
+
+  box.innerHTML = `
+    <div class="summary-line"><span>Deal:</span><strong>${esc(dealName)}</strong></div>
+    <div class="summary-line"><span>Klant:</span><strong>${esc(customer)}</strong></div>
+    <div class="summary-line"><span>Datum:</span><strong>${esc(date)}</strong></div>
+    <div class="summary-line"><span>Status:</span><strong>${statusLabel}</strong></div>
+    <div class="summary-line"><span>Assets:</span><strong>${trainingAssets.length} types, ${totalQty} stuks</strong></div>
+    <div class="summary-line"><span>ERPIE Totaal:</span><strong>€${erpieTotal.toLocaleString('nl-NL')}</strong></div>
+    ${hasActual ? `
+    <div class="summary-line"><span>Werkelijk:</span><strong>€${actualTotal.toLocaleString('nl-NL')}</strong></div>
+    <div class="summary-line"><span>Delta:</span><strong style="color:${delta >= 0 ? '#22c55e' : '#ef4444'}">${delta >= 0 ? '+' : ''}€${delta.toLocaleString('nl-NL')} (${deltaPct}%)</strong></div>
+    ` : ''}
+    <div class="summary-line"><span>Feedback:</span><strong>
+      ${fbCounts.correct ? fbCounts.correct + '× Correct ' : ''}
+      ${fbCounts.too_high ? fbCounts.too_high + '× Te hoog ' : ''}
+      ${fbCounts.too_low ? fbCounts.too_low + '× Te laag ' : ''}
+      ${fbCounts.unknown ? fbCounts.unknown + '× Weet niet ' : ''}
+      ${fbCounts.none ? fbCounts.none + '× Geen feedback' : ''}
+    </strong></div>
+  `;
+}
+
+// ── Save Deal to localStorage ───────────────────────────────────
+function saveTrainingDeal() {
+  if (trainingAssets.length === 0) { alert('Geen assets om op te slaan.'); return; }
+
+  const customer = document.getElementById('training-customer').value || 'Onbekend';
+  const dealName = document.getElementById('training-dealname').value || 'Deal ' + new Date().toISOString().slice(0, 10);
+  const date = document.getElementById('training-date').value || new Date().toISOString().slice(0, 10);
+  const status = document.querySelector('input[name="training-status"]:checked').value;
+  const notes = document.getElementById('training-notes').value;
+
+  const erpieTotal = trainingAssets.reduce((s, a) => s + ((a.historical?.erp || 0) * a.quantity), 0);
+  let actualTotal = 0;
+  let hasActual = false;
+  trainingAssets.forEach(a => {
+    if (a.actualPrice) { actualTotal += a.actualPrice * a.quantity; hasActual = true; }
+  });
+  if (!hasActual) {
+    const dealActual = parseFloat(document.getElementById('training-actual-total').value);
+    if (dealActual) { actualTotal = dealActual; hasActual = true; }
+  }
+
+  const delta = hasActual ? actualTotal - erpieTotal : null;
+  const deltaPct = delta !== null && erpieTotal > 0 ? parseFloat(((delta / erpieTotal) * 100).toFixed(1)) : null;
+
+  // Build lessons from feedback
+  const lessons = [];
+  trainingAssets.forEach(a => {
+    if (a.feedback === 'too_high' || a.feedback === 'too_low') {
+      const actual = a.actualPrice || a.suggestedPrice;
+      if (actual && a.historical?.erp) {
+        const errPct = Math.round(((a.historical.erp - actual) / actual) * 100);
+        lessons.push({
+          type: 'pricing_correction',
+          device: `${a.brand} ${a.model} ${a.cpuModel || a.cpuTier || ''} ${a.ram || ''}GB Grade ${a.grade || '?'}`.trim(),
+          error: `ERPIE €${a.historical.erp} vs actual €${actual}`,
+          delta: errPct,
+          rule: a.feedback === 'too_high'
+            ? `${a.model} prijs te hoog ingeschat (${errPct}% verschil)`
+            : `${a.model} prijs te laag ingeschat (${Math.abs(errPct)}% verschil)`,
+        });
+      }
+    }
+  });
+
+  const deal = {
+    id: `deal-${date}-${customer.toLowerCase().replace(/\s+/g, '-')}`,
+    customer,
+    dealName,
+    date,
+    status,
+    erpieTotal,
+    actualTotal: hasActual ? actualTotal : null,
+    delta,
+    deltaPercent: deltaPct,
+    totalQty: trainingAssets.reduce((s, a) => s + a.quantity, 0),
+    assetCount: trainingAssets.length,
+    assets: trainingAssets.map(a => ({
+      qty: a.quantity,
+      brand: a.brand,
+      model: a.model,
+      cpu: a.cpuModel || a.cpuTier,
+      ram: a.ram ? a.ram + 'GB' : null,
+      storage: a.storage ? a.storage + 'GB' : null,
+      grade: a.grade,
+      keyboard: a.keyboard,
+      erpiePrice: a.historical?.erp || null,
+      actualPrice: a.actualPrice,
+      feedback: a.feedback,
+      suggestedPrice: a.suggestedPrice,
+    })),
+    lessons,
+    notes,
+    createdAt: new Date().toISOString(),
+    trainedAt: null,
+  };
+
+  // Save to localStorage
+  const history = JSON.parse(localStorage.getItem(DEAL_HISTORY_KEY) || '[]');
+  // Check for duplicate
+  const existingIdx = history.findIndex(d => d.id === deal.id);
+  if (existingIdx >= 0) {
+    if (!confirm(`Deal "${deal.dealName}" bestaat al. Overschrijven?`)) return;
+    history[existingIdx] = deal;
+  } else {
+    history.unshift(deal);
+  }
+  localStorage.setItem(DEAL_HISTORY_KEY, JSON.stringify(history));
+
+  alert(`✅ Deal "${deal.dealName}" opgeslagen! (${history.length} deals totaal)`);
+  loadTrainingDeals();
+}
+
+// ── Load & Display Previous Deals ───────────────────────────────
+function loadTrainingDeals() {
+  const history = JSON.parse(localStorage.getItem(DEAL_HISTORY_KEY) || '[]');
+  const list = document.getElementById('training-deals-list');
+  const count = document.getElementById('training-deal-count');
+
+  if (!list) return;
+  count.textContent = `(${history.length} deals)`;
+
+  if (history.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px;">Nog geen deals opgeslagen. Gebruik de Training tab om deals te analyseren en op te slaan.</div>';
+    return;
+  }
+
+  list.innerHTML = history.map((deal, i) => {
+    const statusIcon = { open: '⏳', won: '✅', lost: '❌', rejected: '🚫' }[deal.status] || '❓';
+    const deltaStr = deal.delta !== null
+      ? `<span style="color:${deal.delta >= 0 ? '#22c55e' : '#ef4444'}">${deal.delta >= 0 ? '+' : ''}€${deal.delta.toLocaleString('nl-NL')} (${deal.deltaPercent}%)</span>`
+      : '';
+    return `
+      <div class="training-deal-item">
+        <span class="deal-status">${statusIcon}</span>
+        <div class="deal-info">
+          <strong>${esc(deal.dealName)}</strong>
+          <span style="color:var(--muted)">${esc(deal.customer)} · ${deal.date} · ${deal.totalQty || '?'} stuks</span>
+        </div>
+        <span class="deal-amount">€${(deal.erpieTotal || 0).toLocaleString('nl-NL')}</span>
+        ${deltaStr}
+        <div class="deal-actions">
+          <button onclick="deleteTrainingDeal(${i})" title="Verwijder">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function deleteTrainingDeal(idx) {
+  if (!confirm('Weet je zeker dat je deze deal wilt verwijderen?')) return;
+  const history = JSON.parse(localStorage.getItem(DEAL_HISTORY_KEY) || '[]');
+  history.splice(idx, 1);
+  localStorage.setItem(DEAL_HISTORY_KEY, JSON.stringify(history));
+  loadTrainingDeals();
+}
+
+// ── Train ERPIE (send to OpenClaw) ──────────────────────────────
+async function trainERPIE() {
+  if (trainingAssets.length === 0) { alert('Geen assets om te trainen.'); return; }
+
+  const dealName = document.getElementById('training-dealname').value || 'Onbekend';
+  const date = document.getElementById('training-date').value || '?';
+  const status = document.querySelector('input[name="training-status"]:checked').value;
+  const statusLabel = { open: 'OPEN', won: 'WON', lost: 'LOST', rejected: 'REJECTED' }[status];
+
+  // Build corrections
+  const corrections = [];
+  trainingAssets.forEach(a => {
+    if ((a.feedback === 'too_high' || a.feedback === 'too_low') && a.historical?.erp) {
+      const actual = a.actualPrice || a.suggestedPrice || '?';
+      const device = `${a.brand} ${a.model} ${a.cpuModel || a.cpuTier || ''} ${a.ram || '?'}GB Grade ${a.grade || '?'}`;
+      corrections.push(`- ${device}: My price €${a.historical.erp}, actual €${actual} (${a.feedback === 'too_high' ? 'te hoog' : 'te laag'})`);
+    }
+  });
+
+  if (corrections.length === 0) {
+    alert('Geen correcties gevonden (markeer assets als "Te laag" of "Te hoog" voor training).');
+    return;
+  }
+
+  const message = `TRAINING UPDATE:\nDeal: ${dealName} (${date}) - ${statusLabel}\n\nCorrections:\n${corrections.join('\n')}\n\nPlease update CORRECTIONS.md and consider adjusting pricing rules if this pattern repeats.`;
+
+  try {
+    const res = await fetch('/erpie/api/ai-quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brand: 'TRAINING', model: message, cpu: '', ram: '', storage: '', condition: '', keyboard: '', region: 'EU', battery: 'good', quantity: 1 }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      alert('✅ Training data verstuurd naar ERPIE/OpenClaw!\n\nERPIE zal deze correcties meenemen in toekomstige analyses.');
+      // Mark as trained
+      const history = JSON.parse(localStorage.getItem(DEAL_HISTORY_KEY) || '[]');
+      const dealId = `deal-${date}-${(document.getElementById('training-customer').value || 'unknown').toLowerCase().replace(/\s+/g, '-')}`;
+      const deal = history.find(d => d.id === dealId);
+      if (deal) {
+        deal.trainedAt = new Date().toISOString();
+        localStorage.setItem(DEAL_HISTORY_KEY, JSON.stringify(history));
+        loadTrainingDeals();
+      }
+    } else {
+      alert('❌ Training mislukt: ' + (data.error || 'Onbekende fout'));
+    }
+  } catch (err) {
+    alert('❌ Training mislukt: ' + err.message);
+  }
+}
+
+// ── Export Training CSV ─────────────────────────────────────────
+function exportTrainingCSV() {
+  if (trainingAssets.length === 0) { alert('Geen data om te exporteren.'); return; }
+  const header = ['Qty','Brand','Model','CPU','RAM','Storage','Grade','ERPIE ERP','Actual','Feedback','Suggested','Delta','Warnings'];
+  const rows = trainingAssets.map(a => {
+    const h = a.historical || {};
+    const delta = (a.actualPrice && h.erp) ? (a.actualPrice - h.erp) : '';
+    return [
+      a.quantity, a.brand, a.model, a.cpuModel || a.cpuTier,
+      a.ram ? a.ram + 'GB' : '', a.storage ? a.storage + 'GB' : '',
+      a.grade, h.erp || '', a.actualPrice || '', a.feedback || '',
+      a.suggestedPrice || '', delta, a.warnings.join('; ')
+    ].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',');
+  });
+  const csv = [header.join(','), ...rows].join('\r\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dealName = document.getElementById('training-dealname').value || 'training';
+  a.href = url; a.download = `erpie-training-${dealName.replace(/\s+/g, '-')}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+}
 </script>
 </body>
 </html>
