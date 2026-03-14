@@ -489,7 +489,7 @@ tbody tr:last-child { border-bottom: none; }
   .help-content { padding: 20px; }
 }
 
-/* ── Batch Upload v2.2 ─────────────────────────────────────── */
+/* ── Batch Upload v2.3 ─────────────────────────────────────── */
 .batch-textarea {
   width: 100%;
   min-height: 160px;
@@ -1057,6 +1057,75 @@ tbody tr:last-child { border-bottom: none; }
   padding: 0 2px;
   border-radius: 2px;
 }
+
+/* ── Zelfstudie Tab ────────────────────────────────────────────── */
+.zelfstudie-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+  border-left: 4px solid #7c3aed;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.zelfstudie-card:hover { box-shadow: 0 2px 8px rgba(124,58,237,0.15); }
+.zelfstudie-card.expanded { border-left-color: #22c55e; }
+.zs-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.zs-icon { font-size: 20px; }
+.zs-title { font-weight: 600; font-size: 14px; flex: 1; }
+.zs-size { font-size: 11px; color: var(--muted); }
+.zs-date { font-size: 11px; color: var(--muted); }
+.zs-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.zs-tag {
+  background: var(--surface2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.zs-tag.match { background: #7c3aed25; color: #7c3aed; font-weight: 600; }
+.zs-summary {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.zs-content {
+  display: none;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.7;
+  max-height: 400px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  color: var(--text);
+}
+.zelfstudie-card.expanded .zs-content { display: block; }
+.zs-content mark {
+  background: #7c3aed30;
+  color: var(--text);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+.zs-nuggets {
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--surface2);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.zs-nuggets strong { color: #7c3aed; }
 </style>
 </head>
 <body>
@@ -1067,7 +1136,7 @@ tbody tr:last-child { border-bottom: none; }
     <div class="logo"><span class="logo-lobster">🦞</span><span class="logo-erp">ERP</span>IE PriceFinder</div>
     <span class="logo-by" data-i18n="madeBy">by</span>
     <span class="logo-planbit">Incredible Projects</span>
-    <div class="badge">v2.2</div>
+    <div class="badge">v2.3</div>
   </div>
   <div class="header-right">
     <div class="lang-switch">
@@ -1086,6 +1155,7 @@ tbody tr:last-child { border-bottom: none; }
   <div class="tab" data-tab="batch" data-i18n="batchUpload">Batch Upload</div>
   <div class="tab" data-tab="training" data-i18n="training">🎓 Training</div>
   <div class="tab" data-tab="ptolemeus" data-i18n="ptolemeus">📚 PTOLEMEUS</div>
+  <div class="tab" data-tab="zelfstudie" data-i18n="zelfstudie">📖 Zelfstudie</div>
 </div>
 
 <!-- Main -->
@@ -1245,7 +1315,7 @@ tbody tr:last-child { border-bottom: none; }
       <div class="search-buttons">
         <button type="button" class="search-btn" onclick="openGoogleSearch()">🔎 Google</button>
         <button type="button" class="search-btn b2b" onclick="openITGigant()">🏢 IT Gigant</button>
-        <button type="button" class="search-btn b2b" onclick="openBVAAuctions()">🔨 BVA Auctions</button>
+        <button type="button" class="search-btn b2b" onclick="openTroostwijk()">🔨 Troostwijk</button>
       </div>
       <div class="button-row-label" data-i18n="b2cReference">B2C Reference Prices</div>
       <div class="search-buttons">
@@ -1567,12 +1637,41 @@ Voorbeelden:
     </div>
   </div>
 
+  <!-- ── Zelfstudie panel ──────────────────────────────────────── -->
+  <div class="panel" id="panel-zelfstudie">
+    <div class="form-card">
+
+      <div class="form-section">
+        <div class="form-section-title">📖 ERPIE Zelfstudie — SCHOLAR Reports</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">ERPIE's SCHOLAR agent analyseert dagelijks YouTube video's en artikelen over AI agents, OpenClaw, en ITAD kennis. Hier vind je alle bestudeerde bronnen.</p>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <input type="text" id="zelfstudie-search" placeholder="Zoek in zelfstudie (bijv. memory, security, sub-agents, apps...)"
+                 style="flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);font-size:14px;"
+                 oninput="filterZelfstudie(this.value)">
+        </div>
+        <div class="zelfstudie-tags" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+          <button class="ptol-tag" onclick="filterZelfstudie('memory')">memory</button>
+          <button class="ptol-tag" onclick="filterZelfstudie('security')">security</button>
+          <button class="ptol-tag" onclick="filterZelfstudie('sub-agent')">sub-agents</button>
+          <button class="ptol-tag" onclick="filterZelfstudie('apps')">apps</button>
+          <button class="ptol-tag" onclick="filterZelfstudie('context')">context</button>
+          <button class="ptol-tag" onclick="filterZelfstudie('pricing')">pricing</button>
+          <button class="ptol-tag" onclick="filterZelfstudie('obsidian')">obsidian</button>
+          <button class="ptol-tag" onclick="filterZelfstudie('')">⊘ Reset</button>
+        </div>
+        <div id="zelfstudie-count" style="font-size:12px;color:var(--muted);margin-bottom:8px;"></div>
+        <div id="zelfstudie-list"></div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <!-- Footer -->
 <div class="footer">
   <span data-i18n="footer">ERPIE PriceFinder · Made by Incredible Projects / Henk Jekel</span>
-  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.2</span>
+  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.3</span>
 </div>
 
 <!-- Help Modal -->
@@ -1591,7 +1690,7 @@ Voorbeelden:
     </ol>
     <h3>Price Sources</h3>
     <ul>
-      <li><strong>B2B (green)</strong> — IT Gigant, BVA Auctions — wholesale prices</li>
+      <li><strong>B2B (green)</strong> — IT Gigant, Troostwijk Auctions — wholesale prices</li>
       <li><strong>B2C (blue)</strong> — Back Market, Refurbed, Amazon — consumer reference prices</li>
       <li><strong>Apple (purple)</strong> — RefurbMe — Apple refurbished price comparison</li>
     </ul>
@@ -1605,10 +1704,11 @@ Voorbeelden:
     <p>Enter a serial number to check warranty status and device specs on the manufacturer's support site.</p>
     <h3>Version History</h3>
     <ul class="version-history">
+      <li><strong>v2.3</strong> — Zelfstudie tab (SCHOLAR reports browser), BVA → Troostwijk Auctions</li>
       <li><strong>v2.2</strong> — PTOLEMEUS Knowledge Base: browser, search, Q&A, source management</li>
       <li><strong>v2.1</strong> — Training Tab: deal feedback, per-asset pricing corrections, DEAL_HISTORY</li>
       <li><strong>v2.0</strong> — Batch Upload v2.0: Universal Parser, Historical Pricing, Live Validation, CSV/Excel Export</li>
-      <li><strong>v1.3</strong> — Help button, language switch, URL fixes, RefurbMe, BVA Auctions</li>
+      <li><strong>v1.3</strong> — Help button, language switch, URL fixes, RefurbMe, Troostwijk Auctions</li>
       <li><strong>v1.2</strong> — Live price check, serial number lookup</li>
       <li><strong>v1.1</strong> — Structured dropdowns, cascading selects</li>
       <li><strong>v1.0</strong> — Initial release with AI analysis</li>
@@ -1960,8 +2060,8 @@ function openGoogleSearch() {
 function openITGigant() {
   window.open(`https://www.itgigant.nl/catalogsearch/result/?q=${buildSearchQuery()}`, '_blank');
 }
-function openBVAAuctions() {
-  window.open(`https://www.bva-auctions.com/search?q=${buildSearchQuery()}`, '_blank');
+function openTroostwijk() {
+  window.open(`https://www.troostwijkauctions.com/nl/zoeken?q=${buildSearchQuery()}`, '_blank');
 }
 function openBackMarket() {
   window.open(`https://www.backmarket.nl/nl-nl/search?q=${buildSearchQuery()}`, '_blank');
@@ -2190,7 +2290,7 @@ function esc(str) {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// BATCH UPLOAD v2.2 — Universal Parser + Historical + Live Validation
+// BATCH UPLOAD v2.3 — Universal Parser + Historical + Live Validation
 // ══════════════════════════════════════════════════════════════════════
 
 // ── Pattern definitions ──────────────────────────────────────────
@@ -2989,6 +3089,7 @@ const TRANSLATIONS = {
     batchUpload: 'Batch Upload',
     training: '🎓 Training',
     ptolemeus: '📚 PTOLEMEUS',
+    zelfstudie: '📖 Zelfstudie',
     device: 'APPARAAT', brand: 'MERK', model: 'MODEL', deviceType: 'TYPE',
     cpu: 'CPU', family: 'FAMILIE', generation: 'GENERATIE', fullModel: 'VOLLEDIG MODEL (OPTIONEEL)',
     specs: 'SPECIFICATIES', ram: 'RAM', ssd: 'SSD', grade: 'CONDITIE', keyboard: 'TOETSENBORD',
@@ -3013,6 +3114,7 @@ const TRANSLATIONS = {
     batchUpload: 'Batch Upload',
     training: '🎓 Training',
     ptolemeus: '📚 PTOLEMEUS',
+    zelfstudie: '📖 Zelfstudie',
     device: 'DEVICE', brand: 'BRAND', model: 'MODEL', deviceType: 'DEVICE TYPE',
     cpu: 'CPU', family: 'FAMILY', generation: 'GENERATION', fullModel: 'FULL MODEL (OPTIONAL)',
     specs: 'SPECS', ram: 'RAM', ssd: 'SSD', grade: 'GRADE', keyboard: 'KEYBOARD',
@@ -3378,11 +3480,270 @@ async function askPtolemeus() {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// ZELFSTUDIE TAB — SCHOLAR Reports Browser
+// ══════════════════════════════════════════════════════════════════════
+
+const ZELFSTUDIE_DATA = [
+  {
+    id: 'scholar_3hgXhB_Wy2U',
+    title: '11 AI Agents Running 24/7 — Autonomous App Factory',
+    creator: 'Doobie',
+    icon: '🏭',
+    date: '2026-03-08',
+    tags: ['sub-agents', 'apps', 'automation', 'multi-agent', 'factory', 'marketing'],
+    summary: 'Hoe Doobie 11 AI agents 24/7 laat draaien om automatisch iOS apps te bouwen, testen, en publiceren. Sub-agent architectuur met Claude Code + OpenClaw. Elke agent heeft een specifieke taak (research, build, review, deploy, marketing).',
+    nuggets: [
+      'Sub-agent architectuur: orchestrator + specialist agents',
+      'Context window beheer: <5% gebruik door slim routing',
+      'Kwaliteitsscoring: apps moeten 8/10 halen voor deploy',
+      'Marketing automation via Larry skill (TikTok/Instagram)',
+      'State management: altijd naar files schrijven, niet op chat vertrouwen'
+    ],
+    relevance: 4,
+    size: '15KB'
+  },
+  {
+    id: 'scholar_esuPIJeRotI',
+    title: 'Multi-Agent Systems in OpenClaw — Route vs Terminal Method',
+    creator: 'OpenClaw Community',
+    icon: '🤖',
+    date: '2026-03-08',
+    tags: ['sub-agents', 'multi-agent', 'routing', 'architecture', 'workspace'],
+    summary: 'Twee methoden voor multi-agent setup: Route Method (sub-agents in project folders) en Terminal Method (openclaw agents add — aparte workspaces). Wanneer welke methode gebruiken.',
+    nuggets: [
+      'Route Method: sub-agents in mappenstructuur, snel schakelen',
+      'Terminal Method: openclaw agents add — volledig geïsoleerde workspace',
+      'Context pollution voorkomen door specialisatie',
+      'Blast radius: fout in 1 agent stopt niet de rest',
+      'Start met Route, upgrade naar Terminal wanneer nodig'
+    ],
+    relevance: 5,
+    size: '8KB'
+  },
+  {
+    id: 'scholar_oN__gKJnPls',
+    title: 'OpenClaw Memory Architecture Deep Dive — Meta Incident',
+    creator: 'OpenClaw Maintainer',
+    icon: '🧠',
+    date: '2026-03-08',
+    tags: ['memory', 'compaction', 'safety', 'architecture', 'context', 'MEMORY.md'],
+    summary: 'Meta\'s Director of Alignment verloor controle over haar agent door context compaction. Vier memory systemen uitgelegd: chat context, MEMORY.md, workspace files, tool output. Memory flush als veiligheidsnet.',
+    nuggets: [
+      'Chat instructies overleven NIET compaction — altijd in files',
+      'Memory flush inschakelen met voldoende buffer',
+      'Retrieval mandatory: "search memory before acting" regel',
+      '4 memory systemen: chat, MEMORY.md, workspace, tools',
+      'Safety rules in SOUL.md/AGENTS.md, NIET in conversation'
+    ],
+    relevance: 5,
+    size: '28KB'
+  },
+  {
+    id: 'scholar_Nt03hgxv5TE',
+    title: 'OpenClaw Memory is a Junk Drawer — How I Fixed It',
+    creator: 'Software Engineer',
+    icon: '🗂️',
+    date: '2026-03-08',
+    tags: ['memory', 'cleanup', 'optimization', 'context', 'token-cost'],
+    summary: 'Default OpenClaw memory dumpt alles in één bestand — kost tokens en verwart de agent. Oplossing: gestructureerde memory met categorieën, auto-cleanup, en prioriteiten.',
+    nuggets: [
+      'Memory.md wordt een "junk drawer" zonder structuur',
+      'Categoriseer: hot rules vs cold archive',
+      'Auto-cleanup: oude entries archiveren',
+      'Token cost: grote memory = meer kosten per request',
+      'QMD/structured memory als alternatief'
+    ],
+    relevance: 5,
+    size: '12KB'
+  },
+  {
+    id: 'scholar_QvfqAMUJTT4',
+    title: 'OpenClaw Setup Guide — From Limited to Powerful',
+    creator: 'OpenClaw Tutorial',
+    icon: '⚡',
+    date: '2026-03-08',
+    tags: ['setup', 'configuration', 'tools', 'skills', 'web-search', 'sandbox'],
+    summary: 'Complete OpenClaw setup guide: van basic installatie naar production-ready. Skills, tools, web search, sandbox configuratie, en model selectie.',
+    nuggets: [
+      'Model selectie: Flash voor simpel, Pro voor complex',
+      'Skills marketplace: community skills installeren',
+      'Web search + fetch configuratie',
+      'Sandbox mode voor veilige code executie',
+      'IDENTITY.md + SOUL.md als agent persoonlijkheid'
+    ],
+    relevance: 4,
+    size: '16KB'
+  },
+  {
+    id: 'scholar_v2cPHF5oXcI',
+    title: 'AI Agent Companies — 85 Apps in One Weekend',
+    creator: 'AI Business Analysis',
+    icon: '💼',
+    date: '2026-03-08',
+    tags: ['apps', 'business', 'automation', 'crypto', 'agents'],
+    summary: 'AI agents die bedrijven runnen: 85 apps in een weekend, AI als CEO met crypto treasury, AI die menselijke werknemers aanneemt. Trends en mogelijkheden.',
+    nuggets: [
+      'Volume strategie: veel apps bouwen, winnaar verdubbelen',
+      'AI agent als CEO concept — autonome besluitvorming',
+      'Self-improvement loops in productie',
+      'Kosten vs opbrengst analyse van AI agent systemen'
+    ],
+    relevance: 3,
+    size: '12KB'
+  },
+  {
+    id: 'scholar_HSgqj6ERpSg',
+    title: 'OpenClaw Security — API Keys Threat',
+    creator: 'Security Engineer',
+    icon: '🔒',
+    date: '2026-03-08',
+    tags: ['security', 'API-keys', 'configuration', 'threats'],
+    summary: 'OpenClaw\'s #1 security risico: API keys. Default config is onveilig. Hoe je je accounts beschermt met correcte configuratie.',
+    nuggets: [
+      'API keys nooit in workspace files',
+      'Environment variables gebruiken',
+      'Default config aanpassen voor veiligheid',
+      'Rate limiting als security maatregel'
+    ],
+    relevance: 4,
+    size: '2KB'
+  },
+  {
+    id: 'scholar_mXmCihp50M0',
+    title: 'OpenClaw Security Implementation Guide',
+    creator: 'DevOps Engineer',
+    icon: '🛡️',
+    date: '2026-03-08',
+    tags: ['security', 'implementation', 'hardening', 'permissions'],
+    summary: 'Praktische implementatie van OpenClaw security: permissies, sandboxing, en tool restrictions.',
+    nuggets: [
+      'Tool allowlists configureren',
+      'Sandbox mode voor alle code executie',
+      'Permission gates instellen',
+      'Monitoring en logging'
+    ],
+    relevance: 4,
+    size: '1KB'
+  },
+  {
+    id: 'scholar_42DR-n-XFYc',
+    title: '3 Free Tools Every Claude Code User Needs',
+    creator: 'Claude Code Tips',
+    icon: '🔧',
+    date: '2026-03-08',
+    tags: ['tools', 'claude-code', 'vibeconbot', 'productivity'],
+    summary: 'Drie gratis tools voor Claude Code: Vibeconbot en andere productivity boosters.',
+    nuggets: [
+      'Vibeconbot repo voor conversation management',
+      'Claude Code workflow optimalisatie'
+    ],
+    relevance: 3,
+    size: '1KB'
+  },
+  {
+    id: 'scholar_ueD7YNPDNXg',
+    title: 'Claude Code + Obsidian — Memory Cheat Code',
+    creator: 'Obsidian + AI',
+    icon: '🗃️',
+    date: '2026-03-08',
+    tags: ['obsidian', 'memory', 'claude-code', 'knowledge-base', 'sync'],
+    summary: 'Combinatie van Claude Code en Obsidian als geheugen systeem. Obsidian vault als persistent knowledge base voor AI agents.',
+    nuggets: [
+      'Obsidian als persistent memory voor Claude Code',
+      'Wiki-links tussen concepten',
+      'Graph view voor kennisvisualisatie',
+      'Sync strategie tussen lokaal en VPS'
+    ],
+    relevance: 5,
+    size: '1KB'
+  },
+  {
+    id: 'training_data_br1-7',
+    title: 'TRAINING DATA — Joep\'s Pricing Corrections (BR1-BR7)',
+    creator: 'Joep (CEO PlanBit)',
+    icon: '📊',
+    date: '2025-12-01',
+    tags: ['pricing', 'corrections', 'training', 'dell', 'hp', 'lenovo', 'volume'],
+    summary: '7 echte bid requests met correcties van Joep. 6677 assets, €1.45M-€1.85M marktwaarde. Lessen over volume korting, model-specifieke pricing, en grade impact.',
+    nuggets: [
+      'BR1: 5000× Dell 5420 — volume korting 15-20% bij 5000+ stuks',
+      'BR2: 300× Dell mix — correct geschat',
+      'BR3-BR7: diverse correcties op model-specifieke prijzen',
+      'Les: extreme volumes drukken prijs per stuk significant',
+      'Les: Gen 11 Grade C notebooks overschat'
+    ],
+    relevance: 5,
+    size: '8KB'
+  }
+];
+
+function renderZelfstudie(filter) {
+  const list = document.getElementById('zelfstudie-list');
+  const countEl = document.getElementById('zelfstudie-count');
+  if (!list) return;
+
+  let items = ZELFSTUDIE_DATA;
+  const f = (filter || '').toLowerCase().trim();
+
+  if (f) {
+    items = ZELFSTUDIE_DATA.filter(item => {
+      const searchText = [item.title, item.summary, item.creator, ...item.tags, ...(item.nuggets || [])].join(' ').toLowerCase();
+      return searchText.includes(f);
+    });
+  }
+
+  countEl.textContent = `${items.length} van ${ZELFSTUDIE_DATA.length} bronnen`;
+
+  if (items.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px;">Geen resultaten voor "' + esc(f) + '"</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(item => {
+    const tagsHtml = item.tags.map(t => {
+      const isMatch = f && t.toLowerCase().includes(f);
+      return `<span class="zs-tag${isMatch ? ' match' : ''}">${esc(t)}</span>`;
+    }).join('');
+
+    const nuggetsHtml = item.nuggets ? item.nuggets.map((n, i) => `${i + 1}. ${esc(n)}`).join('\n') : '';
+
+    return `
+      <div class="zelfstudie-card" onclick="this.classList.toggle('expanded')">
+        <div class="zs-header">
+          <span class="zs-icon">${item.icon}</span>
+          <span class="zs-title">${esc(item.title)}</span>
+          <span class="zs-size">${item.size}</span>
+          <span class="zs-date">${item.date}</span>
+        </div>
+        <div class="zs-tags">${tagsHtml}</div>
+        <div class="zs-summary">${esc(item.summary)}</div>
+        <div class="zs-content">
+          <div class="zs-nuggets">
+            <strong>🥇 Golden Nuggets (${item.nuggets?.length || 0}):</strong>
+            <pre style="margin-top:6px;white-space:pre-wrap;font-family:inherit;">${nuggetsHtml}</pre>
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--muted);">
+            <strong>Creator:</strong> ${esc(item.creator)} · <strong>Relevantie:</strong> ${'⭐'.repeat(item.relevance)}
+            ${item.id.startsWith('scholar_') ? ' · <strong>ID:</strong> ' + item.id : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterZelfstudie(term) {
+  document.getElementById('zelfstudie-search').value = term;
+  renderZelfstudie(term);
+}
+
 // Apply language on load
 document.addEventListener('DOMContentLoaded', function() {
   setLanguage(currentLang);
   loadTrainingDeals();
   renderKnowledgeBase(null);
+  renderZelfstudie(null);
   // Set today's date as default for training
   document.getElementById('training-date').value = new Date().toISOString().slice(0, 10);
 });
