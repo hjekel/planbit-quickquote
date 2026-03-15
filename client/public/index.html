@@ -489,7 +489,7 @@ tbody tr:last-child { border-bottom: none; }
   .help-content { padding: 20px; }
 }
 
-/* ── Batch Upload v2.3 ─────────────────────────────────────── */
+/* ── Batch Upload v2.4 ─────────────────────────────────────── */
 .batch-textarea {
   width: 100%;
   min-height: 160px;
@@ -1136,7 +1136,7 @@ tbody tr:last-child { border-bottom: none; }
     <div class="logo"><span class="logo-lobster">🦞</span><span class="logo-erp">ERP</span>IE PriceFinder</div>
     <span class="logo-by" data-i18n="madeBy">by</span>
     <span class="logo-planbit">Incredible Projects</span>
-    <div class="badge">v2.3</div>
+    <div class="badge">v2.4</div>
   </div>
   <div class="header-right">
     <div class="lang-switch">
@@ -1378,8 +1378,8 @@ Of sleep een bestand hierheen (Excel, CSV, TXT)" rows="8"></textarea>
       <div class="batch-dropzone" id="batch-dropzone">
         <span style="font-size:32px">📁</span>
         <span>Sleep bestand hierheen of klik om te uploaden</span>
-        <span style="font-size:11px;color:var(--muted)">Ondersteund: .xlsx, .csv, .txt</span>
-        <input type="file" id="batch-file-input" accept=".xlsx,.xls,.csv,.txt" hidden>
+        <span style="font-size:11px;color:var(--muted)">Ondersteund: .xlsx, .csv, .txt, .pdf</span>
+        <input type="file" id="batch-file-input" accept=".xlsx,.xls,.csv,.txt,.pdf" hidden>
       </div>
 
       <!-- Batch action buttons -->
@@ -1458,7 +1458,7 @@ Of sleep een bestand hierheen (Excel, CSV, TXT)" rows="8"></textarea>
           <span style="font-size:32px">📁</span>
           <span>Sleep bestand hierheen of klik om te uploaden</span>
           <span style="font-size:11px;color:var(--muted)">Ondersteund: .xlsx, .csv, .txt</span>
-          <input type="file" id="training-file-input" accept=".xlsx,.xls,.csv,.txt" hidden>
+          <input type="file" id="training-file-input" accept=".xlsx,.xls,.csv,.txt,.pdf" hidden>
         </div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">OF plak tekst:</div>
         <textarea id="training-input" class="batch-textarea" placeholder="Plak hier een bid request of asset lijst...
@@ -1671,7 +1671,7 @@ Voorbeelden:
 <!-- Footer -->
 <div class="footer">
   <span data-i18n="footer">ERPIE PriceFinder · Made by Incredible Projects / Henk Jekel</span>
-  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.3</span>
+  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.4</span>
 </div>
 
 <!-- Help Modal -->
@@ -1704,6 +1704,7 @@ Voorbeelden:
     <p>Enter a serial number to check warranty status and device specs on the manufacturer's support site.</p>
     <h3>Version History</h3>
     <ul class="version-history">
+      <li><strong>v2.4</strong> — Universal Format Parser: multi-sheet Excel, PDF, email forwards, graceful degradation</li>
       <li><strong>v2.3</strong> — Zelfstudie tab (SCHOLAR reports browser), BVA → Troostwijk Auctions</li>
       <li><strong>v2.2</strong> — PTOLEMEUS Knowledge Base: browser, search, Q&A, source management</li>
       <li><strong>v2.1</strong> — Training Tab: deal feedback, per-asset pricing corrections, DEAL_HISTORY</li>
@@ -1721,6 +1722,8 @@ Voorbeelden:
 </div>
 
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <script>
 // ══════════════════════════════════════════════════════════════════════
 // DATA DEFINITIONS
@@ -2290,7 +2293,7 @@ function esc(str) {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// BATCH UPLOAD v2.3 — Universal Parser + Historical + Live Validation
+// BATCH UPLOAD v2.4 — Universal Parser + Historical + Live Validation
 // ══════════════════════════════════════════════════════════════════════
 
 // ── Pattern definitions ──────────────────────────────────────────
@@ -2444,22 +2447,199 @@ batchDropzone.addEventListener('drop', e => {
 });
 
 async function handleBatchFile(file) {
+  const result = await universalFileParser(file);
+  document.getElementById('batch-input').value = result.text;
+  if (result.warnings.length > 0) {
+    console.log('[UniversalParser]', result.warnings.join('; '));
+  }
+  if (result.sheets > 1) {
+    document.getElementById('batch-input').value = `# Parsed ${result.sheets} sheets from ${file.name}\n` + result.text;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// UNIVERSAL FORMAT PARSER v2.4
+// Handles: Excel (multi-sheet), CSV, PDF, Email, Plain Text
+// ══════════════════════════════════════════════════════════════════
+
+function detectInputType(input) {
+  if (input instanceof File) {
+    const ext = input.name.split('.').pop().toLowerCase();
+    const mime = input.type;
+    if (ext === 'xlsx' || ext === 'xls' || mime.includes('spreadsheet')) return 'excel';
+    if (ext === 'csv' || mime === 'text/csv') return 'csv';
+    if (ext === 'pdf' || mime === 'application/pdf') return 'pdf';
+    return 'text';
+  }
+  if (typeof input === 'string') {
+    // Email detection
+    if (/^(From|Van|Verzonden|Sent|To|Aan|Subject|Onderwerp):/m.test(input)) return 'email';
+    // Tab-separated
+    if (input.includes('\t') && input.split('\n').length > 2) return 'tsv';
+    // CSV-like (2+ commas on first data line)
+    const lines = input.split('\n').filter(l => l.trim());
+    if (lines.length > 1 && (lines[0].match(/,/g) || []).length >= 2) return 'csv-text';
+    return 'text';
+  }
+  return 'unknown';
+}
+
+async function universalFileParser(file) {
   const ext = file.name.split('.').pop().toLowerCase();
-  if (ext === 'csv' || ext === 'txt') {
-    const text = await file.text();
-    document.getElementById('batch-input').value = text;
-  } else if (ext === 'xlsx' || ext === 'xls') {
-    // SheetJS required for Excel
+  const warnings = [];
+  let text = '';
+  let sheets = 1;
+
+  // ── PDF ──
+  if (ext === 'pdf') {
+    if (typeof pdfjsLib === 'undefined') {
+      warnings.push('PDF.js library not loaded');
+      return { text: '# PDF parsing unavailable — please paste text instead', warnings, sheets: 1 };
+    }
+    try {
+      const data = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data }).promise;
+      const pageTexts = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        pageTexts.push(content.items.map(item => item.str).join(' '));
+      }
+      text = pageTexts.join('\n');
+      warnings.push(`PDF parsed: ${pdf.numPages} pages`);
+    } catch (e) {
+      warnings.push('PDF parse error: ' + e.message);
+      text = '# PDF parse failed — please paste text instead';
+    }
+    return { text, warnings, sheets: 1 };
+  }
+
+  // ── Excel (multi-sheet) ──
+  if (ext === 'xlsx' || ext === 'xls') {
     if (typeof XLSX === 'undefined') {
-      alert('Excel support requires SheetJS library. Please paste as text or use CSV.');
-      return;
+      return { text: '# Excel support requires SheetJS', warnings: ['SheetJS not loaded'], sheets: 1 };
     }
     const data = await file.arrayBuffer();
-    const wb = XLSX.read(data);
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    const text = XLSX.utils.sheet_to_csv(ws);
-    document.getElementById('batch-input').value = text;
+    const wb = XLSX.read(data, { type: 'array' });
+    sheets = wb.SheetNames.length;
+    const allRows = [];
+
+    for (const sheetName of wb.SheetNames) {
+      const ws = wb.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      if (jsonData.length < 2) { warnings.push(`Sheet "${sheetName}": empty/skipped`); continue; }
+
+      // Find header row (look for keywords in first 10 rows)
+      const headerKeywords = /model|device|asset|description|product|omschrijving|serial|cpu|processor|ram|memory|storage|ssd|hdd|grade|condition|conditie|qty|quantity|aantal|stuks|brand|merk|manufacturer/i;
+      let headerIdx = -1;
+      for (let i = 0; i < Math.min(10, jsonData.length); i++) {
+        if (!jsonData[i]) continue;
+        const rowText = jsonData[i].join(' ');
+        const matches = rowText.match(new RegExp(headerKeywords.source, 'gi'));
+        if (matches && matches.length >= 2) { headerIdx = i; break; }
+      }
+
+      if (headerIdx >= 0) {
+        // Structured Excel with headers — map columns
+        const headers = jsonData[headerIdx].map(h => String(h || '').toLowerCase());
+        const colMap = {};
+        const fieldPatterns = {
+          model: /model|device|product|description|omschrijving|type/,
+          brand: /brand|merk|manufacturer|fabrikant/,
+          cpu: /cpu|processor|proc/,
+          ram: /ram|memory|geheugen/,
+          storage: /storage|ssd|hdd|disk|opslag/,
+          grade: /grade|condition|conditie|staat/,
+          qty: /qty|quantity|aantal|stuks|count/,
+          serial: /serial|sn|serienummer/,
+        };
+        headers.forEach((h, idx) => {
+          for (const [field, pat] of Object.entries(fieldPatterns)) {
+            if (pat.test(h)) colMap[field] = idx;
+          }
+        });
+
+        for (let i = headerIdx + 1; i < jsonData.length; i++) {
+          const row = jsonData[i];
+          if (!row || row.every(c => !c)) continue;
+          // Build text line from mapped columns
+          const parts = [];
+          if (colMap.qty !== undefined && row[colMap.qty]) parts.push(row[colMap.qty] + 'x');
+          if (colMap.brand !== undefined && row[colMap.brand]) parts.push(row[colMap.brand]);
+          if (colMap.model !== undefined && row[colMap.model]) parts.push(row[colMap.model]);
+          if (colMap.cpu !== undefined && row[colMap.cpu]) parts.push(row[colMap.cpu]);
+          if (colMap.ram !== undefined && row[colMap.ram]) {
+            const r = String(row[colMap.ram]);
+            parts.push(r.match(/\d+\s*GB/i) ? r : r + 'GB');
+          }
+          if (colMap.storage !== undefined && row[colMap.storage]) {
+            const s = String(row[colMap.storage]);
+            parts.push(s.match(/\d+\s*(GB|TB)/i) ? s : s + 'GB SSD');
+          }
+          if (colMap.grade !== undefined && row[colMap.grade]) parts.push('Grade ' + row[colMap.grade]);
+          if (parts.length >= 2) allRows.push(parts.join(' '));
+        }
+        warnings.push(`Sheet "${sheetName}": ${allRows.length} rows (structured, ${Object.keys(colMap).length} columns mapped)`);
+      } else {
+        // No header found — use CSV fallback
+        const csv = XLSX.utils.sheet_to_csv(ws);
+        allRows.push(csv);
+        warnings.push(`Sheet "${sheetName}": no header detected, using raw CSV`);
+      }
+    }
+    text = allRows.join('\n');
+    return { text, warnings, sheets };
   }
+
+  // ── CSV / TXT ──
+  if (ext === 'csv' || ext === 'txt') {
+    text = await file.text();
+    // Auto-detect if it's actually TSV
+    if (text.includes('\t') && !text.includes(',')) {
+      text = text.replace(/\t/g, ', ');
+      warnings.push('TSV detected, converted to CSV');
+    }
+    return { text, warnings, sheets: 1 };
+  }
+
+  // Fallback
+  text = await file.text();
+  return { text, warnings, sheets: 1 };
+}
+
+// ── Email Cleaner ───────────────────────────────────────────────
+function cleanEmailText(text) {
+  // Remove email headers
+  let cleaned = text.replace(/^(From|Van|To|Aan|Cc|Bcc|Subject|Onderwerp|Date|Datum|Sent|Verzonden|Importance|Belang):.*$/gm, '');
+  // Remove forwarding lines
+  cleaned = cleaned.replace(/^-{3,}\s*(Forwarded|Doorgestuurd|Original).*$/gm, '');
+  // Remove signatures (everything after marker)
+  const sigMarkers = [/^--\s*$/m, /^Met vriendelijke groet/im, /^Best regards/im, /^Kind regards/im, /^Groeten/im, /^Regards/im, /^Mvg/im];
+  for (const marker of sigMarkers) {
+    const match = cleaned.match(marker);
+    if (match && match.index !== undefined) {
+      cleaned = cleaned.substring(0, match.index);
+      break;
+    }
+  }
+  // Remove image references
+  cleaned = cleaned.replace(/\[cid:.*?\]/g, '');
+  cleaned = cleaned.replace(/\[image.*?\]/gi, '');
+  // Remove disclaimer blocks
+  cleaned = cleaned.replace(/DISCLAIMER:[\s\S]*$/i, '');
+  cleaned = cleaned.replace(/This email and any.*$/im, '');
+  return cleaned.trim();
+}
+
+// ── Universal parseInput (for text) ─────────────────────────────
+function parseInputText(text) {
+  const inputType = detectInputType(text);
+  if (inputType === 'email') {
+    text = cleanEmailText(text);
+  }
+  // Strip comment lines
+  text = text.replace(/^#.*$/gm, '');
+  return text;
 }
 
 // ── Example data ─────────────────────────────────────────────────
@@ -2491,6 +2671,15 @@ function resetBatchView() {
 function parseLine(line) {
   line = line.trim();
   if (!line || line.startsWith('#') || line.startsWith('//')) return null;
+  // Skip obvious non-asset lines (totals, notes, separators, peripherals)
+  if (isSkipLine(line)) return null;
+  // Normalize CSV: replace commas followed by space with just spaces (so parser can work)
+  // But only if it looks like CSV-formatted data, not a model name with comma
+  if ((line.match(/,/g) || []).length >= 2) {
+    line = line.replace(/,\s*/g, ' ');
+  }
+  // Strip leading bullet points, dashes, asterisks
+  line = line.replace(/^[\s]*[-•*]\s*/, '');
 
   const asset = {
     rawInput: line,
@@ -2659,10 +2848,25 @@ function parseLine(line) {
   asset.confidence = conf;
 
   // Warnings for missing fields
+  // Infer brand from model if missing
+  if (!asset.brand && asset.model) {
+    if (/latitude|precision|optiplex|xps/i.test(asset.model)) asset.brand = 'Dell';
+    else if (/elitebook|probook|zbook/i.test(asset.model)) asset.brand = 'HP';
+    else if (/thinkpad|thinkcentre|ideapad/i.test(asset.model)) asset.brand = 'Lenovo';
+    else if (/macbook|imac|mac\s?(mini|pro|studio)/i.test(asset.model)) asset.brand = 'Apple';
+    else if (/surface/i.test(asset.model)) asset.brand = 'Microsoft';
+    if (asset.brand) asset.warnings.push('Brand inferred from model');
+  }
+
+  // Infer Win11 compatibility
+  if (asset.cpuGen && typeof asset.cpuGen === 'number') {
+    asset.win11Compatible = asset.cpuGen >= 8;
+  }
+
   if (!asset.brand) asset.warnings.push('Brand not detected');
   if (!asset.model) asset.warnings.push('Model not detected');
-  if (!asset.ram) asset.warnings.push('RAM not specified');
-  if (!asset.grade) asset.warnings.push('Grade not specified');
+  if (!asset.ram) asset.warnings.push('RAM not specified (assumed 8GB)');
+  if (!asset.grade) asset.warnings.push('Grade not specified (assumed B)');
 
   return asset;
 }
@@ -2809,8 +3013,8 @@ function openBatchRefurbed(idx) {
 // ══════════════════════════════════════════════════════════════════
 
 async function processBatch() {
-  const input = document.getElementById('batch-input').value.trim();
-  if (!input) { alert('Voer eerst asset data in of laad een voorbeeld.'); return; }
+  const rawInput = document.getElementById('batch-input').value.trim();
+  if (!rawInput) { alert('Voer eerst asset data in of laad een voorbeeld.'); return; }
 
   const stream = document.getElementById('processing-stream');
   const summary = document.getElementById('batch-results-summary');
@@ -2819,12 +3023,22 @@ async function processBatch() {
   summary.style.display = 'none';
   batchParsedGroups = [];
 
-  const lines = input.split('\n').filter(l => l.trim());
+  // Universal parser: clean email, strip comments, detect format
+  const cleanedInput = parseInputText(rawInput);
+  const lines = cleanedInput.split('\n').filter(l => l.trim());
 
-  // Parse all lines
+  // Parse all lines — with graceful degradation
+  let skippedLines = [];
   for (let i = 0; i < lines.length; i++) {
-    const asset = parseLine(lines[i]);
-    if (!asset) continue;
+    const line = lines[i];
+    const asset = parseLine(line);
+    if (!asset) {
+      // Check if it looks like it should be an asset
+      if (/\d/.test(line) && line.length > 10 && !isSkipLine(line)) {
+        skippedLines.push(line);
+      }
+      continue;
+    }
 
     asset.index = batchParsedGroups.length;
     batchParsedGroups.push(asset);
@@ -2841,10 +3055,39 @@ async function processBatch() {
     updateStreamCardComplete(asset);
   }
 
+  // Show skipped lines warning
+  if (skippedLines.length > 0) {
+    const warnCard = document.createElement('div');
+    warnCard.className = 'stream-card status-warning';
+    warnCard.style.borderLeftColor = '#f59e0b';
+    warnCard.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:18px;">⚠️</span>
+        <strong>${skippedLines.length} regel(s) niet herkend</strong>
+      </div>
+      <div style="font-size:12px;color:var(--muted);">
+        ${skippedLines.map(l => `<div style="padding:3px 0;border-bottom:1px solid var(--border);"><code>${esc(l.substring(0, 80))}${l.length > 80 ? '...' : ''}</code></div>`).join('')}
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--muted);">Tip: Probeer plain text formaat of controleer of regels een merk + model bevatten.</div>
+    `;
+    stream.appendChild(warnCard);
+  }
+
   // Show results table
   if (batchParsedGroups.length > 0) {
     showBatchResultsTable();
   }
+}
+
+// ── Skip line detection ─────────────────────────────────────────
+function isSkipLine(line) {
+  const t = line.trim();
+  return /^(total|totaal|subtotal|sub-total)/i.test(t)
+    || /^(note|notes|opmerking|opmerkingen)/i.test(t)
+    || /^[\s\-=_*]+$/.test(t)
+    || /^(mobile\s*phone|monitor|printer|docking|keyboard|mouse|charger)/i.test(t)
+    || /^\d+\s*$/.test(t)
+    || t.length < 5;
 }
 
 // ── Streaming Card UI ────────────────────────────────────────────
@@ -3783,16 +4026,10 @@ trainingDropzone.addEventListener('drop', e => {
 });
 
 async function handleTrainingFile(file) {
-  const ext = file.name.split('.').pop().toLowerCase();
-  if (ext === 'csv' || ext === 'txt') {
-    const text = await file.text();
-    document.getElementById('training-input').value = text;
-  } else if ((ext === 'xlsx' || ext === 'xls') && typeof XLSX !== 'undefined') {
-    const data = await file.arrayBuffer();
-    const wb = XLSX.read(data);
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    document.getElementById('training-input').value = XLSX.utils.sheet_to_csv(ws);
-  }
+  const result = await universalFileParser(file);
+  let text = result.text;
+  if (result.sheets > 1) text = `# Parsed ${result.sheets} sheets from ${file.name}\n` + text;
+  document.getElementById('training-input').value = text;
   // Auto-set deal name from filename
   if (!document.getElementById('training-dealname').value) {
     document.getElementById('training-dealname').value = file.name.replace(/\.[^/.]+$/, '');
@@ -3830,10 +4067,11 @@ function clearTraining() {
 
 // ── Process Training ────────────────────────────────────────────
 async function processTraining() {
-  const input = document.getElementById('training-input').value.trim();
-  if (!input) { alert('Voer eerst asset data in of laad een voorbeeld.'); return; }
+  const rawInput = document.getElementById('training-input').value.trim();
+  if (!rawInput) { alert('Voer eerst asset data in of laad een voorbeeld.'); return; }
 
-  const lines = input.split('\n').filter(l => l.trim());
+  const cleanedInput = parseInputText(rawInput);
+  const lines = cleanedInput.split('\n').filter(l => l.trim());
   trainingAssets = [];
   const cardsContainer = document.getElementById('training-cards');
   cardsContainer.innerHTML = '';
