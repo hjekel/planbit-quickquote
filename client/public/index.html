@@ -2531,7 +2531,7 @@ async function universalFileParser(file) {
       if (jsonData.length < 2) { warnings.push(`Sheet "${sheetName}": empty/skipped`); continue; }
 
       // Find header row (look for keywords in first 10 rows)
-      const headerKeywords = /model|device|asset|description|product|omschrijving|serial|cpu|processor|ram|memory|storage|ssd|hdd|grade|condition|conditie|qty|quantity|aantal|stuks|brand|merk|manufacturer/i;
+      const headerKeywords = /model|device|asset|description|product|omschrijving|serial|cpu|processor|ram|memory|storage|ssd|hdd|grade|condition|conditie|qty|quantity|aantal|stuks|brand|merk|manufacturer|make|specs|battery|screen|year|part/i;
       let headerIdx = -1;
       for (let i = 0; i < Math.min(10, jsonData.length); i++) {
         if (!jsonData[i]) continue;
@@ -2545,42 +2545,96 @@ async function universalFileParser(file) {
         const headers = jsonData[headerIdx].map(h => String(h || '').toLowerCase());
         const colMap = {};
         const fieldPatterns = {
-          model: /model|device|product|description|omschrijving|type/,
-          brand: /brand|merk|manufacturer|fabrikant/,
-          cpu: /cpu|processor|proc/,
-          ram: /ram|memory|geheugen/,
-          storage: /storage|ssd|hdd|disk|opslag/,
-          grade: /grade|condition|conditie|staat/,
+          model: /^model$|device|product$|description|omschrijving/,
+          brand: /brand|merk|manufacturer|fabrikant|^make$/,
+          cpu: /cpu|processor|proc|^specs$|cpu.?type/,
+          ram: /^ram|memory|geheugen|ram.?size/,
+          storage: /storage|^ssd|^hdd|disk|opslag|hdd.?size/,
+          grade: /^grade$|condition|conditie|staat/,
           qty: /qty|quantity|aantal|stuks|count/,
-          serial: /serial|sn|serienummer/,
+          serial: /serial|^sn$|serienummer/,
+          battery: /^battery/,
+          screen: /^screen$|display|^inch$/,
+          year: /^year$/,
+          partno: /part.*#|a-?code|sku|^part$/,
+          productType: /^producttype$|product.?type|^type$/,
         };
         headers.forEach((h, idx) => {
           for (const [field, pat] of Object.entries(fieldPatterns)) {
-            if (pat.test(h)) colMap[field] = idx;
+            if (pat.test(h) && colMap[field] === undefined) colMap[field] = idx;
           }
         });
 
-        for (let i = headerIdx + 1; i < jsonData.length; i++) {
-          const row = jsonData[i];
-          if (!row || row.every(c => !c)) continue;
-          // Build text line from mapped columns
-          const parts = [];
-          if (colMap.qty !== undefined && row[colMap.qty]) parts.push(row[colMap.qty] + 'x');
-          if (colMap.brand !== undefined && row[colMap.brand]) parts.push(row[colMap.brand]);
-          if (colMap.model !== undefined && row[colMap.model]) parts.push(row[colMap.model]);
-          if (colMap.cpu !== undefined && row[colMap.cpu]) parts.push(row[colMap.cpu]);
-          if (colMap.ram !== undefined && row[colMap.ram]) {
-            const r = String(row[colMap.ram]);
-            parts.push(r.match(/\d+\s*GB/i) ? r : r + 'GB');
+        // Detect if this is a serial-level inventory (one row per unit)
+        const hasSerial = colMap.serial !== undefined;
+        const hasQty = colMap.qty !== undefined;
+        const isSerialLevel = hasSerial && !hasQty;
+
+        if (isSerialLevel) {
+          // AGGREGATE: group by model+cpu+ram+storage+grade → count
+          const groups = {};
+          for (let i = headerIdx + 1; i < jsonData.length; i++) {
+            const row = jsonData[i];
+            if (!row || row.every(c => !c)) continue;
+            const brand = colMap.brand !== undefined ? String(row[colMap.brand] || '').trim() : '';
+            const model = colMap.model !== undefined ? String(row[colMap.model] || '').trim() : '';
+            if (!brand && !model) continue;
+            const cpu = colMap.cpu !== undefined ? String(row[colMap.cpu] || '').trim() : '';
+            const ram = colMap.ram !== undefined ? String(row[colMap.ram] || '').trim() : '';
+            const storage = colMap.storage !== undefined ? String(row[colMap.storage] || '').trim() : '';
+            const grade = colMap.grade !== undefined ? String(row[colMap.grade] || '').replace(/^[A-Z]-?/,'').trim() : '';
+            const year = colMap.year !== undefined ? String(row[colMap.year] || '').trim() : '';
+            const screen = colMap.screen !== undefined ? String(row[colMap.screen] || '').trim() : '';
+            // Normalize grade (take first letter)
+            const gradeNorm = grade ? grade.charAt(0).toUpperCase() : '';
+            const key = `${brand}|${model}|${cpu}|${ram}|${storage}|${gradeNorm}`;
+            if (!groups[key]) groups[key] = { brand, model, cpu, ram, storage, grade: gradeNorm, year, screen, count: 0 };
+            groups[key].count++;
           }
-          if (colMap.storage !== undefined && row[colMap.storage]) {
-            const s = String(row[colMap.storage]);
-            parts.push(s.match(/\d+\s*(GB|TB)/i) ? s : s + 'GB SSD');
+          // Build aggregated lines
+          for (const g of Object.values(groups)) {
+            const parts = [`${g.count}x`, g.brand, g.model];
+            if (g.cpu) parts.push(g.cpu.replace(/intel\(r\)\s*core\(tm\)\s*/gi, '').replace(/\s*@\s*[\d.]+GHz/i, '').replace(/\s*CPU/i, '').trim());
+            if (g.ram) parts.push(g.ram.match(/\d+\s*GB/i) ? g.ram : g.ram + 'GB');
+            if (g.storage) parts.push(g.storage.match(/\d+\s*(GB|TB)/i) ? g.storage : g.storage + 'GB SSD');
+            if (g.grade) parts.push('Grade ' + g.grade);
+            if (g.screen) parts.push(g.screen);
+            allRows.push(parts.join(' '));
           }
-          if (colMap.grade !== undefined && row[colMap.grade]) parts.push('Grade ' + row[colMap.grade]);
-          if (parts.length >= 2) allRows.push(parts.join(' '));
+          warnings.push(`Sheet "${sheetName}": ${Object.keys(groups).length} groups aggregated from ${jsonData.length - headerIdx - 1} individual units`);
+        } else {
+          // Normal row-per-group processing
+          for (let i = headerIdx + 1; i < jsonData.length; i++) {
+            const row = jsonData[i];
+            if (!row || row.every(c => !c)) continue;
+            const parts = [];
+            if (colMap.qty !== undefined && row[colMap.qty]) parts.push(row[colMap.qty] + 'x');
+            if (colMap.brand !== undefined && row[colMap.brand]) parts.push(row[colMap.brand]);
+            if (colMap.model !== undefined && row[colMap.model]) parts.push(row[colMap.model]);
+            if (colMap.cpu !== undefined && row[colMap.cpu]) {
+              const cpuStr = String(row[colMap.cpu]).replace(/intel\(r\)\s*core\(tm\)\s*/gi, '').replace(/\s*@\s*[\d.]+GHz/i, '').replace(/\s*CPU/i, '').trim();
+              parts.push(cpuStr);
+            }
+            if (colMap.ram !== undefined && row[colMap.ram]) {
+              const r = String(row[colMap.ram]);
+              parts.push(r.match(/\d+\s*GB/i) ? r : r + 'GB');
+            }
+            if (colMap.storage !== undefined && row[colMap.storage]) {
+              const s = String(row[colMap.storage]);
+              if (s.toLowerCase() !== 'no' && s.trim()) {
+                parts.push(s.match(/\d+\s*(GB|TB)/i) ? s : s + 'GB SSD');
+              }
+            }
+            if (colMap.grade !== undefined && row[colMap.grade]) {
+              const g = String(row[colMap.grade]).charAt(0).toUpperCase();
+              parts.push('Grade ' + g);
+            }
+            if (colMap.year !== undefined && row[colMap.year]) parts.push('(' + row[colMap.year] + ')');
+            if (colMap.screen !== undefined && row[colMap.screen]) parts.push(row[colMap.screen]);
+            if (parts.length >= 2) allRows.push(parts.join(' '));
+          }
+          warnings.push(`Sheet "${sheetName}": ${allRows.length} rows (structured, ${Object.keys(colMap).length} columns mapped)`);
         }
-        warnings.push(`Sheet "${sheetName}": ${allRows.length} rows (structured, ${Object.keys(colMap).length} columns mapped)`);
       } else {
         // No header found — use CSV fallback
         const csv = XLSX.utils.sheet_to_csv(ws);
