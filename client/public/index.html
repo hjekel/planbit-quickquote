@@ -883,6 +883,34 @@ tbody tr:last-child { border-bottom: none; }
 .training-delta.negative { background: #ef444415; color: #ef4444; }
 .training-delta.neutral { background: var(--surface2); color: var(--muted); }
 
+/* Pulse dot loading indicator */
+.pulse-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-anim 1.2s ease-in-out infinite;
+}
+@keyframes pulse-anim {
+  0%, 100% { opacity: .3; transform: scale(.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Format notification styles */
+.format-notif {
+  border-radius: 12px; padding: 14px 18px; margin: 12px 0;
+  font-size: 13px; line-height: 1.6;
+}
+.format-notif.success { background: linear-gradient(135deg,#22c55e12,#22c55e04); border: 1px solid #22c55e40; }
+.format-notif.info { background: linear-gradient(135deg,#3b82f612,#3b82f604); border: 1px solid #3b82f640; }
+.format-notif.warning { background: linear-gradient(135deg,#f59e0b12,#f59e0b04); border: 1px solid #f59e0b40; }
+.format-notif-title { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 700; font-size: 14px; }
+.format-notif-warnings { margin-top: 8px; }
+.format-notif-warnings div { padding: 3px 0; font-size: 12px; color: #f59e0b; }
+.format-notif-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 6px;
+  font-size: 10px; font-weight: 700; letter-spacing: .05em;
+  background: var(--accent); color: #fff;
+}
+
 /* Training Summary Box */
 .training-summary-box {
   background: var(--surface);
@@ -1136,7 +1164,7 @@ tbody tr:last-child { border-bottom: none; }
     <div class="logo"><span class="logo-lobster">🦞</span><span class="logo-erp">ERP</span>IE PriceFinder</div>
     <span class="logo-by" data-i18n="madeBy">by</span>
     <span class="logo-planbit">Incredible Projects</span>
-    <div class="badge">v2.5</div>
+    <div class="badge">v2.6</div>
   </div>
   <div class="header-right">
     <div class="lang-switch">
@@ -1453,20 +1481,31 @@ Of sleep een bestand hierheen (Excel, CSV, TXT)" rows="8"></textarea>
 
       <!-- Upload / Paste Section -->
       <div class="form-section">
-        <div class="form-section-title">📁 UPLOAD ARS / BID REQUEST</div>
+        <div class="form-section-title">📁 UPLOAD BID REQUEST <span style="font-size:11px;color:var(--muted);font-weight:400;">(ARS, Zones, Atlassian, Pallet, Email, Free Text)</span></div>
         <div class="batch-dropzone" id="training-dropzone">
           <span style="font-size:32px">📁</span>
           <span>Sleep bestand hierheen of klik om te uploaden</span>
-          <span style="font-size:11px;color:var(--muted)">Ondersteund: .xlsx, .csv, .txt</span>
+          <span style="font-size:11px;color:var(--muted)">Ondersteund: .xlsx, .xls, .csv, .txt, .pdf</span>
           <input type="file" id="training-file-input" accept=".xlsx,.xls,.csv,.txt,.pdf" hidden>
         </div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">OF plak tekst:</div>
-        <textarea id="training-input" class="batch-textarea" placeholder="Plak hier een bid request of asset lijst...
+        <!-- Format detection notification -->
+        <div id="format-notification" style="display:none;"></div>
+        <!-- Loading indicator -->
+        <div id="training-loading" style="display:none;padding:16px;text-align:center;">
+          <div style="display:inline-flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 24px;">
+            <div class="pulse-dot"></div>
+            <span id="training-loading-text">Bezig met analyseren...</span>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">OF plak tekst (email, bid request, asset lijst):</div>
+        <textarea id="training-input" class="batch-textarea" placeholder="Plak hier een bid request, email forward of asset lijst...
 
 Voorbeelden:
 • 50x Dell Latitude 5530 i5-1245U 16GB 256GB Grade B
 • HP EliteBook 840 G9, i5-1245U, 16GB, 512GB SSD, A-grade
-• 25 stuks Lenovo T14 Gen 2, mix i5/i7, 16GB" rows="5"></textarea>
+• 25 stuks Lenovo T14 Gen 2, mix i5/i7, 16GB
+• 5CD932755X  MAN0201142 (serial numbers)
+• Email forward van Zones/Freshfields" rows="5"></textarea>
       </div>
 
       <!-- Deal Details Section -->
@@ -1671,7 +1710,7 @@ Voorbeelden:
 <!-- Footer -->
 <div class="footer">
   <span data-i18n="footer">ERPIE PriceFinder · Made by Incredible Projects / Henk Jekel</span>
-  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.5</span>
+  <span style="display:block;margin-top:4px;font-size:11px;opacity:0.6;">v2.6</span>
 </div>
 
 <!-- Help Modal -->
@@ -1704,6 +1743,7 @@ Voorbeelden:
     <p>Enter a serial number to check warranty status and device specs on the manufacturer's support site.</p>
     <h3>Version History</h3>
     <ul class="version-history">
+      <li><strong>v2.6</strong> — Universal Bid Parser: 6 formats (ARS, Zones/Freshfields, Atlassian, Tiffany, Pallet, Email/Text), serial prefix detection, UK filtering, iPad separation, loading indicator</li>
       <li><strong>v2.5</strong> — ARS Auto-Training Parser: auto-extract quoted prices from PlanBit ARS files, ERPIE vs PlanBit comparison</li>
       <li><strong>v2.4</strong> — Universal Format Parser: multi-sheet Excel, PDF, email forwards, graceful degradation</li>
       <li><strong>v2.3</strong> — Zelfstudie tab (SCHOLAR reports browser), BVA → Troostwijk Auctions</li>
@@ -2397,6 +2437,230 @@ const MODEL_CPU_GEN = {
   'thinkpad x1 carbon g11': { gen: 13, year: 2023 },
 };
 
+// ══════════════════════════════════════════════════════════════════════
+// SERIAL NUMBER PREFIX → BRAND/MODEL LOOKUP (Zones/Freshfields format)
+// ══════════════════════════════════════════════════════════════════════
+const SERIAL_PREFIX_MAP = [
+  // HP prefixes
+  { prefix: /^5CD/i, brand: 'HP', family: 'EliteBook/ProBook', confidence: 0.6 },
+  { prefix: /^CND/i, brand: 'HP', family: 'EliteBook/ProBook', confidence: 0.6 },
+  { prefix: /^PC[A-Z]/i, brand: 'HP', family: 'ProBook/EliteBook (older)', confidence: 0.5 },
+  { prefix: /^PF[A-Z]/i, brand: 'HP', family: 'ProBook/EliteBook (older)', confidence: 0.5 },
+  { prefix: /^MXL/i, brand: 'HP', family: 'Desktop/ProDesk', confidence: 0.5 },
+  { prefix: /^8CG/i, brand: 'HP', family: 'EliteDesk/ProDesk', confidence: 0.5 },
+  // Lenovo prefixes
+  { prefix: /^R90/i, brand: 'Lenovo', family: 'ThinkPad', confidence: 0.6 },
+  { prefix: /^PF[0-9]/i, brand: 'Lenovo', family: 'ThinkPad/ThinkCentre', confidence: 0.5 },
+  { prefix: /^MP[0-9]/i, brand: 'Lenovo', family: 'ThinkPad', confidence: 0.5 },
+  // Dell prefixes
+  { prefix: /^[A-Z0-9]{7}$/i, brand: 'Dell', family: 'Latitude/OptiPlex', confidence: 0.3 }, // Dell service tags are 7 chars
+  { prefix: /^FXRT/i, brand: 'Dell', family: 'Latitude', confidence: 0.5 },
+  { prefix: /^[0-9][A-Z0-9]{6}$/i, brand: 'Dell', family: 'Latitude/OptiPlex', confidence: 0.3 },
+];
+
+// Detect brand from serial number prefix
+function inferBrandFromSerial(serial) {
+  serial = String(serial).trim().toUpperCase();
+  for (const entry of SERIAL_PREFIX_MAP) {
+    if (entry.prefix.test(serial)) {
+      return { brand: entry.brand, family: entry.family, confidence: entry.confidence };
+    }
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// BID FORMAT DETECTION — Auto-detect which format an input is
+// ══════════════════════════════════════════════════════════════════════
+
+function detectBidFormat(wb, filename) {
+  // Returns: { format: string, label: string, description: string }
+  const fn = (filename || '').toLowerCase();
+  const sheetNames = wb ? wb.SheetNames.map(s => s.toLowerCase()) : [];
+
+  // 1. ARS format: has "Quote Request" + inventory sheet
+  if (wb) {
+    const hasQuoteRequest = sheetNames.some(s => /quote\s*request/i.test(s));
+    const hasInventory = sheetNames.some(s => /customer\s*inventory|inventory.*detail|deviceli/i.test(s));
+    if (hasQuoteRequest || hasInventory) {
+      return { format: 'ars_xlsx', label: 'ARS', description: 'PlanBit ARS Quotation File', color: '#22c55e' };
+    }
+  }
+
+  // 2. Atlassian multi-tab: look for iPad tab or device/notebook tabs with location columns
+  if (wb && wb.SheetNames.length >= 2) {
+    const hasIPadTab = sheetNames.some(s => /ipad|tablet/i.test(s));
+    const hasDeviceTab = sheetNames.some(s => /notebook|desktop|device|laptop|computer/i.test(s));
+    if (hasIPadTab || hasDeviceTab) {
+      return { format: 'atlassian_xlsx', label: 'MULTI-TAB', description: 'Multi-tab Inventory (Atlassian/Tiffany style)', color: '#3b82f6' };
+    }
+  }
+
+  // 3. Pallet format: small single-sheet xlsx with inventory-like data
+  if (wb && wb.SheetNames.length <= 2) {
+    if (/pallet|inv(entory)?|inr\d/i.test(fn)) {
+      return { format: 'pallet_xlsx', label: 'PALLET', description: 'Pallet / Inventory List', color: '#8b5cf6' };
+    }
+  }
+
+  // 4. Zones text: check for serial number patterns in filename
+  if (/zones|ritm\d|freshfields|device\s*collection/i.test(fn)) {
+    return { format: 'zones_text', label: 'ZONES', description: 'Zones IT Device Collection', color: '#f59e0b' };
+  }
+
+  // 5. Tiffany/Exact ERP: filename contains tiffany or offerte
+  if (/tiffany|exact|offerte/i.test(fn)) {
+    return { format: 'tiffany_xlsx', label: 'TIFFANY', description: 'Tiffany / Exact ERP Export', color: '#ec4899' };
+  }
+
+  // If it's an Excel file with data, check sheet content for format clues
+  if (wb) {
+    // Check first sheet for serial-only data (Zones xlsx attachment)
+    const firstSheet = wb.Sheets[wb.SheetNames[0]];
+    const data = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+    if (data.length > 5) {
+      // Check for location columns (UK/EU filtering needed)
+      const headerRow = data.slice(0, 6).find(r => r && r.some(c => /location|locatie|country/i.test(String(c || ''))));
+      if (headerRow) {
+        return { format: 'atlassian_xlsx', label: 'MULTI-TAB', description: 'Inventory with Location Data', color: '#3b82f6' };
+      }
+      // Check for serial-only data (no qty column, has serial patterns)
+      const sampleRow = data[Math.min(5, data.length - 1)];
+      const hasSerialPattern = sampleRow && sampleRow.some(c => /^(5CD|CND|R90|PF|MXL)[A-Z0-9]{4,}/i.test(String(c || '')));
+      if (hasSerialPattern) {
+        return { format: 'zones_text', label: 'ZONES', description: 'Zones Device List (Serial Numbers)', color: '#f59e0b' };
+      }
+    }
+    return { format: 'pallet_xlsx', label: 'EXCEL', description: 'Generic Excel Inventory', color: '#6b7280' };
+  }
+
+  return { format: 'free_text', label: 'TEXT', description: 'Free Text / Email', color: '#6b7280' };
+}
+
+// Detect format from plain text
+function detectTextBidFormat(text) {
+  // Check for serial number patterns (Zones text)
+  const serialLines = text.split('\n').filter(l => /^[A-Z0-9]{7,12}\s+/i.test(l.trim()));
+  if (serialLines.length >= 5) {
+    return { format: 'zones_text', label: 'ZONES', description: 'Zones Serial Number List', color: '#f59e0b' };
+  }
+  // Check for email forward
+  if (/^(From|Van|Verzonden|Sent|Subject|Onderwerp):/m.test(text)) {
+    return { format: 'email_text', label: 'EMAIL', description: 'Email Forward', color: '#3b82f6' };
+  }
+  return { format: 'free_text', label: 'TEXT', description: 'Free Text / Plain Asset List', color: '#6b7280' };
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ZONES TEXT PARSER — Serial numbers → brand inference + aggregation
+// ══════════════════════════════════════════════════════════════════════
+
+function parseZonesText(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  const serials = [];
+  const nonSerialLines = [];
+  const warnings = [];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    // Pattern: "5CD932755X  MAN0201142" or just "5CD932755X"
+    const serialMatch = trimmed.match(/^([A-Z0-9]{7,15})\s*(.*)?$/i);
+    if (serialMatch) {
+      const serial = serialMatch[1];
+      const assetTag = (serialMatch[2] || '').trim();
+      const inference = inferBrandFromSerial(serial);
+      if (inference) {
+        serials.push({ serial, assetTag, ...inference });
+      } else {
+        serials.push({ serial, assetTag, brand: 'Unknown', family: 'Unknown', confidence: 0 });
+        warnings.push(`S/N "${serial}" prefix onbekend`);
+      }
+    } else if (trimmed.length > 5 && /\d/.test(trimmed)) {
+      // Might be a device description line
+      nonSerialLines.push(trimmed);
+    }
+  }
+
+  // Aggregate serials by brand+family
+  const groups = {};
+  for (const s of serials) {
+    const key = `${s.brand}|${s.family}`;
+    if (!groups[key]) groups[key] = { brand: s.brand, family: s.family, count: 0, confidence: s.confidence, serials: [] };
+    groups[key].count++;
+    groups[key].serials.push(s.serial);
+  }
+
+  // Build text lines from groups
+  const resultLines = [];
+  for (const g of Object.values(groups)) {
+    resultLines.push(`${g.count}x ${g.brand} ${g.family}`);
+  }
+
+  // Add any non-serial lines that might be device descriptions
+  for (const line of nonSerialLines) {
+    resultLines.push(line);
+  }
+
+  if (serials.length > 0) {
+    warnings.unshift(`${serials.length} serienummers gedetecteerd en gegroepeerd naar ${Object.keys(groups).length} types`);
+  }
+  const unknownCount = serials.filter(s => s.brand === 'Unknown').length;
+  if (unknownCount > 0) {
+    warnings.push(`⚠️ ${unknownCount} serienummers met onbekend prefix — specs moeten handmatig worden ingevuld`);
+  }
+
+  return { text: resultLines.join('\n'), warnings, serialCount: serials.length, groups };
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// LOCATION FILTER — Skip UK assets for EU-only quotes
+// ══════════════════════════════════════════════════════════════════════
+
+function filterLocationRows(data, colMap, warnings) {
+  // Find location column
+  let locCol = -1;
+  if (colMap.location !== undefined) {
+    locCol = colMap.location;
+  } else {
+    // Scan headers for location-like columns
+    const headerRow = data[0] || [];
+    for (let c = 0; c < headerRow.length; c++) {
+      if (/location|locatie|country|land|region|site/i.test(String(headerRow[c] || ''))) {
+        locCol = c;
+        break;
+      }
+    }
+  }
+
+  if (locCol < 0) return { filteredData: data, skippedUK: 0 };
+
+  let skippedUK = 0;
+  const filteredData = data.filter((row, i) => {
+    if (i <= (colMap._dataStartRow || 0)) return true; // Keep header rows
+    if (!row) return false;
+    const loc = String(row[locCol] || '').trim().toUpperCase();
+    if (/\bUK\b|UNITED\s*KINGDOM|LONDON|MANCHESTER|BIRMINGHAM|EDINBURGH|GLASGOW|BRISTOL|LEEDS/i.test(loc)) {
+      skippedUK++;
+      return false;
+    }
+    return true;
+  });
+
+  if (skippedUK > 0) {
+    warnings.push(`🇬🇧 ${skippedUK} UK-locatie rijen overgeslagen (alleen EU relevant)`);
+  }
+
+  return { filteredData, skippedUK };
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// IPAD / TABLET DETECTION — Separate pricing logic
+// ══════════════════════════════════════════════════════════════════════
+
+function isIPadSheet(sheetName) {
+  return /ipad|tablet|apple.*mobile|ios/i.test(sheetName);
+}
+
 // ── Sample Historical Data (Phase 2 - placeholder until CSV loaded) ──
 const HISTORICAL_DATA = [
   { brand: 'Dell', model: 'Latitude 5530', cpu: 'i5', cpuModel: 'i5-1245U', cpuGen: 12, ram: 16, storage: 256, grade: 'B', price: 285, date: '2024-08-15' },
@@ -2448,14 +2712,42 @@ batchDropzone.addEventListener('drop', e => {
 });
 
 async function handleBatchFile(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  // For Excel files, use enhanced parser with format detection
+  if ((ext === 'xlsx' || ext === 'xls') && typeof XLSX !== 'undefined') {
+    const data = await file.arrayBuffer();
+    const wb = XLSX.read(data, { type: 'array' });
+    const formatInfo = detectBidFormat(wb, file.name);
+
+    // Try ARS detection (Batch tab doesn't use ARS pricing but uses the structure)
+    const result = await universalFileParserEnhanced(file, wb, formatInfo);
+    let text = result.text;
+    if (result.sheets > 1) text = `# ${formatInfo.label}: ${result.sheets} sheets from ${file.name}\n` + text;
+    document.getElementById('batch-input').value = text;
+    if (result.warnings.length > 0) {
+      console.log(`[UniversalParser:${formatInfo.label}]`, result.warnings.join('; '));
+    }
+    return;
+  }
+
+  // Non-Excel: original parser
   const result = await universalFileParser(file);
-  document.getElementById('batch-input').value = result.text;
+  let text = result.text;
+
+  // Check for Zones serial format
+  const textFormat = detectTextBidFormat(text);
+  if (textFormat.format === 'zones_text') {
+    const zonesResult = parseZonesText(text);
+    text = zonesResult.text;
+    result.warnings.push(...zonesResult.warnings);
+  }
+
   if (result.warnings.length > 0) {
     console.log('[UniversalParser]', result.warnings.join('; '));
   }
-  if (result.sheets > 1) {
-    document.getElementById('batch-input').value = `# Parsed ${result.sheets} sheets from ${file.name}\n` + result.text;
-  }
+  if (result.sheets > 1) text = `# Parsed ${result.sheets} sheets from ${file.name}\n` + text;
+  document.getElementById('batch-input').value = text;
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -4082,33 +4374,364 @@ trainingDropzone.addEventListener('drop', e => {
 
 async function handleTrainingFile(file) {
   const ext = file.name.split('.').pop().toLowerCase();
+  const loadingEl = document.getElementById('training-loading');
+  const loadingText = document.getElementById('training-loading-text');
+  const formatNotif = document.getElementById('format-notification');
 
-  // Try ARS detection for Excel files
-  if (ext === 'xlsx' || ext === 'xls') {
-    if (typeof XLSX === 'undefined') {
-      document.getElementById('training-input').value = '# Excel support requires SheetJS';
+  // Show loading
+  loadingEl.style.display = 'block';
+  loadingText.textContent = `Bezig met analyseren van ${file.name}...`;
+  formatNotif.style.display = 'none';
+
+  try {
+    // Excel files: detect format first
+    if (ext === 'xlsx' || ext === 'xls') {
+      if (typeof XLSX === 'undefined') {
+        document.getElementById('training-input').value = '# Excel support requires SheetJS';
+        return;
+      }
+      const data = await file.arrayBuffer();
+      const wb = XLSX.read(data, { type: 'array' });
+
+      // Detect bid format
+      const formatInfo = detectBidFormat(wb, file.name);
+      loadingText.textContent = `Format: ${formatInfo.label} — Verwerken...`;
+
+      // Try ARS detection first (most specific)
+      const arsResult = parseARSWorkbook(wb, file.name);
+      if (arsResult.isARS) {
+        applyARSToTrainingForm(arsResult);
+        showFormatNotification(formatInfo, arsResult.assets.length + ' asset types, ' + arsResult.totalQty + ' stuks', []);
+        return;
+      }
+
+      // Enhanced universal parser with format-specific logic
+      const result = await universalFileParserEnhanced(file, wb, formatInfo);
+      let text = result.text;
+      if (result.sheets > 1) text = `# ${formatInfo.label}: ${result.sheets} sheets from ${file.name}\n` + text;
+      document.getElementById('training-input').value = text;
+      showFormatNotification(formatInfo, result.summary || `${result.sheets} sheet(s) verwerkt`, result.warnings);
+
+      // Try to infer customer from filename
+      autoFillDealFromFilename(file.name, formatInfo);
       return;
     }
-    const data = await file.arrayBuffer();
-    const wb = XLSX.read(data, { type: 'array' });
-    const arsResult = parseARSWorkbook(wb, file.name);
 
-    if (arsResult.isARS) {
-      // ARS file detected! Auto-fill everything
-      applyARSToTrainingForm(arsResult);
-      return;
+    // Non-Excel files
+    const result = await universalFileParser(file);
+    let text = result.text;
+    const formatInfo = detectTextBidFormat(text);
+
+    // If Zones serial text, parse serials
+    if (formatInfo.format === 'zones_text') {
+      const zonesResult = parseZonesText(text);
+      text = zonesResult.text;
+      result.warnings.push(...zonesResult.warnings);
+      showFormatNotification(formatInfo, `${zonesResult.serialCount} serienummers`, result.warnings);
+    } else {
+      if (result.sheets > 1) text = `# Parsed ${result.sheets} sheets from ${file.name}\n` + text;
+      showFormatNotification(formatInfo, `${text.split('\n').filter(l => l.trim()).length} regels`, result.warnings);
     }
+
+    document.getElementById('training-input').value = text;
+    autoFillDealFromFilename(file.name, formatInfo);
+
+  } finally {
+    loadingEl.style.display = 'none';
   }
+}
 
-  // Fallback: regular universal parser
-  const result = await universalFileParser(file);
-  let text = result.text;
-  if (result.sheets > 1) text = `# Parsed ${result.sheets} sheets from ${file.name}\n` + text;
-  document.getElementById('training-input').value = text;
-  // Auto-set deal name from filename
+// Show format detection notification
+function showFormatNotification(formatInfo, summary, warnings) {
+  const notif = document.getElementById('format-notification');
+  const warnClass = warnings && warnings.length > 0 ? 'warning' : 'success';
+  notif.className = `format-notif ${warnClass}`;
+  notif.style.display = 'block';
+  notif.innerHTML = `
+    <div class="format-notif-title">
+      <span class="format-notif-badge" style="background:${formatInfo.color}">${formatInfo.label}</span>
+      <span>${formatInfo.description}</span>
+    </div>
+    <div style="font-size:13px;">${summary}</div>
+    ${warnings && warnings.length > 0 ? `
+    <div class="format-notif-warnings">
+      ${warnings.map(w => `<div>⚠️ ${esc(w)}</div>`).join('')}
+    </div>` : ''}
+    <div style="margin-top:8px;font-size:11px;color:var(--muted);">Klik <strong>"Parse & Analyseer"</strong> om ERPIE's prijzen te berekenen.</div>
+  `;
+}
+
+// Auto-fill deal details from filename
+function autoFillDealFromFilename(filename, formatInfo) {
+  const name = filename.replace(/\.[^/.]+$/, '');
+
+  // Set deal name from filename
   if (!document.getElementById('training-dealname').value) {
-    document.getElementById('training-dealname').value = file.name.replace(/\.[^/.]+$/, '');
+    document.getElementById('training-dealname').value = name;
   }
+
+  // Try to infer customer from filename
+  if (!document.getElementById('training-customer').value) {
+    let customer = inferCustomerFromFilename(filename);
+    // Additional patterns for non-ARS files
+    if (!customer || customer === name) {
+      // "INR12279-34 pallet-3.xlsx" → no clear customer
+      // "Offerte Tiffany.xlsx" → "Tiffany"
+      const offerteMatch = name.match(/offerte\s+(.+)/i);
+      if (offerteMatch) customer = offerteMatch[1].trim();
+      // "RITM0081183 - Device Collection" → extract from subject
+      const ritmMatch = name.match(/RITM\d+\s*-?\s*(.+?)(?:\s*–\s*|$)/i);
+      if (ritmMatch) customer = ritmMatch[1].trim();
+    }
+    if (customer && customer !== name) {
+      document.getElementById('training-customer').value = customer;
+    }
+  }
+
+  // Set today's date if empty
+  if (!document.getElementById('training-date').value) {
+    document.getElementById('training-date').value = new Date().toISOString().slice(0, 10);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ENHANCED UNIVERSAL FILE PARSER — Format-aware with UK filtering
+// ══════════════════════════════════════════════════════════════════════
+
+async function universalFileParserEnhanced(file, wb, formatInfo) {
+  const warnings = [];
+  const allRows = [];
+  const sheets = wb.SheetNames.length;
+  let iPadRows = [];
+  let totalItemCount = 0;
+
+  for (const sheetName of wb.SheetNames) {
+    const ws = wb.Sheets[sheetName];
+    let jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 });
+    if (jsonData.length < 2) { warnings.push(`Sheet "${sheetName}": leeg/overgeslagen`); continue; }
+
+    // iPad/tablet sheet: separate handling
+    if (isIPadSheet(sheetName)) {
+      const iPadResult = parseIPadSheet(jsonData, sheetName, warnings);
+      iPadRows.push(...iPadResult.rows);
+      warnings.push(`Sheet "${sheetName}": ${iPadResult.rows.length} iPad/tablet items (apart verwerkt)`);
+      continue;
+    }
+
+    // Find header row
+    const headerKeywords = /model|device|asset|description|product|omschrijving|serial|cpu|processor|ram|memory|storage|ssd|hdd|grade|condition|conditie|qty|quantity|aantal|stuks|brand|merk|manufacturer|make|specs|battery|screen|year|part|location|locatie|country/i;
+    let headerIdx = -1;
+    for (let i = 0; i < Math.min(10, jsonData.length); i++) {
+      if (!jsonData[i]) continue;
+      const rowText = jsonData[i].join(' ');
+      const matches = rowText.match(new RegExp(headerKeywords.source, 'gi'));
+      if (matches && matches.length >= 2) { headerIdx = i; break; }
+    }
+
+    if (headerIdx >= 0) {
+      const headers = jsonData[headerIdx].map(h => String(h || '').toLowerCase());
+      const colMap = {};
+      const fieldPatterns = {
+        model: /^model$|device|product$|description|omschrijving/,
+        brand: /brand|merk|manufacturer|fabrikant|^make$/,
+        cpu: /cpu|processor|proc|^specs$|cpu.?type/,
+        ram: /^ram|memory|geheugen|ram.?size/,
+        storage: /storage|^ssd|^hdd|disk|opslag|hdd.?size/,
+        grade: /^grade$|condition|conditie|staat/,
+        qty: /qty|quantity|aantal|stuks|count|^units$/,
+        serial: /serial|^sn$|serienummer/,
+        battery: /^battery/,
+        screen: /^screen$|display|^inch$/,
+        year: /^year$/,
+        partno: /part.*#|a-?code|sku|^part$/,
+        productType: /^producttype$|product.?type|^type$/,
+        location: /location|locatie|country|land|region|site/,
+      };
+      headers.forEach((h, idx) => {
+        for (const [field, pat] of Object.entries(fieldPatterns)) {
+          if (pat.test(h) && colMap[field] === undefined) colMap[field] = idx;
+        }
+      });
+      colMap._dataStartRow = headerIdx;
+
+      // UK LOCATION FILTERING for Atlassian/Tiffany formats
+      if (formatInfo.format === 'atlassian_xlsx' || formatInfo.format === 'tiffany_xlsx') {
+        if (colMap.location !== undefined) {
+          const { filteredData, skippedUK } = filterLocationRows(jsonData, colMap, warnings);
+          jsonData = filteredData;
+        }
+      }
+
+      // Serial-level detection
+      const hasSerial = colMap.serial !== undefined;
+      const hasQty = colMap.qty !== undefined;
+      const isSerialLevel = hasSerial && !hasQty;
+
+      if (isSerialLevel) {
+        // AGGREGATE: group by model+cpu+ram+storage+grade → count
+        const groups = {};
+        for (let i = headerIdx + 1; i < jsonData.length; i++) {
+          const row = jsonData[i];
+          if (!row || row.every(c => !c)) continue;
+          const brand = colMap.brand !== undefined ? String(row[colMap.brand] || '').trim() : '';
+          const model = colMap.model !== undefined ? String(row[colMap.model] || '').trim() : '';
+          if (!brand && !model) {
+            // Try serial prefix inference
+            if (colMap.serial !== undefined) {
+              const serial = String(row[colMap.serial] || '').trim();
+              const inf = inferBrandFromSerial(serial);
+              if (inf) {
+                const key = `${inf.brand}|${inf.family}||||`;
+                if (!groups[key]) groups[key] = { brand: inf.brand, model: inf.family, cpu: '', ram: '', storage: '', grade: '', year: '', screen: '', count: 0 };
+                groups[key].count++;
+                continue;
+              }
+            }
+            continue;
+          }
+          const cpu = colMap.cpu !== undefined ? String(row[colMap.cpu] || '').trim() : '';
+          const ram = colMap.ram !== undefined ? String(row[colMap.ram] || '').trim() : '';
+          const storage = colMap.storage !== undefined ? String(row[colMap.storage] || '').trim() : '';
+          const grade = colMap.grade !== undefined ? String(row[colMap.grade] || '').trim() : '';
+          const gradeNorm = grade ? grade.charAt(0).toUpperCase() : '';
+          const year = colMap.year !== undefined ? String(row[colMap.year] || '').trim() : '';
+          const screen = colMap.screen !== undefined ? String(row[colMap.screen] || '').trim() : '';
+          const key = `${brand}|${model}|${cpu}|${ram}|${storage}|${gradeNorm}`;
+          if (!groups[key]) groups[key] = { brand, model, cpu, ram, storage, grade: gradeNorm, year, screen, count: 0 };
+          groups[key].count++;
+        }
+        for (const g of Object.values(groups)) {
+          const parts = [`${g.count}x`, g.brand, g.model];
+          if (g.cpu) parts.push(g.cpu.replace(/intel\(r\)\s*core\(tm\)\s*/gi, '').replace(/\s*@\s*[\d.]+GHz/i, '').replace(/\s*CPU/i, '').trim());
+          if (g.ram) parts.push(g.ram.match(/\d+\s*GB/i) ? g.ram : g.ram + 'GB');
+          if (g.storage && g.storage.toLowerCase() !== 'no' && g.storage.trim()) parts.push(g.storage.match(/\d+\s*(GB|TB)/i) ? g.storage : g.storage + 'GB SSD');
+          if (g.grade) parts.push('Grade ' + g.grade);
+          if (g.screen) parts.push(g.screen);
+          allRows.push(parts.join(' '));
+          totalItemCount += g.count;
+        }
+        warnings.push(`Sheet "${sheetName}": ${Object.keys(groups).length} groups from ${jsonData.length - headerIdx - 1} individual units`);
+      } else {
+        // Normal row-per-group processing
+        let sheetRowCount = 0;
+        for (let i = headerIdx + 1; i < jsonData.length; i++) {
+          const row = jsonData[i];
+          if (!row || row.every(c => !c)) continue;
+          const parts = [];
+          const qty = colMap.qty !== undefined && row[colMap.qty] ? parseInt(row[colMap.qty]) || 1 : 1;
+          parts.push(qty + 'x');
+          if (colMap.brand !== undefined && row[colMap.brand]) parts.push(row[colMap.brand]);
+          if (colMap.model !== undefined && row[colMap.model]) parts.push(row[colMap.model]);
+          if (colMap.cpu !== undefined && row[colMap.cpu]) {
+            const cpuStr = String(row[colMap.cpu]).replace(/intel\(r\)\s*core\(tm\)\s*/gi, '').replace(/\s*@\s*[\d.]+GHz/i, '').replace(/\s*CPU/i, '').trim();
+            parts.push(cpuStr);
+          }
+          if (colMap.ram !== undefined && row[colMap.ram]) {
+            const r = String(row[colMap.ram]);
+            parts.push(r.match(/\d+\s*GB/i) ? r : r + 'GB');
+          }
+          if (colMap.storage !== undefined && row[colMap.storage]) {
+            const s = String(row[colMap.storage]);
+            if (s.toLowerCase() !== 'no' && s.trim()) parts.push(s.match(/\d+\s*(GB|TB)/i) ? s : s + 'GB SSD');
+          }
+          if (colMap.grade !== undefined && row[colMap.grade]) {
+            const g = String(row[colMap.grade]);
+            // Normalize grade 1/2/3 → A/B/C
+            const gradeVal = g.trim();
+            if (/^[123]$/.test(gradeVal)) {
+              const gradeMap = { '1': 'A', '2': 'B', '3': 'C' };
+              parts.push('Grade ' + gradeMap[gradeVal]);
+            } else {
+              parts.push('Grade ' + gradeVal.charAt(0).toUpperCase());
+            }
+          }
+          if (colMap.year !== undefined && row[colMap.year]) parts.push('(' + row[colMap.year] + ')');
+          if (colMap.screen !== undefined && row[colMap.screen]) parts.push(row[colMap.screen]);
+          if (parts.length >= 2) {
+            allRows.push(parts.join(' '));
+            totalItemCount += qty;
+            sheetRowCount++;
+          }
+        }
+        warnings.push(`Sheet "${sheetName}": ${sheetRowCount} rows (${Object.keys(colMap).length - 1} columns mapped)`);
+      }
+    } else {
+      // No header found — CSV fallback or serial-only data
+      const csv = XLSX.utils.sheet_to_csv(ws);
+      // Check for serial number patterns
+      const csvLines = csv.split('\n');
+      const serialLines = csvLines.filter(l => /^[A-Z0-9]{7,15}[,\t]/i.test(l.trim()));
+      if (serialLines.length > csvLines.length * 0.5) {
+        // Mostly serial numbers — use Zones parser
+        const zonesResult = parseZonesText(csv);
+        allRows.push(zonesResult.text);
+        warnings.push(...zonesResult.warnings);
+      } else {
+        allRows.push(csv);
+        warnings.push(`Sheet "${sheetName}": no header detected, using raw CSV`);
+      }
+    }
+  }
+
+  // Add iPad rows with a section marker
+  if (iPadRows.length > 0) {
+    allRows.push('# --- iPads / Tablets ---');
+    allRows.push(...iPadRows);
+  }
+
+  const text = allRows.join('\n');
+  const summary = `${allRows.filter(l => !l.startsWith('#')).length} asset lines, ${totalItemCount} stuks totaal${iPadRows.length > 0 ? `, ${iPadRows.length} iPads apart` : ''}`;
+  return { text, warnings, sheets, summary };
+}
+
+// Parse iPad-specific sheet
+function parseIPadSheet(jsonData, sheetName, warnings) {
+  const rows = [];
+  // Find header
+  let headerIdx = -1;
+  for (let i = 0; i < Math.min(10, jsonData.length); i++) {
+    if (!jsonData[i]) continue;
+    const rowText = jsonData[i].join(' ').toLowerCase();
+    if (/model|product|ipad|device|qty|quantity/i.test(rowText)) { headerIdx = i; break; }
+  }
+
+  if (headerIdx < 0) return { rows: [] };
+
+  const headers = jsonData[headerIdx].map(h => String(h || '').toLowerCase());
+  const colMap = {};
+  headers.forEach((h, idx) => {
+    if (/model|product|device|description/i.test(h)) colMap.model = idx;
+    if (/brand/i.test(h)) colMap.brand = idx;
+    if (/qty|quantity|aantal|units/i.test(h)) colMap.qty = idx;
+    if (/grade|condition|conditie/i.test(h)) colMap.grade = idx;
+    if (/storage|capacity|gb/i.test(h)) colMap.storage = idx;
+    if (/location|locatie/i.test(h)) colMap.location = idx;
+  });
+
+  for (let i = headerIdx + 1; i < jsonData.length; i++) {
+    const row = jsonData[i];
+    if (!row || row.every(c => !c)) continue;
+    const model = colMap.model !== undefined ? String(row[colMap.model] || '').trim() : '';
+    if (!model) continue;
+
+    // Skip UK locations
+    if (colMap.location !== undefined) {
+      const loc = String(row[colMap.location] || '').toUpperCase();
+      if (/\bUK\b|UNITED\s*KINGDOM/i.test(loc)) continue;
+    }
+
+    const qty = colMap.qty !== undefined ? parseInt(row[colMap.qty]) || 1 : 1;
+    const grade = colMap.grade !== undefined ? String(row[colMap.grade] || '').charAt(0).toUpperCase() : '';
+    const storage = colMap.storage !== undefined ? String(row[colMap.storage] || '') : '';
+    const brand = colMap.brand !== undefined ? String(row[colMap.brand] || '').trim() : 'Apple';
+
+    const parts = [`${qty}x`, brand, model];
+    if (storage) parts.push(storage.match(/\d+\s*(GB|TB)/i) ? storage : storage + 'GB');
+    if (grade) parts.push('Grade ' + grade);
+    rows.push(parts.join(' '));
+  }
+
+  return { rows };
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -4479,6 +5102,12 @@ async function processTraining() {
   const rawInput = document.getElementById('training-input').value.trim();
   if (!rawInput) { alert('Voer eerst asset data in of laad een voorbeeld.'); return; }
 
+  // Show loading
+  const loadingEl = document.getElementById('training-loading');
+  const loadingText = document.getElementById('training-loading-text');
+  loadingEl.style.display = 'block';
+  loadingText.textContent = 'Bezig met prijsanalyse...';
+
   trainingAssets = [];
   const cardsContainer = document.getElementById('training-cards');
   cardsContainer.innerHTML = '';
@@ -4506,6 +5135,8 @@ async function processTraining() {
       asset.index = trainingAssets.length;
       asset.arsData = arsAsset; // Keep ARS data reference
 
+      loadingText.textContent = `ARS Asset ${i + 1}/${arsData.assets.length}: ${arsAsset.brand} ${arsAsset.model}`;
+
       // Historical pricing
       const hist = findHistoricalMatches(asset);
       asset.historical = calculateHistoricalERP(hist);
@@ -4522,13 +5153,30 @@ async function processTraining() {
     window._arsImportData = null;
   } else {
     // Normal mode: parse text lines
-    const cleanedInput = parseInputText(rawInput);
+    let cleanedInput = parseInputText(rawInput);
+
+    // Check for Zones serial format in text
+    const textFormat = detectTextBidFormat(cleanedInput);
+    if (textFormat.format === 'zones_text') {
+      const zonesResult = parseZonesText(cleanedInput);
+      cleanedInput = zonesResult.text;
+      if (zonesResult.warnings.length > 0) {
+        showFormatNotification(textFormat, `${zonesResult.serialCount} serienummers`, zonesResult.warnings);
+      }
+    } else if (textFormat.format === 'email_text') {
+      cleanedInput = cleanEmailText(cleanedInput);
+      showFormatNotification(textFormat, 'Email inhoud verwerkt', []);
+    }
+
     const lines = cleanedInput.split('\n').filter(l => l.trim());
+    loadingText.textContent = `Verwerken: ${lines.length} regels...`;
 
     for (let i = 0; i < lines.length; i++) {
       const asset = parseLine(lines[i]);
       if (!asset) continue;
       asset.index = trainingAssets.length;
+
+      loadingText.textContent = `Asset ${trainingAssets.length + 1}: ${asset.brand} ${asset.model || '?'}`;
 
       const hist = findHistoricalMatches(asset);
       asset.historical = calculateHistoricalERP(hist);
@@ -4542,6 +5190,8 @@ async function processTraining() {
     }
   }
 
+  // Hide loading
+  loadingEl.style.display = 'none';
   updateTrainingSummary();
 }
 
