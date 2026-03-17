@@ -334,16 +334,47 @@ function parseGenericHeaders(wb) {
 
     const mappedIdxs = new Set(Object.values(colMap).filter(i => i >= 0));
 
+    let lastModelIdx = -1; // track last row with a valid model (for pivot merge)
+
     for (const row of rows.slice(headerRowIdx + 1)) {
       if (!row.some(v => cellStr(v).length > 0)) continue;
       const model = colMap.model >= 0 ? cellStr(row[colMap.model]) : '';
-      if (!model || !looksLikeModel(model)) continue;
+      const hasModel = model && looksLikeModel(model);
+
+      // Extract specs from this row
+      const cpu   = colMap.cpu   >= 0 ? cellStr(row[colMap.cpu])   : '';
+      const ram   = colMap.ram   >= 0 ? cellStr(row[colMap.ram])   : '';
+      const ssd   = colMap.ssd   >= 0 ? cellStr(row[colMap.ssd])   : '';
+      const grade = colMap.grade >= 0 ? cellStr(row[colMap.grade]) : '';
+      const hasSpecs = cpu || ram || ssd || grade;
+
+      if (!hasModel && !hasSpecs) continue;
+
+      // Pivot merge: row has specs but no model → merge into previous model row
+      if (!hasModel && hasSpecs && lastModelIdx >= 0) {
+        const prev = results[lastModelIdx];
+        if (cpu   && !prev.cpu)   prev.cpu   = cpu;
+        if (ram   && !prev.ram)   prev.ram   = ram;
+        if (ssd   && !prev.ssd)   prev.ssd   = ssd;
+        if (grade && !prev.grade) prev.grade = grade;
+        // Also check for serial in unmapped columns
+        if (!prev.serial) {
+          row.forEach((v, i) => {
+            if (!mappedIdxs.has(i) && !prev.serial && /^[A-Z0-9]{6,}$/i.test(cellStr(v))) {
+              prev.serial = cellStr(v);
+            }
+          });
+        }
+        continue;
+      }
+
+      if (!hasModel) continue; // no model and no previous row to merge into
 
       const d = { model };
-      if (colMap.cpu   >= 0) d.cpu   = cellStr(row[colMap.cpu]);
-      if (colMap.ram   >= 0) d.ram   = cellStr(row[colMap.ram]);
-      if (colMap.ssd   >= 0) d.ssd   = cellStr(row[colMap.ssd]);
-      if (colMap.grade >= 0) d.grade = cellStr(row[colMap.grade]);
+      if (cpu)   d.cpu   = cpu;
+      if (ram)   d.ram   = ram;
+      if (ssd)   d.ssd   = ssd;
+      if (grade) d.grade = grade;
 
       // Auto-detect serial from unmapped columns
       if (!d.serial) {
@@ -355,6 +386,7 @@ function parseGenericHeaders(wb) {
       }
 
       results.push(d);
+      lastModelIdx = results.length - 1;
     }
   }
   return results;
