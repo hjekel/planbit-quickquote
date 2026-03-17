@@ -596,10 +596,12 @@ router.post('/api/analyze', upload.single('file'), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ ok: false, error: 'No file uploaded' });
     const region  = req.body.region || 'EU';
+    const wb = XLSX.read(req.file.buffer, { type: 'buffer' });
+    const format = detectFormat(wb);
     const devices = parseExcel(req.file.buffer);
     if (!devices.length) return res.status(400).json({ ok: false, error: 'No valid devices found in file' });
     const { results, summary } = analyzeDevices(devices, region);
-    res.json({ ok: true, results, summary });
+    res.json({ ok: true, format, results, summary });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
   }
