@@ -1483,6 +1483,12 @@ Of sleep een bestand hierheen (Excel, CSV, TXT)" rows="8"></textarea>
       </div>
       <div id="batch-format-badge" style="display:none;margin-top:6px;margin-bottom:2px;"></div>
 
+      <!-- Deal name -->
+      <div style="margin-top:10px;">
+        <label style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">Deal naam</label>
+        <input type="text" id="batch-deal-name" placeholder="bijv. Sedgwick Amstelveen" style="width:100%;padding:8px 12px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text);margin-top:4px;box-sizing:border-box;">
+      </div>
+
       <!-- Batch action buttons -->
       <div class="batch-actions">
         <button type="button" class="btn btn-ghost" onclick="clearBatchInput()">🗑️ Wissen</button>
@@ -3245,9 +3251,18 @@ function hideFormatBadge() {
   document.getElementById('batch-format-badge').style.display = 'none';
 }
 
+let _batchFileName = '';
+
 async function handleBatchFile(file) {
   const ext = file.name.split('.').pop().toLowerCase();
+  _batchFileName = file.name;
   hideFormatBadge();
+
+  // Auto-fill deal name from filename if empty
+  const dealInput = document.getElementById('batch-deal-name');
+  if (!dealInput.value.trim()) {
+    dealInput.value = file.name.replace(/\.[^.]+$/, '').replace(/[_\-]+/g, ' ').trim();
+  }
 
   // For Excel files, use enhanced parser with format detection
   if ((ext === 'xlsx' || ext === 'xls') && typeof XLSX !== 'undefined') {
@@ -3542,10 +3557,13 @@ function loadBatchExample() {
 
 function clearBatchInput() {
   document.getElementById('batch-input').value = '';
+  document.getElementById('batch-deal-name').value = '';
   document.getElementById('processing-stream').style.display = 'none';
   document.getElementById('processing-stream').innerHTML = '';
   document.getElementById('batch-results-summary').style.display = 'none';
   hideFormatBadge();
+  _batchFileName = '';
+  _batchDealName = '';
   batchParsedGroups = [];
 }
 
@@ -3901,9 +3919,15 @@ function openBatchRefurbed(idx) {
 // MAIN PROCESS FUNCTION
 // ══════════════════════════════════════════════════════════════════
 
+let _batchDealName = '';
+
 async function processBatch() {
   const rawInput = document.getElementById('batch-input').value.trim();
   if (!rawInput) { alert('Voer eerst asset data in of laad een voorbeeld.'); return; }
+
+  // Read deal name (fallback to filename without extension)
+  _batchDealName = document.getElementById('batch-deal-name').value.trim()
+    || (_batchFileName ? _batchFileName.replace(/\.[^.]+$/, '') : 'ERPIE Deal');
 
   const batchStartTime = performance.now();
   const stream = document.getElementById('processing-stream');
@@ -4195,7 +4219,7 @@ function exportBatchCSV() {
   const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = `erpie-batch-${new Date().toISOString().slice(0,10)}.csv`;
+  a.href = url; a.download = `ERPIE_${_batchDealName.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`;
   a.click(); URL.revokeObjectURL(url);
 }
 
@@ -4224,7 +4248,7 @@ function exportBatchExcel() {
   const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'ERPIE Batch');
-  XLSX.writeFile(wb, `erpie-batch-${new Date().toISOString().slice(0,10)}.xlsx`);
+  XLSX.writeFile(wb, `ERPIE_${_batchDealName.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
 // ══════════════════════════════════════════════════════════════════════
