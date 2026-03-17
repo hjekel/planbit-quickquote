@@ -1347,11 +1347,13 @@ tbody tr:last-child { border-bottom: none; }
     </div>
 
     <!-- Button row -->
+    <div style="font-size:11px;color:var(--muted);margin-bottom:4px;letter-spacing:.03em;" data-i18n="exampleAssets">VOORBEELD ASSETS</div>
     <div class="button-row">
       <button class="btn btn-ghost" onclick="clearForm()" data-i18n="clearForm">Clear Form</button>
-      <button class="btn btn-ghost" onclick="showExampleDell()" title="Dell Latitude 5530 i5-1245U">💻 Dell</button>
-      <button class="btn btn-ghost" onclick="showExampleHP()" title="HP EliteBook 840 G9 i5-1245U">💻 HP</button>
-      <button class="btn btn-ghost" onclick="showExampleApple()" title="MacBook Pro 14&quot; M1 Pro">🍎 Apple</button>
+      <button class="btn btn-ghost" onclick="showExampleDell()" title="Dell Latitude 5530 i5-1245U 16GB 256GB"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Dell_Logo.svg/16px-Dell_Logo.svg.png" alt="" style="height:13px;vertical-align:-1px;margin-right:3px;filter:var(--logo-filter,none)">Dell</button>
+      <button class="btn btn-ghost" onclick="showExampleHP()" title="HP EliteBook 840 G9 i5-1245U 16GB 512GB"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/HP_logo_2012.svg/16px-HP_logo_2012.svg.png" alt="" style="height:14px;vertical-align:-2px;margin-right:3px;filter:var(--logo-filter,none)">HP</button>
+      <button class="btn btn-ghost" onclick="showExampleLenovo()" title="Lenovo ThinkPad T14 Gen 3 i5-1245U 16GB 256GB"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lenovo_logo_2015.svg/16px-Lenovo_logo_2015.svg.png" alt="" style="height:11px;vertical-align:0px;margin-right:3px;filter:var(--logo-filter,none)">Lenovo</button>
+      <button class="btn btn-ghost" onclick="showExampleApple()" title="MacBook Pro 14&quot; M1 Pro 16GB 512GB"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/14px-Apple_logo_black.svg.png" alt="" style="height:14px;vertical-align:-2px;margin-right:3px;filter:var(--logo-filter,none)">Apple</button>
       <button class="btn btn-ai" id="btn-ai-quote">🤖 <span data-i18n="getAiAnalysis">Get AI Analysis</span></button>
     </div>
 
@@ -2216,73 +2218,44 @@ function clearForm() {
 // ══════════════════════════════════════════════════════════════════════
 function showExample() { showExampleDell(); }
 
+function fillExample(opts) {
+  document.getElementById('brand').value = opts.brand;
+  document.getElementById('brand').dispatchEvent(new Event('change'));
+  setTimeout(() => {
+    document.getElementById('model').value = opts.model;
+    document.getElementById('deviceType').value = opts.deviceType || 'notebook';
+    document.getElementById('cpuFamily').value = opts.cpuFamily;
+    document.getElementById('cpuFamily').dispatchEvent(new Event('change'));
+    setTimeout(() => {
+      document.getElementById('cpuGen').value = opts.cpuGen;
+      document.getElementById('cpuModel').value = opts.cpuModel || '';
+      document.getElementById('ram').value = opts.ram;
+      document.getElementById('ssd').value = opts.ssd;
+      document.getElementById('grade').value = opts.grade;
+      document.getElementById('keyboard').value = opts.keyboard || 'qwerty-eu';
+      document.getElementById('region').value = opts.region || 'EU';
+      document.getElementById('battery').value = opts.battery || 'good';
+      document.getElementById('quantity').value = opts.quantity || '1';
+      document.getElementById('keyboard-warning').style.display = 'none';
+    }, 50);
+  }, 50);
+}
+
 function showExampleDell() {
-  document.getElementById('brand').value = 'dell';
-  document.getElementById('brand').dispatchEvent(new Event('change'));
-  setTimeout(() => {
-    document.getElementById('model').value = 'latitude-5xxx';
-    document.getElementById('deviceType').value = 'notebook';
-    document.getElementById('cpuFamily').value = 'i5';
-    document.getElementById('cpuFamily').dispatchEvent(new Event('change'));
-    setTimeout(() => {
-      document.getElementById('cpuGen').value = '12';
-      document.getElementById('cpuModel').value = 'i5-1245U';
-      document.getElementById('ram').value = '16';
-      document.getElementById('ssd').value = '256';
-      document.getElementById('grade').value = 'B';
-      document.getElementById('keyboard').value = 'qwerty-eu';
-      document.getElementById('region').value = 'EU';
-      document.getElementById('battery').value = 'good';
-      document.getElementById('quantity').value = '50';
-      document.getElementById('keyboard-warning').style.display = 'none';
-    }, 50);
-  }, 50);
+  fillExample({ brand: 'dell', model: 'latitude-5xxx', cpuFamily: 'i5', cpuGen: '12',
+    cpuModel: 'i5-1245U', ram: '16', ssd: '256', grade: 'B', quantity: '50' });
 }
-
 function showExampleHP() {
-  document.getElementById('brand').value = 'hp';
-  document.getElementById('brand').dispatchEvent(new Event('change'));
-  setTimeout(() => {
-    document.getElementById('model').value = 'elitebook-8xx';
-    document.getElementById('deviceType').value = 'notebook';
-    document.getElementById('cpuFamily').value = 'i5';
-    document.getElementById('cpuFamily').dispatchEvent(new Event('change'));
-    setTimeout(() => {
-      document.getElementById('cpuGen').value = '12';
-      document.getElementById('cpuModel').value = 'i5-1245U';
-      document.getElementById('ram').value = '16';
-      document.getElementById('ssd').value = '512';
-      document.getElementById('grade').value = 'A';
-      document.getElementById('keyboard').value = 'qwerty-eu';
-      document.getElementById('region').value = 'EU';
-      document.getElementById('battery').value = 'good';
-      document.getElementById('quantity').value = '25';
-      document.getElementById('keyboard-warning').style.display = 'none';
-    }, 50);
-  }, 50);
+  fillExample({ brand: 'hp', model: 'elitebook-8xx', cpuFamily: 'i5', cpuGen: '12',
+    cpuModel: 'i5-1245U', ram: '16', ssd: '512', grade: 'A', quantity: '25' });
 }
-
+function showExampleLenovo() {
+  fillExample({ brand: 'lenovo', model: 'thinkpad-t', cpuFamily: 'i5', cpuGen: '12',
+    cpuModel: 'i5-1245U', ram: '16', ssd: '256', grade: 'B', quantity: '30' });
+}
 function showExampleApple() {
-  document.getElementById('brand').value = 'apple';
-  document.getElementById('brand').dispatchEvent(new Event('change'));
-  setTimeout(() => {
-    document.getElementById('model').value = 'macbook-pro-14';
-    document.getElementById('deviceType').value = 'notebook';
-    document.getElementById('cpuFamily').value = 'm1';
-    document.getElementById('cpuFamily').dispatchEvent(new Event('change'));
-    setTimeout(() => {
-      document.getElementById('cpuGen').value = 'pro';
-      document.getElementById('cpuModel').value = '';
-      document.getElementById('ram').value = '16';
-      document.getElementById('ssd').value = '512';
-      document.getElementById('grade').value = 'A';
-      document.getElementById('keyboard').value = 'qwerty-eu';
-      document.getElementById('region').value = 'EU';
-      document.getElementById('battery').value = 'good';
-      document.getElementById('quantity').value = '10';
-      document.getElementById('keyboard-warning').style.display = 'none';
-    }, 50);
-  }, 50);
+  fillExample({ brand: 'apple', model: 'macbook-pro-14', cpuFamily: 'm1', cpuGen: 'pro',
+    cpuModel: '', ram: '16', ssd: '512', grade: 'A', quantity: '10' });
 }
 
 // ── The Broker Site search ──────────────────────────────────────
@@ -3780,7 +3753,7 @@ const TRANSLATIONS = {
     cpu: 'CPU', family: 'FAMILIE', generation: 'GENERATIE', fullModel: 'VOLLEDIG MODEL (OPTIONEEL)',
     specs: 'SPECIFICATIES', ram: 'RAM', ssd: 'SSD', grade: 'CONDITIE', keyboard: 'TOETSENBORD',
     context: 'CONTEXT', region: 'REGIO', battery: 'BATTERIJ (NOTEBOOK)', quantity: 'AANTAL',
-    clearForm: 'Formulier Wissen', getAiAnalysis: 'AI Analyse',
+    exampleAssets: 'VOORBEELD ASSETS', clearForm: 'Formulier Wissen', getAiAnalysis: 'AI Analyse',
     livePriceCheck: '🔍 LIVE PRIJS CHECK',
     generalB2B: 'ALGEMEEN & B2B MARKTPLAATSEN', b2cReference: 'B2C REFERENTIEPRIJZEN',
     serialCheck: '🔢 SERIENUMMER CHECK',
@@ -3805,7 +3778,7 @@ const TRANSLATIONS = {
     cpu: 'CPU', family: 'FAMILY', generation: 'GENERATION', fullModel: 'FULL MODEL (OPTIONAL)',
     specs: 'SPECS', ram: 'RAM', ssd: 'SSD', grade: 'GRADE', keyboard: 'KEYBOARD',
     context: 'CONTEXT', region: 'REGION', battery: 'BATTERY (NOTEBOOK)', quantity: 'QUANTITY',
-    clearForm: 'Clear Form', getAiAnalysis: 'AI Analysis',
+    exampleAssets: 'EXAMPLE ASSETS', clearForm: 'Clear Form', getAiAnalysis: 'AI Analysis',
     livePriceCheck: '🔍 LIVE PRICE CHECK',
     generalB2B: 'GENERAL & B2B MARKETPLACES', b2cReference: 'B2C REFERENCE PRICES',
     serialCheck: '🔢 SERIAL NUMBER CHECK',

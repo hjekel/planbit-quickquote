@@ -554,8 +554,28 @@ router.post('/api/ai-quote', async (req, res) => {
               || parsed.output;
 
     if (!text) {
+      // Retry once — OpenClaw sometimes returns empty on first call after restart
+      console.warn('[ai-quote] empty response, retrying once...');
+      try {
+        const { stdout: stdout2 } = await execFileAsync(OPENCLAW_BIN, args, {
+          timeout: 60000,
+          env: { ...process.env, PATH: `${process.env.PATH}:/usr/local/bin:/opt/homebrew/bin` }
+        });
+        const parsed2 = JSON.parse(stdout2);
+        const text2 = parsed2.result?.payloads?.[0]?.text
+                    || parsed2.result?.text
+                    || (typeof parsed2.result === 'string' ? parsed2.result : null)
+                    || parsed2.text
+                    || parsed2.output;
+        if (text2) {
+          console.log('[ai-quote] retry success, returning %d chars', text2.length);
+          return res.json({ ok: true, result: text2 });
+        }
+      } catch (retryErr) {
+        console.error('[ai-quote] retry also failed:', retryErr.message);
+      }
       console.error('[ai-quote] could not extract text. Full response:', JSON.stringify(parsed).slice(0, 1000));
-      return res.status(502).json({ ok: false, error: 'No pricing result from AI agent', debug: Object.keys(parsed) });
+      return res.status(502).json({ ok: false, error: 'No pricing result from AI agent — probeer het opnieuw', debug: Object.keys(parsed) });
     }
 
     console.log('[ai-quote] success, returning %d chars', text.length);
