@@ -1542,6 +1542,11 @@ Of sleep een bestand hierheen (Excel, CSV, TXT)" rows="8"></textarea>
           </tfoot>
         </table>
       </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;padding:8px 12px;font-size:11px;color:var(--muted);">
+        <span><span style="display:inline-block;padding:1px 6px;border-radius:999px;font-size:10px;font-weight:700;color:#fff;background:#00c853;">EXACT</span> exacte modelovereenkomst</span>
+        <span><span style="display:inline-block;padding:1px 6px;border-radius:999px;font-size:10px;font-weight:700;color:#fff;background:#ffab00;">TIER</span> vergelijkbaar model</span>
+        <span><span style="display:inline-block;padding:1px 6px;border-radius:999px;font-size:10px;font-weight:700;color:#fff;background:#d50000;">NONE</span> geen historische prijs gevonden</span>
+      </div>
 
       <!-- Export buttons -->
       <div class="batch-actions" style="margin-top:16px;">
@@ -4177,7 +4182,7 @@ function showBatchResultsTable() {
       <td>${esc(a.grade || '—')}</td>
       <td ${kbClass}>${esc(kbDisplay)}</td>
       <td>${unitERP ? '€' + unitERP : '—'}</td>
-      <td>${h.matchLevel ? `<span class="match-badge match-${h.matchLevel}">${h.matchLevel}</span>` : '—'}</td>
+      <td>${h.matchLevel ? `<span style="display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;color:#fff;background:${h.matchLevel === 'EXACT' ? '#00c853' : h.matchLevel === 'TIER' ? '#ffab00' : '#d50000'}">${h.matchLevel}</span>` : `<span style="display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;color:#fff;background:#d50000">NONE</span>`}</td>
       <td class="${confColor}">${h.confidence ? h.confidence + '%' : '—'}</td>
       <td>
         <button class="card-live-btn" onclick="openBatchGoogle(${i})" title="Google">🔎</button>
