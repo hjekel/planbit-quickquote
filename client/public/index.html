@@ -1512,6 +1512,8 @@ Of sleep een bestand hierheen (Excel, CSV, TXT)" rows="8"></textarea>
         </div>
       </div>
 
+      <div id="batch-insight-line" style="font-size:12px;color:var(--muted);margin-bottom:8px;padding:0 4px;"></div>
+
       <!-- Results Table -->
       <div class="batch-table-wrap">
         <table class="batch-table">
@@ -4197,6 +4199,18 @@ function showBatchResultsTable() {
   document.getElementById('br-total-qty').textContent = totalQty;
   document.getElementById('br-total-erp').textContent = '€' + totalERP.toLocaleString('nl-NL');
   document.getElementById('br-bandwidth').textContent = '€' + totalMin.toLocaleString('nl-NL') + ' - €' + totalMax.toLocaleString('nl-NL');
+
+  // Insight line
+  const exactCount = batchParsedGroups.filter(a => (a.historical?.matchLevel) === 'EXACT').length;
+  const tierCount = batchParsedGroups.filter(a => (a.historical?.matchLevel) === 'TIER').length;
+  const noneCount = batchParsedGroups.length - exactCount - tierCount;
+  const total = batchParsedGroups.length;
+  const pct = total > 0 ? Math.round(exactCount / total * 100) : 0;
+  let insightParts = [];
+  if (exactCount > 0) insightParts.push(`<strong>${exactCount}</strong> van ${total} apparaten exact herkend (${pct}%)`);
+  if (tierCount > 0) insightParts.push(`<strong>${tierCount}</strong> op basis van vergelijkbaar model`);
+  if (noneCount > 0) insightParts.push(`<strong>${noneCount}</strong> zonder historische prijs`);
+  document.getElementById('batch-insight-line').innerHTML = 'ERPIE herkende ' + (insightParts.join(' · ') || 'geen apparaten');
 
   // Footer
   document.getElementById('br-foot-qty').textContent = totalQty;
