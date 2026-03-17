@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNENEEwMTciLz48dGV4dCB4PSIxNiIgeT0iMjEiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjExIiBmaWxsPSIjQ0MwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iLTAuNSI+RVJQPC90ZXh0Pjwvc3ZnPg==" type="image/svg+xml">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNCODg2MEIiLz48dGV4dCB4PSIxNiIgeT0iMjEiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjExIiBmaWxsPSIjQ0MwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iLTAuNSI+RVJQPC90ZXh0Pjwvc3ZnPg==" type="image/svg+xml">
 <title>ERPIE PriceFinder – Incredible Projects</title>
 <style>
 /* ── Reset & base ─────────────────────────────────────────────────── */
@@ -68,7 +68,7 @@ input, select, button { font-family: inherit; }
 .header-left { display: flex; align-items: center; gap: 12px; flex: 1; }
 .logo { color: var(--accent); font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
 .logo-lobster { font-size: 20px; margin-right: 4px; }
-.logo-erp { color: #D4A017; font-weight: 900; font-size: 22px; margin-right: 1px; letter-spacing: -1px; }
+.logo-erp { color: #B8860B; font-weight: 900; font-size: 22px; margin-right: 1px; letter-spacing: -1px; }
 .logo-by { color: var(--muted); font-weight: 400; font-size: 14px; }
 .logo-planbit { color: var(--accent); font-weight: 700; font-size: 14px; }
 .badge {
@@ -193,16 +193,18 @@ input, select, button { font-family: inherit; }
 .btn-primary:hover { background: var(--accent2); }
 .btn-ai { background: #7c3aed; color: #fff; }
 .btn-ai:hover { background: #6d28d9; }
-.btn-ai-green { background: #D4A017; color: #fff; padding: 12px 28px; font-size: 15px; margin-left: auto; font-weight: 700; letter-spacing: .02em; }
-.btn-ai-green:hover { background: #b8890f; }
+.btn-ai-green { background: #B8860B; color: #fff; padding: 12px 28px; font-size: 15px; margin-left: auto; font-weight: 700; letter-spacing: .02em; }
+.btn-ai-green:hover { background: #9a7209; }
 .btn-ghost {
   background: transparent;
   color: var(--muted);
   border: 1px solid var(--border);
 }
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-.btn-clear { background: var(--surface2); color: var(--text); border: 1px solid var(--border); opacity: .85; }
-.btn-clear:hover { opacity: 1; border-color: var(--accent); }
+.btn-clear { background: #444; color: #e0e0e0; border: 1px solid #555; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+:root.light .btn-clear { background: #bbb; color: #333; border: 1px solid #aaa; }
+.btn-clear:hover { background: #555; border-color: #777; color: #fff; }
+:root.light .btn-clear:hover { background: #999; border-color: #888; color: #fff; }
 .btn-brand {
   background: var(--bg);
   color: var(--text);
@@ -279,8 +281,8 @@ input, select, button { font-family: inherit; }
 .ai-spinner-wrap.active { display: flex; }
 .ai-spinner {
   width: 18px; height: 18px;
-  border: 2.5px solid #D4A01730;
-  border-top-color: #D4A017;
+  border: 2.5px solid #B8860B30;
+  border-top-color: #B8860B;
   border-radius: 50%;
   animation: spin .7s linear infinite;
   flex-shrink: 0;
@@ -288,14 +290,14 @@ input, select, button { font-family: inherit; }
 .ai-spinner-text {
   font-size: 13px;
   font-weight: 500;
-  color: #D4A017;
+  color: #B8860B;
   white-space: nowrap;
 }
 /* AI Progress bar */
 .ai-progress-wrap {
   flex: 1;
   height: 6px;
-  background: #D4A01720;
+  background: #B8860B20;
   border-radius: 3px;
   overflow: hidden;
   margin-left: 8px;
@@ -310,7 +312,7 @@ input, select, button { font-family: inherit; }
 .ai-progress-bar.done { background: linear-gradient(90deg, #16a34a, #22c55e); }
 .ai-progress-bar.error { background: linear-gradient(90deg, #ef4444, #f87171); }
 .ai-result-shimmer {
-  background: linear-gradient(90deg, var(--surface2) 25%, #D4A01710 50%, var(--surface2) 75%);
+  background: linear-gradient(90deg, var(--surface2) 25%, #B8860B10 50%, var(--surface2) 75%);
   background-size: 200% 100%;
   animation: ai-shimmer 1.8s ease-in-out infinite;
   min-height: 80px;
@@ -1386,14 +1388,14 @@ tbody tr:last-child { border-bottom: none; }
     <div class="form-section">
       <div class="form-section-title" data-i18n="livePriceCheck">🔍 Live Price Check</div>
       <div class="search-buttons">
-        <button type="button" class="search-btn" onclick="openGoogleSearch()"><img src="https://www.google.com/s2/favicons?domain=google.com&sz=32" alt=""> Google</button>
-        <button type="button" class="search-btn b2b" onclick="openITGigant()"><img src="https://www.google.com/s2/favicons?domain=itgigant.nl&sz=32" alt=""> IT Gigant</button>
-        <button type="button" class="search-btn b2b" onclick="openTroostwijk()"><img src="https://www.google.com/s2/favicons?domain=troostwijkauctions.com&sz=32" alt=""> Troostwijk</button>
-        <button type="button" class="search-btn b2b" onclick="openBrokerSite()"><img src="https://www.google.com/s2/favicons?domain=thebrokersite.com&sz=32" alt=""> The Broker Site</button>
-        <button type="button" class="search-btn b2c" onclick="openBackMarket()"><img src="https://www.google.com/s2/favicons?domain=backmarket.nl&sz=32" alt=""> Back Market</button>
-        <button type="button" class="search-btn b2c" onclick="openRefurbed()"><img src="https://www.google.com/s2/favicons?domain=refurbed.nl&sz=32" alt=""> Refurbed</button>
-        <button type="button" class="search-btn b2c" onclick="openAmazonRenewed()"><img src="https://www.google.com/s2/favicons?domain=amazon.nl&sz=32" alt=""> Amazon Renewed</button>
-        <button type="button" class="search-btn apple" onclick="openRefurbMe()"><img src="https://www.google.com/s2/favicons?domain=refurb.me&sz=32" alt=""> RefurbMe</button>
+        <button type="button" class="search-btn" onclick="openGoogleSearch()" title="Google Shopping — algemene marktprijzen"><img src="https://www.google.com/s2/favicons?domain=google.com&sz=32" alt=""> Google</button>
+        <button type="button" class="search-btn b2b" onclick="openITGigant()" title="IT Gigant — B2B groothandel refurbished IT"><img src="https://www.google.com/s2/favicons?domain=itgigant.nl&sz=32" alt=""> IT Gigant</button>
+        <button type="button" class="search-btn b2b" onclick="openTroostwijk()" title="Troostwijk Auctions — B2B veilingen IT hardware"><img src="https://www.google.com/s2/favicons?domain=troostwijkauctions.com&sz=32" alt=""> Troostwijk</button>
+        <button type="button" class="search-btn b2b" onclick="openBrokerSite()" title="The Broker Site — B2B IT broker marktplaats"><img src="https://www.google.com/s2/favicons?domain=thebrokersite.com&sz=32" alt=""> Broker Site</button>
+        <button type="button" class="search-btn b2c" onclick="openBackMarket()" title="Back Market — B2C refurbished marktplaats"><img src="https://www.google.com/s2/favicons?domain=backmarket.nl&sz=32" alt=""> Back Market</button>
+        <button type="button" class="search-btn b2c" onclick="openRefurbed()" title="Refurbed — B2C refurbished met garantie"><img src="https://www.google.com/s2/favicons?domain=refurbed.nl&sz=32" alt=""> Refurbed</button>
+        <button type="button" class="search-btn b2c" onclick="openAmazonRenewed()" title="Amazon Renewed — B2C refurbished via Amazon"><img src="https://www.google.com/s2/favicons?domain=amazon.nl&sz=32" alt=""> Amazon</button>
+        <button type="button" class="search-btn apple" onclick="openRefurbMe()" title="RefurbMe — Apple refurbished prijsvergelijker"><img src="https://www.google.com/s2/favicons?domain=refurb.me&sz=32" alt=""> RefurbMe</button>
       </div>
     </div>
 
@@ -1414,10 +1416,10 @@ tbody tr:last-child { border-bottom: none; }
     </div>
 
     <!-- AI Result card -->
-    <div id="ai-result-card" style="display:none;background:var(--surface);border:2px solid #D4A017;border-radius:var(--radius);padding:28px;margin-top:24px;margin-bottom:24px;">
+    <div id="ai-result-card" style="display:none;background:var(--surface);border:2px solid #B8860B;border-radius:var(--radius);padding:28px;margin-top:24px;margin-bottom:24px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
-        <h2 style="font-size:16px;font-weight:700;color:#D4A017;margin:0;">AI Analysis</h2>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B8860B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+        <h2 style="font-size:16px;font-weight:700;color:#B8860B;margin:0;">AI Analysis</h2>
         <span id="ai-loading" class="ai-spinner-wrap">
           <span class="ai-spinner"></span>
           <span class="ai-spinner-text">AI is analyzing...</span>
@@ -1426,6 +1428,12 @@ tbody tr:last-child { border-bottom: none; }
       </div>
       <div id="ai-result-text" style="background:var(--surface2);border-radius:8px;padding:16px;font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;font-family:inherit;"></div>
       <div id="ai-result-error" style="display:none;background:#f4433620;border:1px solid var(--nogo);border-radius:8px;padding:14px;font-size:13px;color:var(--nogo);margin-top:12px;"></div>
+      <div id="ai-export-row" style="display:none;margin-top:14px;display:none;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-ghost" onclick="exportAiResult('md')" title="Download als Markdown">📄 .md</button>
+        <button class="btn btn-ghost" onclick="exportAiResult('pdf')" title="Download als PDF">📑 .pdf</button>
+        <button class="btn btn-ghost" onclick="exportAiResult('docx')" title="Download als Word document">📝 .docx</button>
+        <button class="btn btn-ghost" onclick="copyAiResult()" title="Kopieer naar klembord">📋 Kopieer</button>
+      </div>
     </div>
 
   </div>
@@ -2366,6 +2374,7 @@ async function doAiQuote() {
   textEl.textContent    = '';
   textEl.classList.add('ai-result-shimmer');
   errorEl.style.display = 'none';
+  document.getElementById('ai-export-row').style.display = 'none';
   loadEl.classList.add('active');
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -2411,6 +2420,7 @@ async function doAiQuote() {
     if (!data.ok) throw new Error(data.error || 'Unknown error');
 
     textEl.textContent = data.result;
+    document.getElementById('ai-export-row').style.display = 'flex';
   } catch (err) {
     clearInterval(progressInterval);
     progressBar.classList.add('error');
@@ -2426,6 +2436,57 @@ async function doAiQuote() {
       progressBar.classList.remove('done', 'error');
     }, 1500);
   }
+}
+
+// ── AI Result Export ─────────────────────────────────────────────
+function getAiResultText() {
+  return document.getElementById('ai-result-text').textContent || '';
+}
+
+function copyAiResult() {
+  navigator.clipboard.writeText(getAiResultText()).then(() => {
+    const btn = event.target.closest('button');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✅ Gekopieerd!';
+    setTimeout(() => btn.innerHTML = orig, 1500);
+  });
+}
+
+function exportAiResult(format) {
+  const text = getAiResultText();
+  if (!text) return;
+  const brand = document.getElementById('brand');
+  const model = document.getElementById('model');
+  const brandLabel = brand.options[brand.selectedIndex]?.text || 'Device';
+  const modelLabel = model.options[model.selectedIndex]?.text || '';
+  const filename = 'ERPIE_Report_' + brandLabel + '_' + modelLabel.replace(/[^a-zA-Z0-9]/g, '_');
+
+  if (format === 'md') {
+    const blob = new Blob([text], { type: 'text/markdown' });
+    downloadBlob(blob, filename + '.md');
+  } else if (format === 'pdf') {
+    const win = window.open('', '_blank');
+    win.document.write('<html><head><title>' + filename + '</title><style>body{font-family:Consolas,monospace;font-size:12px;line-height:1.6;padding:40px;max-width:800px;margin:0 auto;}h1{font-size:16px;border-bottom:2px solid #B8860B;padding-bottom:8px;color:#333;}</style></head><body>');
+    win.document.write('<h1>ERPIE Pricing Report</h1>');
+    win.document.write('<pre>' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre>');
+    win.document.write('</body></html>');
+    win.document.close();
+    setTimeout(() => { win.print(); }, 300);
+  } else if (format === 'docx') {
+    // Simple DOCX via HTML → Blob with Word MIME type
+    const html = '<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.5;}h1{font-size:14pt;color:#B8860B;border-bottom:1pt solid #B8860B;padding-bottom:4pt;}pre{font-family:Consolas,monospace;font-size:10pt;white-space:pre-wrap;}</style></head><body><h1>ERPIE Pricing Report</h1><pre>' + text.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre></body></html>';
+    const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+    downloadBlob(blob, filename + '.doc');
+  }
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function esc(str) {

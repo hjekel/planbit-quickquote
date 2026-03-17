@@ -508,8 +508,8 @@ const OPENCLAW_BIN = process.env.OPENCLAW_PATH || 'openclaw';
 
 router.post('/api/ai-quote', async (req, res) => {
   try {
-    const { brand, model, cpu, ram, storage, condition } = req.body;
-    const specs = [brand, model, cpu, ram, storage, condition].filter(Boolean).join(', ');
+    const { brand, model, cpu, ram, storage, condition, keyboard, region, battery, quantity } = req.body;
+    const specs = [brand, model, cpu, ram, storage, condition, keyboard ? 'Keyboard: ' + keyboard : '', region ? 'Region: ' + region : '', battery ? 'Battery: ' + battery : '', quantity ? 'Quantity: ' + quantity : ''].filter(Boolean).join(', ');
     console.log('[ai-quote] incoming specs:', specs);
     if (!specs) return res.status(400).json({ ok: false, error: 'No device specs provided' });
 
