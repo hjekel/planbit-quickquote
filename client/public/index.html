@@ -1481,6 +1481,7 @@ Of sleep een bestand hierheen (Excel, CSV, TXT)" rows="8"></textarea>
         <span style="font-size:11px;color:var(--muted)">Ondersteund: .xlsx, .csv, .txt, .pdf</span>
         <input type="file" id="batch-file-input" accept=".xlsx,.xls,.csv,.txt,.pdf" hidden>
       </div>
+      <div id="batch-format-badge" style="display:none;margin-top:6px;margin-bottom:2px;"></div>
 
       <!-- Batch action buttons -->
       <div class="batch-actions">
@@ -3225,14 +3226,37 @@ batchDropzone.addEventListener('drop', e => {
   if (e.dataTransfer.files[0]) handleBatchFile(e.dataTransfer.files[0]);
 });
 
+const FORMAT_LABELS = {
+  'ARS': 'PlanBit ARS formaat',
+  'ARS_SIMPLE': 'PlanBit ARS (vereenvoudigd)',
+  'VENDOR_QUOTE': 'Vendor Quote',
+  'GENERIC_HEADERS': 'Generiek met headers',
+  'GENERIC_HEADERLESS': 'Generiek zonder headers'
+};
+
+function showFormatBadge(formatKey, filename) {
+  const badge = document.getElementById('batch-format-badge');
+  const label = FORMAT_LABELS[formatKey] || formatKey;
+  badge.innerHTML = `<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted);">✅ ${esc(label)} <span style="opacity:.6;">— ${esc(filename)}</span></span>`;
+  badge.style.display = 'block';
+}
+
+function hideFormatBadge() {
+  document.getElementById('batch-format-badge').style.display = 'none';
+}
+
 async function handleBatchFile(file) {
   const ext = file.name.split('.').pop().toLowerCase();
+  hideFormatBadge();
 
   // For Excel files, use enhanced parser with format detection
   if ((ext === 'xlsx' || ext === 'xls') && typeof XLSX !== 'undefined') {
     const data = await file.arrayBuffer();
     const wb = XLSX.read(data, { type: 'array' });
     const formatInfo = detectBidFormat(wb, file.name);
+
+    // Show format badge
+    showFormatBadge(formatInfo.format || formatInfo.label, file.name);
 
     // Try ARS detection (Batch tab doesn't use ARS pricing but uses the structure)
     const result = await universalFileParserEnhanced(file, wb, formatInfo);
@@ -3255,6 +3279,9 @@ async function handleBatchFile(file) {
     const zonesResult = parseZonesText(text);
     text = zonesResult.text;
     result.warnings.push(...zonesResult.warnings);
+    showFormatBadge('ZONES_TEXT', file.name);
+  } else {
+    showFormatBadge(ext.toUpperCase(), file.name);
   }
 
   if (result.warnings.length > 0) {
@@ -3518,6 +3545,7 @@ function clearBatchInput() {
   document.getElementById('processing-stream').style.display = 'none';
   document.getElementById('processing-stream').innerHTML = '';
   document.getElementById('batch-results-summary').style.display = 'none';
+  hideFormatBadge();
   batchParsedGroups = [];
 }
 
