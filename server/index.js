@@ -132,19 +132,11 @@ function extractGrade(s) {
 // ─── FORMAT DETECTORS ────────────────────────────────────────────────────────
 
 function detectFormat(wb) {
-  // 1. PlanBit ARS — has "Customer Inventory" tab or RITM-prefixed sheets
-  if (wb.SheetNames.some(n => n.toLowerCase().includes('inventory')) ||
-      wb.SheetNames.some(n => /^RITM/i.test(n.trim()))) {
-    return 'ARS';
-  }
-
-  // 2. Check first/main sheet
+  // 1. Check VENDOR_QUOTE first (takes priority over ARS when sheet has Product+Brand+Model+Processor headers)
   for (const name of wb.SheetNames) {
     const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
     const nonEmpty = rows.filter(r => r.some(v => cellStr(v).length > 0));
     if (!nonEmpty.length) continue;
-
-    // 3. PWC/Vendor quote: has Product+Brand+Model+Processor in header row
     for (let i = 0; i < Math.min(5, nonEmpty.length); i++) {
       const cells = nonEmpty[i].map(v => cellStr(v).toLowerCase());
       const hasProduct  = cells.some(c => c === 'product');
@@ -155,6 +147,23 @@ function detectFormat(wb) {
         return 'VENDOR_QUOTE';
       }
     }
+  }
+
+  // 2. PlanBit ARS — has "Customer Inventory" tab (but NOT "Customer Inventory and Details" which is VENDOR_QUOTE)
+  //    or RITM-prefixed sheets
+  const hasArsInventory = wb.SheetNames.some(n => {
+    const lower = n.toLowerCase().trim();
+    return lower.includes('customer inventory') && !lower.includes('and details');
+  });
+  if (hasArsInventory || wb.SheetNames.some(n => /^RITM/i.test(n.trim()))) {
+    return 'ARS';
+  }
+
+  // 3. Check remaining formats
+  for (const name of wb.SheetNames) {
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
+    const nonEmpty = rows.filter(r => r.some(v => cellStr(v).length > 0));
+    if (!nonEmpty.length) continue;
 
     // 4. Generic with headers (Frankfurt style, any CSV with model column)
     for (let i = 0; i < Math.min(10, nonEmpty.length); i++) {
