@@ -1153,7 +1153,9 @@ tbody tr:last-child { border-bottom: none; }
 .monitor-stat { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; }
 .monitor-stat-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:4px; }
 .monitor-stat-value { font-size:18px; font-weight:700; color:var(--text); }
-.monitor-log { background:#0d0d0d; border:1px solid var(--border); border-radius:var(--radius); padding:12px; font-family:'Fira Code',monospace; font-size:11px; line-height:1.6; color:#8f8; max-height:400px; overflow-y:auto; white-space:pre-wrap; word-break:break-all; }
+.monitor-log { background:#0d0d0d; border:1px solid var(--border); border-radius:var(--radius); padding:12px; font-family:'Fira Code',monospace; font-size:11px; line-height:1.6; color:#8f8; min-height:300px; max-height:calc(100vh - 400px); overflow-y:auto; white-space:pre-wrap; word-break:break-all; flex:1; }
+#panel-monitor > .form-card { display:flex; flex-direction:column; min-height:calc(100vh - 160px); }
+#panel-monitor > .form-card > .form-section { display:flex; flex-direction:column; flex:1; }
 .monitor-footer { font-size:11px; color:var(--muted); text-align:center; margin-top:12px; opacity:.6; }
 
 /* ── Zelfstudie Tab ────────────────────────────────────────────── */
