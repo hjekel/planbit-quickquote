@@ -129,76 +129,127 @@ function extractGrade(s) {
   return m ? m[1] : '';
 }
 
-// ─── FORMAT DETECTORS ────────────────────────────────────────────────────────
+// ─── UNIFIED COLUMN RESOLVER ─────────────────────────────────────────────────
+const COLUMN_ALIASES = {
+  brand:    ['brand','manufacturer','make','merk','vendor','oem','fabrikant'],
+  model:    ['model','device','modelname','computername','description','productname','name','item','assetname','partnumber','sku'],
+  cpu:      ['cpu','processor','proc','cputype','cpumodel','chipset','specs'],
+  ram:      ['ram','memory','mem','ramsizeoutgoing','systemmemory','installedmemory','ramsize'],
+  ssd:      ['ssd','storage','hdd','disk','drive','hddsizeoutgoing','capacity','disksize','hddsize','storagesize'],
+  grade:    ['grade','condition','quality','cosmeticcategory','functionalgrade','cosmeticgrade','gradein'],
+  serial:   ['serial','serialnumber','sn','assettag','asset','devicetag','equipmentid','uid','serialnumberasset'],
+  qty:      ['qty','quantity','count','units','aantal'],
+  type:     ['producttype','producttyp','productype'],
+  category: ['modelcategory','category','devicetype','assettype'],
+  keyboard: ['keyboard','kb','toetsenbord','layout'],
+  location: ['location','country','region','site','locatie','locationdisplay'],
+};
+
+function resolveColumns(headerRow) {
+  const cells = headerRow.map(v => cellStr(v).toLowerCase().replace(/[\s_\-\.]/g, ''));
+  const map = {};
+  for (const [field, aliases] of Object.entries(COLUMN_ALIASES)) {
+    const idx = cells.findIndex(c => aliases.includes(c) || aliases.some(a => c === a));
+    map[field] = idx;
+  }
+  return map;
+}
+
+function hasColumns(colMap, ...fields) {
+  return fields.every(f => colMap[f] >= 0);
+}
+
+// ─── ADAPTIVE ROW FILTER ─────────────────────────────────────────────────────
+const DEVICE_TYPES = new Set(['notebook','laptop','desktop','workstation','server','tablet','allinone','computer']);
+const SKIP_TYPES = new Set(['monitor','flatpanel','mobilephone','phone','ipphone','printer','network','docking','cable','peripheral','accessory','other']);
+
+function isDeviceRow(row, colMap) {
+  // Check product type column
+  if (colMap.type >= 0) {
+    const t = cellStr(row[colMap.type]).toLowerCase().replace(/[\s\-\/]/g, '');
+    if (DEVICE_TYPES.has(t)) return true;
+    if (SKIP_TYPES.has(t)) return false;
+  }
+  // Check category column (e.g., "Computer")
+  if (colMap.category >= 0) {
+    const c = cellStr(row[colMap.category]).toLowerCase();
+    if (c === 'computer' || c === 'laptop' || c === 'notebook') return true;
+    if (c === 'monitor' || c === 'ip phone' || c === 'phone' || c === 'printer') return false;
+  }
+  // Check type column for EOL patterns (Cognizant: "EOL", "Apple EOL", "Google Asset EOL")
+  if (colMap.type >= 0) {
+    const t = cellStr(row[colMap.type]);
+    if (/EOL/i.test(t) && !/monitor|phone/i.test(t)) {
+      // If category column says "Computer", accept
+      if (colMap.category >= 0 && /computer/i.test(cellStr(row[colMap.category]))) return true;
+      // If no category column, accept EOL as device (conservative)
+      if (colMap.category < 0) return true;
+    }
+  }
+  // No type/category columns — accept all rows (GENERIC_HEADERS behavior)
+  if (colMap.type < 0 && colMap.category < 0) return true;
+  return false;
+}
+
+// ─── SMART FORMAT SCORING ────────────────────────────────────────────────────
 
 function detectFormat(wb) {
-  // 1. Check VENDOR_QUOTE first (takes priority over ARS when sheet has Product+Brand+Model+Processor headers)
-  for (const name of wb.SheetNames) {
-    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
-    const nonEmpty = rows.filter(r => r.some(v => cellStr(v).length > 0));
-    if (!nonEmpty.length) continue;
-    for (let i = 0; i < Math.min(5, nonEmpty.length); i++) {
-      const cells = nonEmpty[i].map(v => cellStr(v).toLowerCase());
-      const hasProduct  = cells.some(c => c === 'product');
-      const hasBrandCol = cells.some(c => c === 'brand');
-      const hasModel    = cells.some(c => c === 'model');
-      const hasProc     = cells.some(c => c.includes('processor') || c === 'p/n');
-      if (hasProduct && hasBrandCol && hasModel && hasProc) {
-        return 'VENDOR_QUOTE';
-      }
-    }
-  }
+  const scores = { VENDOR_QUOTE: 0, ARS: 0, ZONES_INVENTORY: 0, GENERIC_HEADERS: 0, ARS_SIMPLE: 0 };
 
-  // 2. PlanBit ARS — has "Customer Inventory" tab (but NOT "Customer Inventory and Details" which is VENDOR_QUOTE)
-  //    or RITM-prefixed sheets
+  // ── Sheet name hints ──
   const hasArsInventory = wb.SheetNames.some(n => {
-    const lower = n.toLowerCase().trim();
-    return lower.includes('customer inventory') && !lower.includes('and details');
+    const l = n.toLowerCase().trim();
+    return l.includes('customer inventory') && !l.includes('and details');
   });
-  if (hasArsInventory || wb.SheetNames.some(n => /^RITM/i.test(n.trim()))) {
-    return 'ARS';
-  }
+  const hasRitmSheets = wb.SheetNames.some(n => /^RITM/i.test(n.trim()));
+  if (hasArsInventory) scores.ARS += 10;
+  if (hasRitmSheets) scores.ARS += 5;
 
-  // 3. ZONES_INVENTORY — has Product Type + Brand + Model + Serial but NO CPU/RAM/SSD
+  // ── Column analysis per sheet ──
   for (const name of wb.SheetNames) {
-    const lower = name.toLowerCase();
     const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
     const nonEmpty = rows.filter(r => r.some(v => cellStr(v).length > 0));
     if (!nonEmpty.length) continue;
-    for (let i = 0; i < Math.min(3, nonEmpty.length); i++) {
-      const cells = nonEmpty[i].map(v => cellStr(v).toLowerCase().replace(/[\s_\-]/g,''));
-      const hasProductType = cells.some(c => c === 'producttype' || c === 'producttyp' || c === 'pat');
-      const hasBrand = cells.some(c => c === 'brand');
-      const hasModel = cells.some(c => c === 'model');
-      const hasSerial= cells.some(c => c.includes('serial'));
-      const hasCpu   = cells.some(c => c.includes('cpu') || c.includes('processor') || c.includes('cputype'));
-      // Strict: needs "Producttype" (not just "Type") + Brand + Model + Serial, NO cpu
-      if (hasProductType && hasBrand && hasModel && hasSerial && !hasCpu) {
-        return 'ZONES_INVENTORY';
+
+    // Check header rows (first 5)
+    for (let i = 0; i < Math.min(5, nonEmpty.length); i++) {
+      const colMap = resolveColumns(nonEmpty[i]);
+      const cells = nonEmpty[i].map(v => cellStr(v).toLowerCase());
+
+      // VENDOR_QUOTE: Product + Brand + Model + Processor
+      const hasProduct = cells.some(c => c === 'product' || c === 'configuration');
+      const hasProc = cells.some(c => c.includes('processor') || c === 'p/n' || c.includes('assumed specifications'));
+      if (hasProduct && hasColumns(colMap, 'brand', 'model') && hasProc) {
+        scores.VENDOR_QUOTE += 12;
       }
+
+      // ZONES_INVENTORY: strict Producttype + Brand + Model + Serial, NO cpu
+      if (hasColumns(colMap, 'type', 'brand', 'model', 'serial') && colMap.cpu < 0 && colMap.ram < 0) {
+        // Only if 'type' column is strict producttype (not generic "Type" like EOL status)
+        const typeHeader = cellStr(nonEmpty[i][colMap.type]).toLowerCase().replace(/[\s_\-]/g, '');
+        if (['producttype','producttyp','pat'].includes(typeHeader)) {
+          scores.ZONES_INVENTORY += 10;
+        }
+      }
+
+      // GENERIC_HEADERS: has model or serial column
+      if (colMap.model >= 0) scores.GENERIC_HEADERS += 3;
+      if (colMap.serial >= 0) scores.GENERIC_HEADERS += 2;
+      if (colMap.brand >= 0) scores.GENERIC_HEADERS += 2;
+      if (colMap.cpu >= 0) scores.GENERIC_HEADERS += 3;  // CPU column = strongly generic
+      if (colMap.ram >= 0) scores.GENERIC_HEADERS += 1;
     }
-  }
 
-  // 4. Check remaining formats
-  for (const name of wb.SheetNames) {
-    const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
-    const nonEmpty = rows.filter(r => r.some(v => cellStr(v).length > 0));
-    if (!nonEmpty.length) continue;
-
-    // 5. Generic with headers (Frankfurt style, any CSV with model column)
-    for (let i = 0; i < Math.min(10, nonEmpty.length); i++) {
-      const cells = nonEmpty[i].map(v => cellStr(v).toLowerCase().replace(/[\s_\-]/g,''));
-      const score = ['model','device','modelname','computername','description'].filter(k => cells.includes(k)).length
-                  + ['serial','serialnumber','sn'].filter(k => cells.includes(k)).length;
-      if (score >= 1) return 'GENERIC_HEADERS';
-    }
-
-    // 5. Data rows with product type in col0 (simplified ARS without inventory tab)
+    // ARS_SIMPLE: data rows with product type in col0
     const dataRows = nonEmpty.filter(r => isProductType(r[0]));
-    if (dataRows.length >= 2) return 'ARS_SIMPLE';
+    if (dataRows.length >= 2) scores.ARS_SIMPLE += 5;
   }
 
-  return 'GENERIC_HEADERLESS';
+  // ── Pick highest score ──
+  const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+  const format = best[1] > 0 ? best[0] : 'GENERIC_HEADERLESS';
+  console.log(`[detectFormat] Scores: ${JSON.stringify(scores)} → ${format}`);
+  return format;
 }
 
 // ─── PARSERS ─────────────────────────────────────────────────────────────────
@@ -410,34 +461,20 @@ function parseGenericHeaders(wb) {
     const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
     if (!rows.length) continue;
 
-    // Find header row
+    // Find header row using unified COLUMN_ALIASES
     let headerRowIdx = -1;
-    const COL_KEYS = {
-      brand:  ['manufacturer','brand','merk','vendor','make'],
-      model:  ['model','device','modelname','computername','description','productname','name','item','assetname'],
-      cpu:    ['cpu','processor','proc','cputype'],
-      ram:    ['ram','memory','mem','ramsizeoutgoing'],
-      ssd:    ['ssd','storage','hdd','disk','drive','hddsizeoutgoing'],
-      grade:  ['grade','condition','quality','cosmeticcategory'],
-      serial: ['serial','serialnumber','sn','assettag','asset'],
-      qty:    ['qty','quantity','count','units'],
-    };
-    const allKeys = Object.values(COL_KEYS).flat();
+    const allAliases = Object.values(COLUMN_ALIASES).flat();
 
     for (let i = 0; i < Math.min(10, rows.length); i++) {
       const cells = rows[i].map(v => cellStr(v).toLowerCase().replace(/[\s_\-\.]/g,''));
-      if (cells.filter(c => allKeys.includes(c)).length >= 1) {
+      if (cells.filter(c => allAliases.includes(c)).length >= 1) {
         headerRowIdx = i;
         break;
       }
     }
     if (headerRowIdx === -1) continue;
 
-    const header = rows[headerRowIdx].map(v => cellStr(v).toLowerCase().replace(/[\s_\-\.]/g,''));
-    const colMap = {};
-    for (const [field, keys] of Object.entries(COL_KEYS)) {
-      colMap[field] = header.findIndex(h => keys.includes(h));
-    }
+    const colMap = resolveColumns(rows[headerRowIdx]);
     console.log(`[parseGenericHeaders] Sheet "${name}" colMap:`, JSON.stringify(colMap));
 
     const mappedIdxs = new Set(Object.values(colMap).filter(i => i >= 0));
@@ -702,25 +739,20 @@ function parseZonesInventory(wb) {
     const rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
     if (rows.length < 2) continue;
 
-    // Find header row
-    let headerIdx = -1, colMap = {};
+    // Find header row using unified resolver
+    let headerIdx = -1;
+    let colMap = {};
     for (let i = 0; i < Math.min(5, rows.length); i++) {
-      const cells = rows[i].map(v => cellStr(v).toLowerCase().replace(/[\s_\-]/g, ''));
-      const typeCol  = cells.findIndex(c => c.includes('producttype') || c === 'type' || c === 'producttyp');
-      const catCol   = cells.findIndex(c => c.includes('modelcategory'));
-      const brandCol = cells.findIndex(c => c === 'brand' || c === 'manufacturer' || c === 'make');
-      const modelCol = cells.findIndex(c => c === 'model');
-      const serialCol= cells.findIndex(c => c.includes('serial') || c === 'sn');
-      const gradeCol = cells.findIndex(c => c.includes('grade'));
-      if (brandCol >= 0 && modelCol >= 0) {
+      const cm = resolveColumns(rows[i]);
+      if (cm.brand >= 0 && cm.model >= 0) {
         headerIdx = i;
-        colMap = { type: typeCol, category: catCol, brand: brandCol, model: modelCol, serial: serialCol, grade: gradeCol };
+        colMap = cm;
         break;
       }
     }
     if (headerIdx < 0) continue;
 
-    console.log(`[zones-inventory] Sheet "${name}": header at row ${headerIdx}, colMap:`, colMap);
+    console.log(`[zones-inventory] Sheet "${name}": header at row ${headerIdx}, colMap:`, JSON.stringify(colMap));
 
     // Aggregate by brand+model
     const groups = {};
@@ -728,19 +760,19 @@ function parseZonesInventory(wb) {
 
     for (let i = headerIdx + 1; i < rows.length; i++) {
       const row = rows[i];
+
+      // Use adaptive row filter
+      if (!isDeviceRow(row, colMap)) {
+        skippedNonNotebook++;
+        continue;
+      }
+
       const type  = colMap.type >= 0 ? cellStr(row[colMap.type]).toUpperCase() : '';
       const category = colMap.category >= 0 ? cellStr(row[colMap.category]).toUpperCase() : '';
       const brand = cellStr(row[colMap.brand]).toUpperCase();
       const model = cellStr(row[colMap.model]).trim();
 
-      // Filter: accept NOTEBOOK/LAPTOP/DESKTOP or "Computer" category or "*EOL" type (excl Monitor/Phone)
-      const isNotebook = type === 'NOTEBOOK' || type === 'LAPTOP' || type === 'DESKTOP';
-      const isComputer = category === 'COMPUTER' || category.includes('COMPUTER');
-      const isEolComputer = type.includes('EOL') && !type.includes('MONITOR') && !type.includes('PHONE');
-      if (!isNotebook && !isComputer && !isEolComputer) {
-        skippedNonNotebook++;
-        continue;
-      }
+      // isDeviceRow already filtered above
       if (!model) continue;
 
       const key = `${brand}|${model}`;
