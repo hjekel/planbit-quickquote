@@ -512,12 +512,15 @@ function analyzeDevices(devices, region = 'EU') {
     }
   });
 
-  // LOT DISCOUNT — apply quantity-based bulk discount (Cognizant correction)
+  // LOT DISCOUNT — Expected Resale Price adjustment for volume
+  // ERP = de prijs waartegen PlanBit deze assets kan DOORVERKOPEN aan B2B kopers
+  // Grotere loten → iets lagere per-unit resale (koper heeft meer onderhandelingsmacht)
+  // NB: model-specifieke caps (Gen8 max €20 etc.) doen het zware correctiewerk al
   const totalQty = devices.reduce((s, d) => s + (parseInt(d.qty || d.quantity, 10) || 1), 0);
   let lotFactor = 1.0;
-  if (totalQty >= 500) lotFactor = 0.65;
-  else if (totalQty >= 200) lotFactor = 0.72;
-  else if (totalQty >= 100) lotFactor = 0.80;
+  if (totalQty >= 500) lotFactor = 0.80;
+  else if (totalQty >= 200) lotFactor = 0.85;
+  else if (totalQty >= 100) lotFactor = 0.92;
 
   if (lotFactor < 1.0) {
     for (const r of results) {
