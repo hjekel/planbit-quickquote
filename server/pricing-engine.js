@@ -402,6 +402,93 @@ function calculatePrice(input) {
     }
   }
 
+  // ── COGNIZANT CORRECTIONS (19 maart 2026) ──────────────────────────────────
+
+  // 1. FLAT CAPS — hard max regardless of specs
+  const nm = normModel;
+  const isChromebook = nm.includes('chromebook');
+  const isLowSpec = nm.includes('probook 6') && (gen === 'Gen3' || gen === 'Gen4');
+  const isAncient = ['Gen3','Gen4','Gen5','Gen6'].includes(gen);
+  if (isChromebook || isLowSpec) {
+    if (advised > 10) { reasoning.push(`Flat cap: Chromebook/low-spec → €10 (was €${advised})`); advised = 10; }
+  } else if (isAncient && advised > 10) {
+    reasoning.push(`Flat cap: ${gen} (≤2015) → €10 (was €${advised})`);
+    advised = 10;
+  }
+
+  // 2. GEN8 BULK CAPS — model-specific max prices for lot sales
+  const GEN8_CAPS = [
+    { pat: /thinkpad\s*t4[789]0\b/i, cap: 20, label: 'ThinkPad T470/T480/T490 lot' },
+    { pat: /thinkpad\s*t495/i, cap: 25, label: 'ThinkPad T495 AMD lot' },
+    { pat: /latitude\s*(5490|5400|7390)/i, cap: 55, label: 'Dell Latitude Gen8 lot' },
+    { pat: /latitude\s*7480/i, cap: 25, label: 'Dell Latitude 7480 Gen7 lot' },
+    { pat: /thinkpad\s*x1\s*yoga.*g[1-4]/i, cap: 80, label: 'ThinkPad X1 Yoga Gen8 lot' },
+    { pat: /macbookpro14[,.]1|a1708/i, cap: 35, label: 'MacBookPro14,1 A1708' },
+    { pat: /a1278/i, cap: 75, label: 'MacBook Pro A1278' },
+  ];
+  for (const { pat, cap, label } of GEN8_CAPS) {
+    if (pat.test(rawModel) || pat.test(nm)) {
+      if (advised > cap) {
+        reasoning.push(`Gen8 lot cap: ${label} → MAX €${cap} (was €${advised})`);
+        advised = cap;
+      }
+      break;
+    }
+  }
+
+  // 3. APPLE QWERTZU CORRECTION (DACH market)
+  const isApple = nm.includes('macbook') || nm.includes('apple');
+  const isQwertzu = /qwertz/i.test(rawCpu) || /qwertz/i.test(rawModel) || region === 'DACH' || region === 'DE' || region === 'AT' || region === 'CH';
+  if (isApple && isQwertzu) {
+    const qzDiscount = Math.round(advised * 0.20);
+    reasoning.push(`Apple QWERTZU DACH correction: -20% (−€${qzDiscount})`);
+    advised = Math.round(advised * 0.80);
+    // Gen8 Apple QWERTZU hard cap
+    if (['Gen8','Gen7','Gen6'].includes(gen) && advised > 90) {
+      reasoning.push(`Apple Gen8 QWERTZU cap: €${advised} → €90`);
+      advised = 90;
+    }
+  }
+  // Apple Gen9 premium (correction upward)
+  if (isApple && gen === 'Gen9') {
+    const a2141Match = /a2141|macbookpro16[,.]1/i.test(rawModel) || /a2141|macbookpro16[,.]1/i.test(nm);
+    if (a2141Match && advised < 220) {
+      reasoning.push(`Apple A2141 Gen9 minimum: €${advised} → €220 (Joep benchmark)`);
+      advised = 220;
+    }
+  }
+
+  // 4. HP AMD RYZEN DACH LOT CORRECTION
+  const isAmdRyzen = /ryzen/i.test(rawCpu) || /ryzen/i.test(rawModel);
+  const isDach = ['DE','AT','CH','DACH'].includes(region);
+  if (isAmdRyzen && isDach) {
+    const AMD_RYZEN_CAPS = [
+      { pat: /845\s*g7|elitebook\s*845.*g7/i, cap: 150 },
+      { pat: /745\s*g6|elitebook\s*745.*g6/i, cap: 75 },
+      { pat: /845\s*g8|elitebook\s*845.*g8/i, cap: 80 },
+    ];
+    let matched = false;
+    for (const { pat, cap } of AMD_RYZEN_CAPS) {
+      if (pat.test(rawModel) || pat.test(nm)) {
+        if (advised > cap) {
+          reasoning.push(`AMD Ryzen DACH lot cap: MAX €${cap} (was €${advised})`);
+          advised = cap;
+        }
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) {
+      // General AMD Ryzen DACH discount: ×0.65
+      const before = advised;
+      advised = Math.round(advised * 0.65);
+      reasoning.push(`AMD Ryzen DACH liquiditeitskorting: ×0.65 (€${before} → €${advised})`);
+    }
+  }
+
+  // 5. LOT DISCOUNT (applied at batch level in analyzeDevices, not here)
+  // Lot discount is quantity-dependent and applied after individual pricing
+
   const low  = Math.round(advised * 0.85);
   const high = Math.round(advised * 1.15);
 
@@ -424,6 +511,26 @@ function analyzeDevices(devices, region = 'EU') {
       return { model: d.model || 'Unknown', status: 'ERROR', advisedPrice: 0, error: e.message };
     }
   });
+
+  // LOT DISCOUNT — apply quantity-based bulk discount (Cognizant correction)
+  const totalQty = devices.reduce((s, d) => s + (parseInt(d.qty || d.quantity, 10) || 1), 0);
+  let lotFactor = 1.0;
+  if (totalQty >= 500) lotFactor = 0.65;
+  else if (totalQty >= 200) lotFactor = 0.72;
+  else if (totalQty >= 100) lotFactor = 0.80;
+
+  if (lotFactor < 1.0) {
+    for (const r of results) {
+      if (r.advisedPrice > 0) {
+        const before = r.advisedPrice;
+        r.advisedPrice = Math.round(r.advisedPrice * lotFactor);
+        r.priceLow = Math.round((r.priceLow || before * 0.85) * lotFactor);
+        r.priceHigh = Math.round((r.priceHigh || before * 1.15) * lotFactor);
+        r.reasoning = r.reasoning || [];
+        r.reasoning.push(`Lot discount (${totalQty} stuks): ×${lotFactor} (€${before} → €${r.advisedPrice})`);
+      }
+    }
+  }
 
   const total  = results.length;
   const goList = results.filter(r => r.status === 'GO');
