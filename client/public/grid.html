@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="nl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRID — Graded Range Intelligence Dashboard · PlanBit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  /* ─── DARK THEME (default) ─── */
+  [data-theme="dark"] {
+    --pb-page:    #0B1829;
+    --pb-dark:    #111F31;
+    --pb-panel:   #162436;
+    --pb-card:    #1D2E42;
+    --pb-border:  #253B52;
+    --pb-muted:   #4A6A85;
+    --pb-text:    #C8D8E8;
+    --pb-white:   #F0F6FF;
+    --pb-gold:    #E8A020;
+    --pb-gold-dim:#7A5010;
+    --row-hover:  rgba(255,255,255,0.02);
+    --section-bg: var(--pb-dark);
+    --header-grad:linear-gradient(135deg, #111F31 0%, #0D1F35 100%);
+    --toggle-icon: "☀️";
+    --toggle-label: "Light";
+    --formula-bg: var(--pb-dark);
+    --thead-bg:   var(--pb-panel);
+    --row-header-bg: var(--pb-panel);
+  }
+
+  /* ─── LIGHT THEME ─── */
+  [data-theme="light"] {
+    --pb-page:    #F4F7FA;
+    --pb-dark:    #FFFFFF;
+    --pb-panel:   #F0F4F8;
+    --pb-card:    #FFFFFF;
+    --pb-border:  #D1DCE8;
+    --pb-muted:   #7A90A8;
+    --pb-text:    #2B3D52;
+    --pb-white:   #0B1829;
+    --pb-gold:    #C07810;
+    --pb-gold-dim:#F0D8A0;
+    --row-hover:  rgba(0,0,0,0.02);
+    --section-bg: #E8EFF6;
+    --header-grad:linear-gradient(135deg, #FFFFFF 0%, #EEF3F9 100%);
+    --toggle-icon: "🌙";
+    --toggle-label: "Dark";
+    --formula-bg: #EEF3F9;
+    --thead-bg:   #E4ECF4;
+    --row-header-bg: #EEF4FA;
+  }
+
+  /* Status colours — same in both themes */
+  :root {
+    --go-color:    #16A34A;
+    --go-bg:       rgba(22,163,74,0.10);
+    --go-border:   rgba(22,163,74,0.30);
+
+    --watch-color: #D97706;
+    --watch-bg:    rgba(217,119,6,0.10);
+    --watch-border:rgba(217,119,6,0.30);
+
+    --nogo-color:  #DC2626;
+    --nogo-bg:     rgba(220,38,38,0.10);
+    --nogo-border: rgba(220,38,38,0.30);
+
+    --apple-color: #7C3AED;
+    --apple-bg:    rgba(124,58,237,0.10);
+    --apple-border:rgba(124,58,237,0.30);
+
+    --ms-color:    #0078D4;
+    --ms-bg:       rgba(0,120,212,0.10);
+    --ms-border:   rgba(0,120,212,0.30);
+  }
+
+  [data-theme="dark"] {
+    --go-color:    #22D17A;
+    --go-bg:       rgba(34,209,122,0.10);
+    --go-border:   rgba(34,209,122,0.30);
+    --watch-color: #F59E0B;
+    --watch-bg:    rgba(245,158,11,0.10);
+    --watch-border:rgba(245,158,11,0.30);
+    --nogo-color:  #EF4444;
+    --nogo-bg:     rgba(239,68,68,0.10);
+    --nogo-border: rgba(239,68,68,0.30);
+    --apple-color: #A78BFA;
+    --apple-bg:    rgba(167,139,250,0.10);
+    --apple-border:rgba(167,139,250,0.30);
+    --ms-color:    #60ABEF;
+    --ms-bg:       rgba(96,171,239,0.10);
+    --ms-border:   rgba(96,171,239,0.30);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--pb-page);
+    color: var(--pb-text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--header-grad);
+    border-bottom: 1px solid var(--pb-border);
+    padding: 20px 32px 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    transition: background 0.25s;
+  }
+  .logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .logo-box {
+    background: var(--pb-gold);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 3px 8px;
+    letter-spacing: 1px;
+  }
+  .title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--pb-white);
+    letter-spacing: -0.3px;
+  }
+  .subtitle {
+    font-size: 11px;
+    color: var(--pb-muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .header-meta {
+    text-align: right;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--pb-muted);
+    line-height: 1.8;
+  }
+  .header-meta strong { color: var(--pb-gold); }
+
+  /* ─── THEME TOGGLE ─── */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pb-panel);
+    border: 1px solid var(--pb-border);
+    padding: 6px 12px 6px 10px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--pb-text);
+    transition: all 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .theme-toggle:hover { border-color: var(--pb-gold); color: var(--pb-gold); }
+  .theme-toggle .toggle-track {
+    width: 32px; height: 16px;
+    background: var(--pb-border);
+    border-radius: 8px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  [data-theme="light"] .theme-toggle .toggle-track { background: var(--pb-gold); }
+  .theme-toggle .toggle-thumb {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 12px; height: 12px;
+    background: var(--pb-white);
+    border-radius: 50%;
+    transition: left 0.2s;
+  }
+  [data-theme="light"] .theme-toggle .toggle-thumb { left: 18px; }
+
+  /* ─── CONTROLS ─── */
+  .controls {
+    background: var(--pb-dark);
+    border-bottom: 1px solid var(--pb-border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    transition: background 0.25s;
+  }
+  .ctrl-group { display: flex; flex-direction: column; gap: 5px; }
+  .ctrl-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--pb-muted);
+  }
+  .btn-row { display: flex; gap: 4px; flex-wrap: wrap; }
+  .btn {
+    background: var(--pb-panel);
+    border: 1px solid var(--pb-border);
+    color: var(--pb-text);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .btn:hover { border-color: var(--pb-gold); color: var(--pb-gold); }
+  .btn.active { background: var(--pb-gold); border-color: var(--pb-gold); color: #000; font-weight: 700; }
+  .btn.all-btn.active { background: var(--pb-muted); border-color: var(--pb-muted); color: #fff; }
+
+  .divider { width: 1px; height: 40px; background: var(--pb-border); flex-shrink: 0; }
+
+  .legend { margin-left: auto; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .leg-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--pb-muted); font-family: 'Space Mono', monospace; }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .leg-dot.go    { background: var(--go-color); }
+  .leg-dot.watch { background: var(--watch-color); }
+  .leg-dot.nogo  { background: var(--nogo-color); }
+  .leg-dot.apple { background: var(--apple-color); }
+  .leg-dot.ms    { background: var(--ms-color); }
+
+  .grade-row { display: flex; gap: 3px; }
+  .grade-btn {
+    background: var(--pb-panel);
+    border: 1px solid var(--pb-border);
+    color: var(--pb-muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 3px 7px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .grade-btn:hover { border-color: var(--pb-gold); color: var(--pb-gold); }
+  .grade-btn.active { background: var(--pb-gold); border-color: var(--pb-gold); color: #000; font-weight: 700; }
+
+  /* ─── MAIN ─── */
+  .main { padding: 24px 32px 48px; }
+
+  /* ─── SUMMARY CARDS ─── */
+  .summary-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+  .sum-card { background: var(--pb-panel); border: 1px solid var(--pb-border); padding: 14px 16px; border-radius: 2px; transition: background 0.25s, border 0.25s; }
+  .sum-card .sc-label { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--pb-muted); margin-bottom: 6px; }
+  .sum-card .sc-value { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; line-height: 1; margin-bottom: 2px; }
+  .sum-card .sc-sub { font-size: 11px; color: var(--pb-muted); }
+  .sum-card.gold .sc-value { color: var(--pb-gold); }
+  .sum-card.green .sc-value { color: var(--go-color); }
+
+  /* ─── FORMULA BAR ─── */
+  .formula-bar {
+    background: var(--formula-bg);
+    border: 1px solid var(--pb-border);
+    border-radius: 2px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--pb-muted);
+    flex-wrap: wrap;
+    transition: background 0.25s;
+  }
+  .formula-bar .fb-label { color: var(--pb-gold); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; flex-shrink: 0; }
+  .formula-bar code { color: var(--go-color); background: var(--go-bg); padding: 2px 6px; border-radius: 2px; font-size: 10px; }
+  .formula-bar .fb-sep { color: var(--pb-border); }
+
+  /* ─── TABLE ─── */
+  .grid-wrapper { overflow-x: auto; border: 1px solid var(--pb-border); border-radius: 2px; }
+  table.price-grid { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.price-grid thead tr { background: var(--thead-bg); position: sticky; top: 0; z-index: 10; transition: background 0.25s; }
+  table.price-grid th {
+    padding: 9px 12px;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--pb-muted);
+    border-bottom: 2px solid var(--pb-border);
+    border-right: 1px solid var(--pb-border);
+    white-space: nowrap;
+  }
+  table.price-grid th:first-child { text-align: left; min-width: 170px; }
+  table.price-grid th.brand-header {
+    font-size: 10px;
+    color: var(--pb-text);
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--pb-gold);
+  }
+  table.price-grid th.brand-header.apple-col { color: var(--apple-color); border-bottom-color: var(--apple-color); }
+  table.price-grid th.brand-header.ms-col { color: var(--ms-color); border-bottom-color: var(--ms-color); }
+
+  table.price-grid tbody tr { border-bottom: 1px solid var(--pb-border); transition: background 0.1s; }
+  table.price-grid tbody tr:hover { background: var(--row-hover); }
+  table.price-grid td { padding: 8px 10px; border-right: 1px solid var(--pb-border); vertical-align: middle; }
+  table.price-grid td:first-child { background: var(--row-header-bg); border-right: 2px solid var(--pb-border); white-space: nowrap; transition: background 0.25s; }
+
+  .gen-label { display: flex; align-items: center; gap: 8px; }
+  .gen-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    min-width: 28px;
+    text-align: center;
+  }
+  .gen-badge.go    { background: var(--go-bg);    color: var(--go-color);    border: 1px solid var(--go-border); }
+  .gen-badge.watch { background: var(--watch-bg); color: var(--watch-color); border: 1px solid var(--watch-border); }
+  .gen-badge.nogo  { background: var(--nogo-bg);  color: var(--nogo-color);  border: 1px solid var(--nogo-border); }
+  .gen-badge.apple { background: var(--apple-bg); color: var(--apple-color); border: 1px solid var(--apple-border); }
+  .gen-badge.ms    { background: var(--ms-bg);    color: var(--ms-color);    border: 1px solid var(--ms-border); }
+
+  .gen-info { display: flex; flex-direction: column; gap: 1px; }
+  .gen-info .gen-name { color: var(--pb-white); font-size: 12px; font-weight: 500; }
+  .gen-info .gen-year { color: var(--pb-muted); font-size: 9px; font-family: 'Space Mono', monospace; }
+  .ram-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--pb-muted); padding-left: 36px; padding-top: 6px; padding-bottom: 6px; }
+
+  /* ─── PRICE CELL ─── */
+  .price-cell { text-align: center; min-width: 88px; }
+  .hidden-col { display: none; }
+  .pc-inner { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 6px; border-radius: 3px; transition: background 0.1s; }
+  .pc-inner:hover { background: var(--row-hover); }
+  .pc-price { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; line-height: 1; }
+  .go    .pc-price { color: var(--go-color); }
+  .watch .pc-price { color: var(--watch-color); }
+  .nogo  .pc-price { color: var(--nogo-color); }
+  .apple .pc-price { color: var(--apple-color); }
+  .ms    .pc-price { color: var(--ms-color); }
+  .pc-range { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--pb-muted); }
+  .pc-grade { font-size: 9px; color: var(--pb-muted); font-family: 'Space Mono', monospace; }
+
+  /* ─── SECTION DIVIDER ─── */
+  .section-divider td {
+    background: var(--section-bg) !important;
+    padding: 6px 12px !important;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--pb-muted);
+    border-right: none !important;
+    border-bottom: 1px solid var(--pb-border) !important;
+    transition: background 0.25s;
+  }
+
+  /* ─── TOOLTIP ─── */
+  .tooltip-wrap { position: relative; display: inline-block; }
+  .tooltip-wrap .tip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--pb-card);
+    border: 1px solid var(--pb-border);
+    padding: 7px 10px;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: var(--pb-text);
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .tooltip-wrap:hover .tip { display: block; }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    margin-top: 32px;
+    border-top: 1px solid var(--pb-border);
+    padding-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--pb-muted);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer strong { color: var(--pb-gold); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+  .price-cell { animation: fadeIn 0.15s ease both; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-row">
+      <div class="logo-box">GRID</div>
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--pb-muted);">v1.2 · Graded Range Intelligence Dashboard</div>
+    </div>
+    <div class="title">PlanBit Pricing Matrix</div>
+    <div class="subtitle">Eureka Rule Book v8.8 · B2B Lot Inkoopprijzen · EUR excl. BTW</div>
+  </div>
+  <div class="header-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Wissel tussen dark en light mode">
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+      <span id="toggle-label">Light</span>
+    </button>
+    <div class="header-meta">
+      <div>Basis: <strong>Eureka Rule Book v8.8</strong></div>
+      <div>Brands: <strong>Dell · HP · Lenovo · Microsoft · Apple</strong></div>
+      <div>Gegenereerd: <strong>20 mrt 2026</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="ctrl-group">
+    <div class="ctrl-label">Brand</div>
+    <div class="btn-row" id="brand-btns">
+      <button class="btn all-btn active" data-brand="all"       onclick="filterBrand('all')">Alle</button>
+      <button class="btn"               data-brand="dell"      onclick="filterBrand('dell')">Dell</button>
+      <button class="btn"               data-brand="hp"        onclick="filterBrand('hp')">HP</button>
+      <button class="btn"               data-brand="lenovo"    onclick="filterBrand('lenovo')">Lenovo</button>
+      <button class="btn"               data-brand="microsoft" onclick="filterBrand('microsoft')">Microsoft</button>
+      <button class="btn"               data-brand="apple"     onclick="filterBrand('apple')">Apple</button>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="ctrl-group">
+    <div class="ctrl-label">RAM</div>
+    <div class="btn-row" id="ram-btns">
+      <button class="btn active" data-ram="8"  onclick="filterRAM('8')">8 GB</button>
+      <button class="btn active" data-ram="16" onclick="filterRAM('16')">16 GB</button>
+      <button class="btn active" data-ram="32" onclick="filterRAM('32')">32 GB</button>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="ctrl-group">
+    <div class="ctrl-label">Grade</div>
+    <div class="grade-row" id="grade-btns">
+      <button class="grade-btn active" data-grade="A" onclick="setGrade('A')">A</button>
+      <button class="grade-btn"        data-grade="B" onclick="setGrade('B')">B</button>
+      <button class="grade-btn"        data-grade="C" onclick="setGrade('C')">C</button>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="ctrl-group">
+    <div class="ctrl-label">Status</div>
+    <div class="btn-row" id="status-btns">
+      <button class="btn active" data-status="go"    onclick="toggleStatus('go')">✅ GO</button>
+      <button class="btn active" data-status="watch" onclick="toggleStatus('watch')">⚠️ WATCH</button>
+      <button class="btn active" data-status="nogo"  onclick="toggleStatus('nogo')">🔴 NO-GO</button>
+    </div>
+  </div>
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot go"></div>GO</div>
+    <div class="leg-item"><div class="leg-dot watch"></div>WATCH</div>
+    <div class="leg-item"><div class="leg-dot nogo"></div>NO-GO</div>
+    <div class="leg-item"><div class="leg-dot ms"></div>Microsoft</div>
+    <div class="leg-item"><div class="leg-dot apple"></div>Apple</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="formula-bar">
+    <span class="fb-label">Formule</span>
+    <code>Base × Grade × RAM</code>
+    <span class="fb-sep">|</span>
+    <span>B2C vuistregel: <code>B2C ÷ 2.0–2.2</code></span>
+    <span class="fb-sep">|</span>
+    <span>Grade A ×1.00 · B ×0.90 · C ×0.75</span>
+    <span class="fb-sep">|</span>
+    <span>8GB −10% · 16GB baseline · 32GB +10%</span>
+    <span class="fb-sep">|</span>
+    <span>WATCH: Gen8 max €75 · Gen9 max €100</span>
+    <span class="fb-sep">|</span>
+    <span>Microsoft Surface: premium ×1.10 vs Dell</span>
+  </div>
+
+  <div class="summary-row">
+    <div class="sum-card green">
+      <div class="sc-label">GO range</div>
+      <div class="sc-value" id="go-range">—</div>
+      <div class="sc-sub">Gen 10–14 · A-grade · 16GB</div>
+    </div>
+    <div class="sum-card">
+      <div class="sc-label">WATCH range</div>
+      <div class="sc-value" id="watch-range" style="color:var(--watch-color)">—</div>
+      <div class="sc-sub">Gen 8–9 · gecapped</div>
+    </div>
+    <div class="sum-card gold">
+      <div class="sc-label">Grade actief</div>
+      <div class="sc-value" id="active-grade-display">A</div>
+      <div class="sc-sub" id="grade-factor-label">Baseline (×1.00)</div>
+    </div>
+    <div class="sum-card">
+      <div class="sc-label">Surface Pro 9 (ref)</div>
+      <div class="sc-value" style="color:var(--ms-color)" id="ms-ref">—</div>
+      <div class="sc-sub">12e gen · A-grade · 16GB</div>
+    </div>
+    <div class="sum-card">
+      <div class="sc-label">Apple M3 (ref)</div>
+      <div class="sc-value" style="color:var(--apple-color)">€1.000</div>
+      <div class="sc-sub">MacBook Air M3 · direct lookup</div>
+    </div>
+  </div>
+
+  <div class="grid-wrapper">
+    <table class="price-grid" id="price-grid">
+      <thead>
+        <tr>
+          <th style="text-align:left">Generatie / RAM</th>
+          <th class="brand-header dell-col">Dell</th>
+          <th class="brand-header hp-col">HP</th>
+          <th class="brand-header lenovo-col">Lenovo</th>
+          <th class="brand-header ms-col">Microsoft</th>
+          <th class="brand-header apple-col">Apple</th>
+        </tr>
+      </thead>
+      <tbody id="grid-body"></tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <div>GRID v1.3 · <strong>Incredible Projects / Henk Jekel</strong> · Made for PlanBit</div>
+    <div>Bron: <strong>Eureka Rule Book v8.8</strong> · B2B lot indicaties excl. BTW · Altijd valideren met live marktdata</div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const BASE = {
+  14: { price: 450, status: 'go',    label: '14e Gen Intel',  year: '2023' },
+  13: { price: 380, status: 'go',    label: '13e Gen Intel',  year: '2022–23' },
+  12: { price: 310, status: 'go',    label: '12e Gen Intel',  year: '2021–22' },
+  11: { price: 245, status: 'go',    label: '11e Gen Intel',  year: '2020–21' },
+  10: { price: 200, status: 'go',    label: '10e Gen Intel',  year: '2019–20' },
+   9: { price: 160, status: 'watch', label: '9e Gen Intel',   year: '2018–19', cap: 100 },
+   8: { price: 150, status: 'watch', label: '8e Gen Intel',   year: '2017–18', cap: 75 },
+   7: { price: 70,  status: 'nogo',  label: '7e Gen Intel',   year: '2016–17' },
+   6: { price: 40,  status: 'nogo',  label: '6e Gen Intel',   year: '2015–16' },
+};
+
+// Brand multipliers vs generic base
+// Microsoft Surface commands a premium — positioned above Dell/HP in B2C,
+// but in ITAD bulk lots still achieves slightly above Dell due to brand perception.
+const BRAND_MULT = {
+  dell:      1.00,
+  hp:        0.97,
+  lenovo:    0.98,
+  microsoft: 1.10,   // Surface premium: better resale, niche B2B demand
+  apple:     null,   // separate lookup
+};
+
+const BRAND_NOTES = {
+  dell:      'ref',
+  hp:        '−3%',
+  lenovo:    '−2%',
+  microsoft: '+10% Surface',
+};
+
+const RAM_MULT   = { '8': 0.90, '16': 1.00, '32': 1.10 };
+const GRADE_MULT = { 'A': 1.00, 'B': 0.90, 'C': 0.75 };
+
+// Microsoft Surface generations (mapped to Intel gen)
+// Surface Pro 9 = Gen 12 (2022), Surface Pro 10 = Gen 13 (2023), Surface Laptop 5 = Gen 12
+const MS_MODELS = {
+  14: 'Surface Pro 10 / Laptop 6',
+  13: 'Surface Pro 10 / Laptop 5',
+  12: 'Surface Pro 9 / Laptop 5',
+  11: 'Surface Pro 8 / Laptop 4',
+  10: 'Surface Pro 7+ / Laptop 3',
+   9: 'Surface Pro 7 (2019)',
+   8: 'Surface Pro 6 (2018)',
+   7: 'Surface Pro 5 (2017)',
+   6: 'Surface Pro 4 (2015)',
+};
+
+const APPLE_SILICON = {
+  'M1':     { price: 360,  label: 'MacBook Air/Pro M1',    status: 'apple' },
+  'M1 Pro': { price: 468,  label: 'MacBook Pro 14 M1 Pro', status: 'apple' },
+  'M2':     { price: 800,  label: 'MacBook Air M2',         status: 'apple' },
+  'M2 Pro': { price: 900,  label: 'MacBook Pro M2 Pro',     status: 'apple' },
+  'M3':     { price: 1000, label: 'MacBook Air M3',         status: 'apple' },
+  'M3 Pro': { price: 1100, label: 'MacBook Pro M3 Pro',     status: 'apple' },
+};
+
+const APPLE_INTEL = [
+  { label: 'MBP 16" 2019', price: 320, status: 'watch' },
+  { label: 'MBP 13" 2019', price: 235, status: 'watch' },
+  { label: 'MBP 13" 2018', price: 235, status: 'watch' },
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+const state = {
+  brand:    'all',
+  rams:     new Set(['8','16','32']),
+  grade:    'A',
+  statuses: new Set(['go','watch','nogo']),
+};
+
+// ─── THEME TOGGLE ─────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const html  = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('toggle-label').textContent = isDark ? 'Dark' : 'Light';
+}
+
+// ─── FILTER HANDLERS ──────────────────────────────────────────────────────────
+function filterBrand(b) {
+  state.brand = b;
+  document.querySelectorAll('#brand-btns .btn').forEach(el =>
+    el.classList.toggle('active', el.dataset.brand === b));
+  render();
+}
+
+function filterRAM(r) {
+  if (state.rams.has(r)) { if (state.rams.size > 1) state.rams.delete(r); }
+  else state.rams.add(r);
+  document.querySelectorAll('#ram-btns .btn').forEach(el =>
+    el.classList.toggle('active', state.rams.has(el.dataset.ram)));
+  render();
+}
+
+function setGrade(g) {
+  state.grade = g;
+  document.querySelectorAll('#grade-btns .grade-btn').forEach(el =>
+    el.classList.toggle('active', el.dataset.grade === g));
+  document.getElementById('active-grade-display').textContent = g;
+  const labels = { A: 'Baseline (×1.00)', B: '−10% (×0.90)', C: '−25% (×0.75)' };
+  document.getElementById('grade-factor-label').textContent = labels[g];
+  render();
+}
+
+function toggleStatus(s) {
+  if (state.statuses.has(s)) { if (state.statuses.size > 1) state.statuses.delete(s); }
+  else state.statuses.add(s);
+  document.querySelectorAll('#status-btns .btn').forEach(el =>
+    el.classList.toggle('active', state.statuses.has(el.dataset.status)));
+  render();
+}
+
+// ─── PRICE CALC ───────────────────────────────────────────────────────────────
+function calcPrice(basePrice, status, brand, ram, grade, cap) {
+  if (status === 'nogo') return { price: 12, range: '€12', fixed: true };
+  const bm = BRAND_MULT[brand] ?? 1.0;
+  const rm = RAM_MULT[ram]     ?? 1.0;
+  const gm = GRADE_MULT[grade] ?? 1.0;
+  let p = basePrice * bm * rm * gm;
+  if (cap) p = Math.min(p, cap * gm);
+  p = Math.round(p / 5) * 5;
+  const lo = Math.round(p * 0.90 / 5) * 5;
+  const hi = Math.round(p * 1.12 / 5) * 5;
+  return { price: p, range: `€${lo}–€${hi}`, fixed: false };
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  const tbody  = document.getElementById('grid-body');
+  const rams   = ['8','16','32'].filter(r => state.rams.has(r));
+  const brands = ['dell','hp','lenovo','microsoft','apple'];
+
+  // Column visibility
+  brands.forEach(b => {
+    const show = state.brand === 'all' || state.brand === b;
+    document.querySelectorAll(`.${b}-col`).forEach(el =>
+      el.classList.toggle('hidden-col', !show));
+  });
+
+  let html = '';
+  const gens = [14,13,12,11,10,9,8,7,6];
+
+  for (const gen of gens) {
+    const info = BASE[gen];
+    if (!state.statuses.has(info.status)) continue;
+
+    // Section divider
+    if (gen === 14) html += `<tr class="section-divider"><td colspan="6">▶ GO — Windows 11 native · Gen 10–14</td></tr>`;
+    if (gen === 9)  html += `<tr class="section-divider"><td colspan="6">▶ WATCH — Win11 beperkt · gecapped bid</td></tr>`;
+    if (gen === 7)  html += `<tr class="section-divider"><td colspan="6">▶ NO-GO — Legacy · vaste €12/unit</td></tr>`;
+
+    for (let ri = 0; ri < rams.length; ri++) {
+      const ram     = rams[ri];
+      const isFirst = ri === 0;
+
+      html += `<tr data-gen="${gen}" data-status="${info.status}">`;
+
+      // Row header
+      if (isFirst && rams.length > 1) {
+        html += `<td rowspan="${rams.length}">
+          <div class="gen-label">
+            <div class="gen-badge ${info.status}">${gen}</div>
+            <div class="gen-info">
+              <span class="gen-name">${info.label}</span>
+              <span class="gen-year">${info.year}</span>
+            </div>
+          </div></td>`;
+      } else if (rams.length === 1) {
+        html += `<td>
+          <div class="gen-label">
+            <div class="gen-badge ${info.status}">${gen}</div>
+            <div class="gen-info">
+              <span class="gen-name">${info.label}</span>
+              <span class="gen-year">${info.year} · ${ram}GB · Grade ${state.grade}</span>
+            </div>
+          </div></td>`;
+      } else {
+        html += `<td><div class="ram-label">${ram} GB</div></td>`;
+      }
+
+      // Dell / HP / Lenovo cells
+      for (const b of ['dell','hp','lenovo']) {
+        const show = state.brand === 'all' || state.brand === b;
+        if (!show) { html += `<td class="${b}-col hidden-col"></td>`; continue; }
+        const { price, range, fixed } = calcPrice(info.price, info.status, b, ram, state.grade, info.cap);
+        const note = !fixed ? BRAND_NOTES[b] : '';
+        html += `<td class="price-cell ${b}-col ${info.status}">
+          <div class="tooltip-wrap">
+            <div class="pc-inner">
+              <div class="pc-price">${fixed ? '€12' : `€${price}`}</div>
+              ${!fixed ? `<div class="pc-range">${range}</div>` : ''}
+              ${note && note !== 'ref' ? `<div class="pc-grade">${note}</div>` : ''}
+            </div>
+            <div class="tip">
+              ${b.charAt(0).toUpperCase()+b.slice(1)} · Gen ${gen} · ${ram}GB · Grade ${state.grade}<br>
+              Base: €${info.price} · Merk: ×${BRAND_MULT[b]}<br>
+              ${info.cap ? `WATCH cap: €${info.cap}` : 'Geen cap'}
+            </div>
+          </div></td>`;
+      }
+
+      // Microsoft Surface cell
+      const msShow = state.brand === 'all' || state.brand === 'microsoft';
+      if (!msShow) {
+        html += `<td class="microsoft-col hidden-col"></td>`;
+      } else {
+        const { price: msp, range: msr, fixed: msf } = calcPrice(info.price, info.status, 'microsoft', ram, state.grade, info.cap);
+        const msModel = MS_MODELS[gen] || 'Surface';
+        html += `<td class="price-cell microsoft-col ms ${info.status === 'nogo' ? 'nogo' : 'ms'}">
+          <div class="tooltip-wrap">
+            <div class="pc-inner">
+              <div class="pc-price" style="color:var(--ms-color)">${msf ? '€12' : `€${msp}`}</div>
+              ${!msf ? `<div class="pc-range">${msr}</div>` : ''}
+              ${!msf ? `<div class="pc-grade" style="color:var(--ms-color);opacity:0.7;font-size:8px">${msModel}</div>` : ''}
+            </div>
+            <div class="tip">
+              Microsoft Surface · Gen ${gen} · ${ram}GB · Grade ${state.grade}<br>
+              ${msModel}<br>
+              Base: €${info.price} · Merk: ×${BRAND_MULT.microsoft} (Surface premium)<br>
+              ${info.cap ? `WATCH cap: €${info.cap}` : 'Geen cap'}
+            </div>
+          </div></td>`;
+      }
+
+      // Apple column — N/A for Intel rows (handled in Apple section below)
+      const apShow = state.brand === 'all' || state.brand === 'apple';
+      if (ri === 0) {
+        html += `<td class="price-cell apple-col" ${rams.length > 1 ? `rowspan="${rams.length}"` : ''} style="${!apShow?'display:none':''}">
+          <div class="pc-inner">
+            <div class="pc-price" style="color:var(--pb-muted);font-size:10px">—</div>
+            <div class="pc-grade">Zie Apple↓</div>
+          </div></td>`;
+      } else if (apShow) {
+        // already handled by rowspan
+      }
+
+      html += `</tr>`;
+    }
+  }
+
+  // ─── APPLE SILICON ────────────────────────────────────────────────────────
+  const apShow = state.brand === 'all' || state.brand === 'apple';
+  const msShow2 = state.brand === 'all' || state.brand === 'microsoft';
+
+  if (apShow || msShow2) {
+    html += `<tr class="section-divider"><td colspan="6">▶ APPLE SILICON — Direct lookup · generatie-onafhankelijk</td></tr>`;
+  }
+
+  if (apShow) {
+    for (const [chip, info] of Object.entries(APPLE_SILICON)) {
+      const gm  = GRADE_MULT[state.grade] ?? 1.0;
+      const adj = Math.round(info.price * gm / 5) * 5;
+      const lo  = Math.round(adj * 0.90 / 5) * 5;
+      const hi  = Math.round(adj * 1.12 / 5) * 5;
+
+      html += `<tr><td>
+        <div class="gen-label">
+          <div class="gen-badge apple">${chip}</div>
+          <div class="gen-info">
+            <span class="gen-name">${info.label}</span>
+            <span class="gen-year">Direct lookup · Grade ${state.grade}</span>
+          </div>
+        </div></td>`;
+
+      ['dell','hp','lenovo'].forEach(b => {
+        const s = state.brand !== 'all' && state.brand !== b;
+        html += `<td class="${b}-col${s?' hidden-col':''}"><div class="pc-inner"><div class="pc-price" style="color:var(--pb-muted)">—</div></div></td>`;
+      });
+
+      // Microsoft — N/A for Apple Silicon
+      html += `<td class="microsoft-col${!msShow2?' hidden-col':''}"><div class="pc-inner"><div class="pc-price" style="color:var(--pb-muted)">—</div></div></td>`;
+
+      html += `<td class="price-cell apple-col apple">
+        <div class="tooltip-wrap">
+          <div class="pc-inner">
+            <div class="pc-price">€${adj}</div>
+            <div class="pc-range">€${lo}–€${hi}</div>
+            <div class="pc-grade">Grade ${state.grade}</div>
+          </div>
+          <div class="tip">${chip} · Grade ${state.grade}<br>Base: €${info.price} · ×${gm.toFixed(2)}<br>RAM geïntegreerd in chip</div>
+        </div></td>`;
+      html += `</tr>`;
+    }
+
+    html += `<tr class="section-divider"><td colspan="6">▶ APPLE INTEL — Vaste lookup · WATCH</td></tr>`;
+    for (const item of APPLE_INTEL) {
+      const adj = Math.round(item.price * (GRADE_MULT[state.grade]??1) / 5) * 5;
+      html += `<tr><td>
+        <div class="gen-label">
+          <div class="gen-badge watch">Intel</div>
+          <div class="gen-info">
+            <span class="gen-name">${item.label}</span>
+            <span class="gen-year">Apple Intel · Grade ${state.grade}</span>
+          </div>
+        </div></td>`;
+      ['dell','hp','lenovo'].forEach(b => {
+        const s = state.brand !== 'all' && state.brand !== b;
+        html += `<td class="${b}-col${s?' hidden-col':''}"><div class="pc-inner"><div class="pc-price" style="color:var(--pb-muted)">—</div></div></td>`;
+      });
+      html += `<td class="microsoft-col${!msShow2?' hidden-col':''}"><div class="pc-inner"><div class="pc-price" style="color:var(--pb-muted)">—</div></div></td>`;
+      html += `<td class="price-cell apple-col watch">
+        <div class="pc-inner">
+          <div class="pc-price">€${adj}</div>
+          <div class="pc-grade">Grade ${state.grade}</div>
+        </div></td></tr>`;
+    }
+  }
+
+  tbody.innerHTML = html;
+  updateSummary();
+}
+
+function updateSummary() {
+  const g = state.grade;
+  document.getElementById('go-range').textContent =
+    `€${calcPrice(BASE[10].price,'go','dell','16',g,null).price}–€${calcPrice(BASE[14].price,'go','dell','16',g,null).price}`;
+  document.getElementById('watch-range').textContent =
+    `€${calcPrice(BASE[8].price,'watch','dell','16',g,BASE[8].cap).price}–€${calcPrice(BASE[9].price,'watch','dell','16',g,BASE[9].cap).price}`;
+  // Surface Pro 9 = Gen 12 ref
+  document.getElementById('ms-ref').textContent =
+    `€${calcPrice(BASE[12].price,'go','microsoft','16',g,null).price}`;
+}
+
+render();
+</script>
+
+<div style="padding:24px 32px 48px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--pb-white);margin-bottom:16px;">📋 Model Referentie — Top 40 (uit 24.826 verkooprecords)</div>
+  <div style="font-size:11px;color:var(--pb-muted);margin-bottom:12px;">Mediaan verkoopprijs per model · Grade B4 baseline · Bron: PlanBit Sales Orders 2024-2026</div>
+  <table class="price-grid" style="font-size:11px;">
+    <thead>
+      <tr>
+        <th style="text-align:left;min-width:220px;">Model</th>
+        <th>Gen</th>
+        <th>Verkopen</th>
+        <th>Mediaan €</th>
+        <th>Q1 €</th>
+        <th>Q3 €</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 5420</strong></td><td>Gen11</td><td>798</td><td style="color:var(--go-color);font-weight:700">€200</td><td>€95</td><td>€235</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 5400</strong></td><td>Gen10</td><td>743</td><td style="color:var(--watch-color);font-weight:700">€55</td><td>€40</td><td>€65</td><td><span class="gen-badge watch">W</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 5590</strong></td><td>Gen8</td><td>635</td><td style="color:var(--watch-color);font-weight:700">€90</td><td>€70</td><td>€165</td><td><span class="gen-badge watch">W</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 5410</strong></td><td>Gen10</td><td>627</td><td style="color:var(--go-color);font-weight:700">€190</td><td>€85</td><td>€225</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 5490</strong></td><td>Gen8</td><td>618</td><td style="color:var(--watch-color);font-weight:700">€45</td><td>€35</td><td>€50</td><td><span class="gen-badge watch">W</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP EliteBook 845 G7</strong></td><td>Gen10</td><td>540</td><td style="color:var(--go-color);font-weight:700">€75</td><td>€60</td><td>€200</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--apple-color)"><strong>Apple MacBookPro 16.1</strong></td><td>Gen9</td><td>513</td><td style="color:var(--apple-color);font-weight:700">€325</td><td>€185</td><td>€400</td><td><span class="gen-badge apple">🍎</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Lenovo ThinkPad T14 Gen 1</strong></td><td>Gen10</td><td>503</td><td style="color:var(--go-color);font-weight:700">€150</td><td>€95</td><td>€210</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP EliteBook 840 G5</strong></td><td>Gen8</td><td>473</td><td style="color:var(--watch-color);font-weight:700">€70</td><td>€65</td><td>€75</td><td><span class="gen-badge watch">W</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP EliteBook 840 G3</strong></td><td>Gen6</td><td>424</td><td style="color:var(--nogo-color);font-weight:700">€35</td><td>€30</td><td>€40</td><td><span class="gen-badge nogo">✗</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP EliteBook 840 G6</strong></td><td>Gen8</td><td>372</td><td style="color:var(--watch-color);font-weight:700">€65</td><td>€55</td><td>€70</td><td><span class="gen-badge watch">W</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 5500</strong></td><td>Gen8</td><td>349</td><td style="color:var(--watch-color);font-weight:700">€100</td><td>€79</td><td>€195</td><td><span class="gen-badge watch">W</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Lenovo ThinkPad L590</strong></td><td>Gen8</td><td>299</td><td style="color:var(--watch-color);font-weight:700">€130</td><td>€75</td><td>€160</td><td><span class="gen-badge watch">W</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP ProBook 450 G7</strong></td><td>Gen10</td><td>214</td><td style="color:var(--go-color);font-weight:700">€210</td><td>€210</td><td>€220</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 5520</strong></td><td>Gen11</td><td>162</td><td style="color:var(--go-color);font-weight:700">€140</td><td>€125</td><td>€260</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP EliteBook 850 G7</strong></td><td>Gen10</td><td>160</td><td style="color:var(--go-color);font-weight:700">€210</td><td>€90</td><td>€215</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--apple-color)"><strong>Apple MacBookPro 18.3</strong></td><td>M1Pro</td><td>147</td><td style="color:var(--apple-color);font-weight:700">€540</td><td>€260</td><td>€625</td><td><span class="gen-badge apple">🍎</span></td></tr>
+      <tr><td style="color:var(--apple-color)"><strong>Apple MacBookPro 16.2</strong></td><td>M1Pro</td><td>147</td><td style="color:var(--apple-color);font-weight:700">€225</td><td>€190</td><td>€355</td><td><span class="gen-badge apple">🍎</span></td></tr>
+      <tr><td style="color:var(--apple-color)"><strong>Apple MacBookPro 15.1</strong></td><td>Gen9</td><td>129</td><td style="color:var(--apple-color);font-weight:700">€230</td><td>€180</td><td>€325</td><td><span class="gen-badge apple">🍎</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP EliteBook 830 G7</strong></td><td>Gen10</td><td>90</td><td style="color:var(--go-color);font-weight:700">€202</td><td>€75</td><td>€225</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 3520</strong></td><td>Gen11</td><td>87</td><td style="color:var(--go-color);font-weight:700">€110</td><td>€110</td><td>€115</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP EliteBook 830 G8</strong> ⭐ 🌐</td><td>Gen11</td><td>~125*</td><td style="color:var(--go-color);font-weight:700">€170</td><td>€153</td><td>€175</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP EliteBook 845 G7</strong> ⭐ 🌐</td><td>Gen10 AMD</td><td>~103*</td><td style="color:var(--watch-color);font-weight:700">€150</td><td>€135</td><td>€165</td><td><span class="gen-badge watch">WATCH</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>HP EliteBook 640 G8</strong> ⭐ 🌐</td><td>Gen11</td><td>72*</td><td style="color:var(--go-color);font-weight:700">€190</td><td>€171</td><td>€200</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 5410</strong> ⭐</td><td>Gen10</td><td>23*</td><td style="color:var(--go-color);font-weight:700">€185</td><td>€148</td><td>€225</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Lenovo T14 Gen 2i</strong> ⭐</td><td>Gen11</td><td>23*</td><td style="color:var(--go-color);font-weight:700">€175</td><td>€173</td><td>€210</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Lenovo ThinkPad T480</strong> ⭐ 🌐</td><td>Gen8</td><td>16*</td><td style="color:var(--watch-color);font-weight:700">€15</td><td>€18</td><td>€35</td><td><span class="gen-badge watch">WATCH</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Apple MacBookPro16,1</strong> ⭐ 🌐</td><td>Gen9 Intel</td><td>10*</td><td style="color:var(--go-color);font-weight:700">€225</td><td>€176</td><td>€320</td><td><span class="gen-badge go">GO</span></td></tr>
+      <tr><td style="color:var(--pb-white)"><strong>Dell Latitude 5430</strong></td><td>Gen12</td><td>111</td><td style="color:var(--go-color);font-weight:700">€270</td><td>€250</td><td>€290</td><td><span class="gen-badge go">GO</span></td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:12px;font-size:10px;color:var(--pb-muted);font-family:'Space Mono',monospace;">
+    ⭐ = Cognizant deal bevestigd (20/03/26) · * = Joep referentieprijs · Q1/Q3 = 25e/75e percentiel bandbreedte · 🌐 = Live websearch 20/03/26 gevalideerd
+  </div>
+</div>
+
+<!-- DEAL HISTORY & REGIO LESSEN -->
+<div style="margin:16px 0;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;page-break-inside:avoid;">
+  <div style="background:#7c3aed;color:white;padding:6px 14px;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:1px;">
+    📚 Deal History — 18 deals · 16 gewonnen · Lessen per regio &amp; asset-type (Apr 2025 – Mrt 2026)
+  </div>
+
+  <!-- REGIO LESSEN -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid #e2e8f0;">
+    <div style="padding:10px 12px;border-right:1px solid #e2e8f0;">
+      <div style="font-weight:700;font-size:10px;color:#7c3aed;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">🌍 DACH (DE/AT/CH)</div>
+      <div style="font-size:10px;line-height:1.6;color:#374151;">
+        • QWERTZU Windows: <strong>−10%</strong> op ERP<br>
+        • QWERTZU Apple: <strong>−20%</strong> op ERP<br>
+        • AMD Ryzen: base <strong>×0.65</strong> (lagere liquiditeit)<br>
+        • Kleine AMD partij (&lt;15×): extra korting<br>
+        • Lot-caps = de lot-korting (geen dubbele)<br>
+        • Gen8 bulk 500+: caps zwaarder dan solo<br>
+        <em>Deals: Freshfields FRA/BER/DUS, Cognizant FRA, Tencent NL</em>
+      </div>
+    </div>
+    <div style="padding:10px 12px;border-right:1px solid #e2e8f0;">
+      <div style="font-weight:700;font-size:10px;color:#0369a1;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">🇬🇧 UK / Brexit</div>
+      <div style="font-size:10px;line-height:1.6;color:#374151;">
+        • GBP pricing: structureel <strong>−15% vs EUR</strong><br>
+        • UK + EU lot: <strong>aparte PO's, aparte bids</strong><br>
+        • eBay UK als primaire B2C bron<br>
+        • Freshfields LDN: gem. €250/stuk UK deel<br>
+        • Atlassian: UK + EU split, Apple A-code cruciaal<br>
+        <em>Deals: Freshfields MAN/LDN, Atlassian, RITM0081120, McDonalds UK</em>
+      </div>
+    </div>
+    <div style="padding:10px 12px;">
+      <div style="font-weight:700;font-size:10px;color:#16a34a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">🇳🇱 NL / EU / FR / APAC</div>
+      <div style="font-size:10px;line-height:1.6;color:#374151;">
+        • NL: standaard Eureka regels van toepassing<br>
+        • FR (Parijs): <strong>iets lagere liquiditeit</strong> (Joep: "iets te hoog")<br>
+        • APAC (Singapore): aparte pricing nodig, Apple premie hoger<br>
+        • Multi-site EU: per locatie beoordelen<br>
+        • Redeploy &gt; recycle stream in waarde<br>
+        <em>Deals: Tencent NL, Sedgwick AMS, Freshfields Q2 FR/NL, Singapore</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASSET TYPE LESSEN -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-bottom:1px solid #e2e8f0;">
+    <div style="padding:10px 12px;border-right:1px solid #e2e8f0;">
+      <div style="font-weight:700;font-size:10px;color:#0F1B2D;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">💻 Apple MacBooks</div>
+      <div style="font-size:10px;line-height:1.5;color:#374151;">
+        • A-code = leeftijdsindicator ✅<br>
+        • Pre-2017 (A1706/A1707): <strong>parts only</strong><br>
+        • A2141/A2151 (2019): courante modellen<br>
+        • A1278 (2012): onderdelen €50–75<br>
+        • M1/M2/M3: NOOIT notebook factor<br>
+        • Intel MacBook: WEL notebook factor
+      </div>
+    </div>
+    <div style="padding:10px 12px;border-right:1px solid #e2e8f0;">
+      <div style="font-weight:700;font-size:10px;color:#0F1B2D;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">🖥 Desktops</div>
+      <div style="font-size:10px;line-height:1.5;color:#374151;">
+        • <strong>Aparte regels — buiten Eureka notebook scope</strong><br>
+        • OptiPlex 3060 Gen8: max <strong>€45</strong> (niet €136)<br>
+        • Dell 7440/7450: tool te hoog (FIS)<br>
+        • Desktops = eigen pricing pipeline nodig<br>
+        <em>Les: FIS Netherlands Jul 2025</em>
+      </div>
+    </div>
+    <div style="padding:10px 12px;border-right:1px solid #e2e8f0;">
+      <div style="font-weight:700;font-size:10px;color:#0F1B2D;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">🖧 Servers</div>
+      <div style="font-size:10px;line-height:1.5;color:#374151;">
+        • <strong>Volledig buiten notebook Eureka</strong><br>
+        • Dell PowerEdge / HP ProLiant = eigen regels<br>
+        • UK servers: GBP + Brexit factor<br>
+        • IT servers: EU pricing<br>
+        <em>Les: McDonalds UK + Italy Feb 2026</em>
+      </div>
+    </div>
+    <div style="padding:10px 12px;">
+      <div style="font-weight:700;font-size:10px;color:#0F1B2D;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">📱 Chromebooks</div>
+      <div style="font-size:10px;line-height:1.5;color:#374151;">
+        • Celeron/Pentium: flat cap <strong>€9–10</strong> (e-waste)<br>
+        • <strong>i5/i7 + 16GB Chromebook ≠ e-waste</strong><br>
+        • Dell 5400 i7 16/512: Joep €75<br>
+        • i7 Chromebook min <strong>€50–75</strong><br>
+        <em>Les: Cognizant Frankfurt Mrt 2026</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEAL TABLE COMPACT -->
+  <table style="width:100%;border-collapse:collapse;font-size:10px;">
+    <thead>
+      <tr style="background:#f1f5f9;">
+        <th style="padding:4px 8px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:9px;text-transform:uppercase;letter-spacing:.5px;">Klant / Deal</th>
+        <th style="padding:4px 8px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:9px;text-transform:uppercase;letter-spacing:.5px;">Datum</th>
+        <th style="padding:4px 8px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:9px;text-transform:uppercase;letter-spacing:.5px;">Regio</th>
+        <th style="padding:4px 8px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:9px;text-transform:uppercase;letter-spacing:.5px;">Status</th>
+        <th style="padding:4px 8px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:9px;text-transform:uppercase;letter-spacing:.5px;">Kernles voor GRID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:600">5× Freshfields (FRA/BER/MAN/LDN/SIN)</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Jan '26</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">DACH / UK / APAC</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#16a34a;font-weight:700;">✅ WON ×5</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">UK −15% Brexit. DACH QWERTZU. UK/EU aparte PO's. APAC = eigen regels.</td></tr>
+      <tr style="background:#f8fafc"><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:600">Freshfields Dusseldorf (4 RITM)</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Mrt '26</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">DACH DE</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#16a34a;font-weight:700;">✅ WON</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">716× notebooks DACH. QWERTZU −10% Win bevestigd.</td></tr>
+      <tr><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:600">Freshfields Q2 e-waste (LYO/AMS/PAR)</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Jul '25</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">FR / NL</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#16a34a;font-weight:700;">✅ WON</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Parijs iets te hoog. FR = lagere liquiditeit dan NL.</td></tr>
+      <tr style="background:#f8fafc"><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:600">Atlassian (OPP0212851)</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Sep '25</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">UK + EU</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#16a34a;font-weight:700;">✅ WON</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Apple A1706/A1707 = parts only. A2141/A2151 = close ✓. A-code = leeftijdsindicator.</td></tr>
+      <tr><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:600">FIS Netherlands (OPP0216358)</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Jul '25</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">NL</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#16a34a;font-weight:700;">✅ WON</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#dc2626;">OptiPlex 3060 Gen8 desktop = €45 (niet €136). 5430 Gen13 = €270 (niet €5). Desktops ≠ notebook pricing!</td></tr>
+      <tr style="background:#f8fafc"><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:600">McDonalds Servers UK + Italy</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Feb '26</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">UK / IT</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#16a34a;font-weight:700;">✅ WON</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#dc2626;">Servers = volledig aparte pricing. Buiten Eureka/GRID scope.</td></tr>
+      <tr><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:600">Sedgwick Amstelveen</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Feb '26</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">NL</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#16a34a;font-weight:700;">✅ WON</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Redeploy &gt; recycle. NL standaard Eureka.</td></tr>
+      <tr style="background:#fef2f2"><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:700;color:#dc2626">Cognizant Frankfurt ⭐ 🎉</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Mrt '26</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">DACH Frankfurt</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#16a34a;font-weight:700;">✅ WON €79.605</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">ERPIE +40%→−9.9% in 24u. 7 lessen: QWERTZU, AMD ×0.65, lot-caps, Chromebook i7, A1278 parts, T480 €15, AMD kleine partij lager.</td></tr>
+      <tr style="background:#f8fafc"><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:600">84 Dells (Zones NL)</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Okt '25</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">NL</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#16a34a;font-weight:700;">✅ WON</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Dell 5410/5420/5430 Gen10-12 NL: spot on ✓. Bevestiging baseline NL pricing.</td></tr>
+      <tr><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;font-weight:600">Mender High-End (1.110× Dell)</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Jun '25</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">EU</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;color:#d97706;font-weight:700;">⚠️ TEST</td><td style="padding:3px 8px;border-bottom:1px solid #f1f5f9;">Mono-brand Dell lot 1.110×. 7th gen+ = caps. Volume lot-factor.</td></tr>
+      <tr style="background:#f8fafc"><td style="padding:3px 8px;font-weight:600">Tencent NL + Scylla EU</td><td style="padding:3px 8px;">Mrt '26</td><td style="padding:3px 8px;">NL / EU</td><td style="padding:3px 8px;color:#16a34a;font-weight:700;">✅ WON</td><td style="padding:3px 8px;">NL standaard Eureka. Mix-brand lots.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- LIVE WEBSEARCH VALIDATIE -->
+<div style="margin:16px 0;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;page-break-inside:avoid;">
+  <div style="background:#16a34a;color:white;padding:6px 14px;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:1px;">
+    🌐 Live Websearch Validatie — 20 maart 2026
+  </div>
+  <div style="padding:10px 14px;font-size:10px;color:#64748b;border-bottom:1px solid #e2e8f0;">
+    Bronnen: Amazon Renewed US · Back Market UK/NL · eBay UK · Tier1Online UK · DeviceRefresh US &nbsp;|&nbsp; 
+    Conversie: B2C ÷ 2.0–2.2 = B2B lot prijs &nbsp;|&nbsp; QWERTZU: −10% Windows / −20% Apple
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:11px;">
+    <thead>
+      <tr style="background:#f1f5f9;">
+        <th style="padding:5px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e2e8f0;">Model</th>
+        <th style="padding:5px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e2e8f0;">Bron</th>
+        <th style="padding:5px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e2e8f0;">Type</th>
+        <th style="padding:5px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e2e8f0;">Gevonden prijs</th>
+        <th style="padding:5px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e2e8f0;">B2B lot bandbreedte</th>
+        <th style="padding:5px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e2e8f0;">Joep</th>
+        <th style="padding:5px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e2e8f0;">Check</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#f8fafc;"><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;"><strong>HP EliteBook 830 G8</strong> i5-1145G7 16/512 QWERTZU</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;">Amazon Renewed / Back Market DE</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#dc2626;font-weight:700;">B2C</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;">$310–350 / €280–370</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#0F1B2D;font-weight:700;">€140–185</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#16a34a;font-weight:700;">€170</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#16a34a;font-weight:700;">✓</td></tr>
+      <tr><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;"><strong>HP EliteBook 845 G7</strong> Ryzen 5 4650U 16/512 QWERTZU</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;">Back Market US / Best Buy</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#dc2626;font-weight:700;">B2C</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;">$179–230 / €165–240</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#0F1B2D;font-weight:700;">€80–130</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#d97706;font-weight:700;">€150 (cap)</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#16a34a;font-weight:700;">✓</td></tr>
+      <tr style="background:#f8fafc;"><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;"><strong>Dell Latitude 5420</strong> i7-1185G7 16/512</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;">Tier1Online UK £440 (B2B!) / Back Market UK</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#16a34a;font-weight:700;">B2B + B2C</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;">£440 B2B / $329–450 B2C</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#0F1B2D;font-weight:700;">€155–210</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#16a34a;font-weight:700;">€175</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#16a34a;font-weight:700;">✓ perfect</td></tr>
+      <tr><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;"><strong>Lenovo ThinkPad T480</strong> i7-8650U 8/256</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;">eBay UK / Newegg</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#dc2626;font-weight:700;">B2C</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;">£53–85 / $99–150</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#0F1B2D;font-weight:700;">€10–35 (lot)</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#d97706;font-weight:700;">€15</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#16a34a;font-weight:700;">✓</td></tr>
+      <tr style="background:#f8fafc;"><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;"><strong>Apple MacBookPro16,1 A2141</strong> i7-9750H 16/512 QWERTZU</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;">DeviceRefresh / Wisetek EU / Walmart</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#dc2626;font-weight:700;">B2C</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;">$380–500 / €350–480</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#0F1B2D;font-weight:700;">€200–320</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#16a34a;font-weight:700;">€225</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#16a34a;font-weight:700;">✓</td></tr>
+      <tr><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;"><strong>Apple MacBook Pro A1278</strong> 2012 model</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;">eBay.de (onderdelen)</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#7c3aed;font-weight:700;">Parts B2C</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;">€40–100</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#0F1B2D;font-weight:700;">€50–75 (onderdelen)</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;font-family:monospace;color:#d97706;font-weight:700;">€75</td><td style="padding:5px 10px;border-bottom:1px solid #e2e8f0;color:#16a34a;font-weight:700;">✓ parts</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

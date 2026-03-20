@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>PlanBit Eureka Rule Book v8.8 — Pricing Reference</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+@page { size: A4; margin: 12mm; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: white; color: #1a202c; font-size: 12px; }
+.header { background: #0F1B2D; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.logo { border: 2px solid white; padding: 3px 8px; font-weight: 700; font-size: 14px; }
+.logo span { color: #E87722; }
+.header-title h1 { font-size: 18px; font-weight: 700; }
+.header-title p { color: #94a3b8; font-size: 11px; margin-top: 2px; }
+.header-right { text-align: right; font-size: 10px; color: #94a3b8; }
+.section { margin: 0 0 14px 0; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; page-break-inside: avoid; }
+.section-title { background: #E87722; color: white; padding: 6px 14px; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.section-title.blue { background: #0F1B2D; }
+.section-title.green { background: #16a34a; }
+.section-title.purple { background: #7c3aed; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+thead th { background: #f1f5f9; color: #374151; padding: 6px 10px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid #e2e8f0; }
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody td { padding: 5px 10px; border-bottom: 1px solid #e2e8f0; }
+tfoot td { padding: 6px 10px; font-weight: 700; background: #f1f5f9; border-top: 2px solid #0F1B2D; font-size: 11px; }
+.formula-box { background: #f0fdf4; border: 2px solid #16a34a; border-radius: 6px; padding: 10px 14px; margin: 10px 14px; font-family: monospace; font-size: 12px; }
+.warning-box { background: #fff7ed; border-left: 4px solid #E87722; padding: 8px 12px; margin: 8px 14px; font-size: 11px; }
+.critical-box { background: #fef2f2; border-left: 4px solid #dc2626; padding: 8px 12px; margin: 8px 14px; font-size: 11px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
+.tag-new { background: #dcfce7; color: #16a34a; border-radius: 3px; padding: 1px 5px; font-size: 9px; font-weight: 700; margin-left: 4px; }
+.tag-updated { background: #fff7ed; color: #ea580c; border-radius: 3px; padding: 1px 5px; font-size: 9px; font-weight: 700; margin-left: 4px; }
+.tag-critical { background: #fef2f2; color: #dc2626; border-radius: 3px; padding: 1px 5px; font-size: 9px; font-weight: 700; margin-left: 4px; }
+.footer { text-align: center; padding: 12px; font-size: 9px; color: #94a3b8; border-top: 1px solid #e2e8f0; margin-top: 16px; }
+.go { color: #16a34a; font-weight: 700; }
+.watch { color: #d97706; font-weight: 700; }
+.nogo { color: #dc2626; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">plan<span>B</span>it</div>
+  <div class="header-title">
+    <h1>Eureka Rule Book v8.8</h1>
+    <p>PlanBit Pricing Reference — Gekalibreerd op 24.826 verkooprecords + 18 deals (Apr 2025–Mrt 2026) + Joep feedback</p>
+  </div>
+  <div class="header-right">
+    Versie: 8.8<br>
+    Bijgewerkt: 20 maart 2026<br>
+    Status: LEIDEND (authoritative)
+  </div>
+</div>
+
+<!-- FORMULE -->
+<div class="section">
+  <div class="section-title green">📐 Basisformule</div>
+  <div class="formula-box">
+    ERP = (basePrice + ramAdj + ssdAdj + batteryAdj) × gradeMult × brandMult
+  </div>
+  <div class="warning-box">
+    ⚠️ <strong>NOOIT gebruiken:</strong> "Bid Price" of "Bid Factor" — alleen <strong>ERP</strong> (Expected Resale Price)
+    &nbsp;&nbsp;|&nbsp;&nbsp; Service Cost: €10–13 per device (COGS, niet aftrekken van ERP)
+  </div>
+</div>
+
+<!-- TWEE KOLOMMEN: BASE PRIJS + GRADE -->
+<div class="two-col">
+
+  <div class="section">
+    <div class="section-title">💻 Base Prijs per CPU Generatie (Grade A, 8GB, 256GB)</div>
+    <table>
+      <thead><tr><th>Gen</th><th>CPU Platform</th><th>Base ERP</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Gen 14</strong></td><td>Intel Core Ultra / i5-1345U</td><td>€400 <span class="tag-updated">CALIBRATED</span></td><td class="go">GO</td></tr>
+        <tr><td><strong>Gen 13</strong></td><td>i5-1345U / i7-1365U</td><td>€380</td><td class="go">GO</td></tr>
+        <tr><td><strong>Gen 12</strong></td><td>i5-1245U / i7-1265U</td><td>€285 <span class="tag-updated">CALIBRATED</span></td><td class="go">GO</td></tr>
+        <tr><td><strong>Gen 11</strong></td><td>i5-1135G7 / i7-1165G7</td><td>€210 <span class="tag-updated">CALIBRATED</span></td><td class="go">GO</td></tr>
+        <tr><td><strong>Gen 10</strong></td><td>i5-10210U / i7-10610U</td><td>€200</td><td class="go">GO</td></tr>
+        <tr><td><strong>Gen 9</strong></td><td>i5-8265U / i7-8565U</td><td>€160</td><td class="watch">WATCH</td></tr>
+        <tr><td><strong>Gen 8</strong></td><td>i5-8250U / i7-8650U</td><td>€85 <span class="tag-updated">CALIBRATED</span></td><td class="watch">WATCH</td></tr>
+        <tr><td><strong>Gen 7</strong></td><td>i5-7200U / i7-7600U</td><td>€70</td><td class="nogo">NO-GO</td></tr>
+        <tr><td><strong>Gen 6</strong></td><td>i5-6200U / i7-6600U</td><td>€40</td><td class="nogo">NO-GO</td></tr>
+      </tbody>
+    </table>
+    <div class="critical-box">
+      🚫 <strong>KRITIEK:</strong> HP EliteBook 840 G5/G6 (Gen8) → HALVEER: €75–100<br>
+      🚫 Dell Gen8 laptops: €100–120 (niet €150). Dit zijn FINALE prijzen, GEEN factor meer toepassen.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🏷️ Grade Vermenigvuldiger</div>
+    <table>
+      <thead><tr><th>Grade</th><th>Omschrijving</th><th>Multiplier</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A1</strong></td><td>Original sealed / nieuw in doos</td><td>×1.40</td></tr>
+        <tr><td><strong>A2</strong></td><td>Open box, pristine</td><td>×1.25</td></tr>
+        <tr><td><strong>A3</strong></td><td>Vrijwel geen gebruikssporen</td><td>×1.15</td></tr>
+        <tr><td><strong>A</strong></td><td>Standaard A-grade</td><td>×1.00</td></tr>
+        <tr><td><strong>B</strong></td><td>Goed, lichte slijtage</td><td>×0.90</td></tr>
+        <tr><td><strong>B4</strong></td><td>Baseline B-grade</td><td>×1.00 <span class="tag-updated">CALIBRATED</span></td></tr>
+        <tr><td><strong>C</strong></td><td>Defecten aanwezig</td><td>×0.70</td></tr>
+        <tr><td><strong>C6</strong></td><td>Zware slijtage</td><td>×0.37 <span class="tag-updated">CALIBRATED</span></td></tr>
+        <tr><td><strong>D</strong></td><td>Schade</td><td>×0.40</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title blue" style="margin-top:8px">🔋 Batterij Correctie (additief)</div>
+    <table>
+      <thead><tr><th>Staat</th><th>Aanpassing</th></tr></thead>
+      <tbody>
+        <tr><td>Aanwezig / goed</td><td>€0</td></tr>
+        <tr><td>Slecht / worn</td><td>−€35</td></tr>
+        <tr><td>Ontbreekt</td><td>−€50</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- RAM + SSD CORRECTIES -->
+<div class="two-col">
+  <div class="section">
+    <div class="section-title">🧠 RAM Correctie (additief) <span class="tag-updated">JOEP 19/03/26</span></div>
+    <table>
+      <thead><tr><th>RAM</th><th>Aanpassing</th><th>Opmerking</th></tr></thead>
+      <tbody>
+        <tr><td>4GB</td><td>−€40</td><td>Ondermaats</td></tr>
+        <tr><td>8GB</td><td>€0</td><td>Standaard baseline</td></tr>
+        <tr><td>16GB</td><td><strong>+€10–15</strong></td><td>Was +€30/+€70</td></tr>
+        <tr><td>32GB</td><td>+€50</td><td>Premium</td></tr>
+        <tr><td>64GB</td><td>+€100</td><td>Workstation</td></tr>
+      </tbody>
+    </table>
+    <div class="warning-box">Joep: "Het zijn aanvullingen op de basisprijs, geen grote stijgingen."</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">💾 SSD Correctie (additief) <span class="tag-updated">JOEP 19/03/26</span></div>
+    <table>
+      <thead><tr><th>SSD</th><th>Aanpassing</th><th>Opmerking</th></tr></thead>
+      <tbody>
+        <tr><td>Geen</td><td>−€50</td><td>Ernstig nadeel</td></tr>
+        <tr><td>128GB</td><td>−€25</td><td>Ondermaats</td></tr>
+        <tr><td>256GB</td><td>€0</td><td>Standaard baseline</td></tr>
+        <tr><td>512GB</td><td><strong>+€10–15</strong></td><td>Was +€35/+€70</td></tr>
+        <tr><td>1TB</td><td><strong>+€15–20</strong></td><td>Was +€70</td></tr>
+        <tr><td>2TB</td><td>+€80</td><td>Werkstation niveau</td></tr>
+      </tbody>
+    </table>
+    <div class="warning-box">Gen12+: NOOIT aanleveren met 8GB of 128GB — minimale specs zijn hoger.</div>
+  </div>
+</div>
+
+<!-- BRAND TIERS -->
+<div class="section">
+  <div class="section-title blue">🏢 Brand / Model Tier Vermenigvuldiger</div>
+  <div class="two-col" style="padding:0">
+    <table>
+      <thead><tr><th>Brand / Model</th><th>Multiplier</th></tr></thead>
+      <tbody>
+        <tr><td>Dell XPS / MacBook Pro</td><td>×1.15</td></tr>
+        <tr><td>HP ZBook / ThinkPad X1</td><td>×1.12</td></tr>
+        <tr><td>ThinkPad P (werkstation)</td><td>×1.10</td></tr>
+        <tr><td>EliteBook / Latitude / ThinkPad T&L</td><td>×1.00</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Brand / Model</th><th>Multiplier</th></tr></thead>
+      <tbody>
+        <tr><td>ThinkPad E / ProBook</td><td>×0.95</td></tr>
+        <tr><td>Dell Vostro</td><td>×0.92</td></tr>
+        <tr><td>IdeaPad / Inspiron</td><td>×0.90</td></tr>
+        <tr><td>HP Pavilion / 250 serie</td><td>×0.88</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- APPLE SILICON -->
+<div class="section">
+  <div class="section-title purple">🍎 Apple Silicon — Aparte Regels <span class="tag-critical">NOOIT notebook factor toepassen</span></div>
+  <div class="two-col" style="padding:0">
+    <table>
+      <thead><tr><th>Chip</th><th>Base ERP</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>M1</td><td>€375</td><td class="go">GO</td></tr>
+        <tr><td>M1 Pro</td><td>€400</td><td class="go">GO</td></tr>
+        <tr><td>M2</td><td>€800</td><td class="go">GO</td></tr>
+        <tr><td>M2 Pro</td><td>€900</td><td class="go">GO</td></tr>
+        <tr><td>M3</td><td>€1.000</td><td class="go">GO</td></tr>
+        <tr><td>M3 Pro</td><td>€1.050</td><td class="go">GO</td></tr>
+        <tr><td>M4</td><td>€1.100</td><td class="go">GO</td></tr>
+      </tbody>
+    </table>
+    <div style="padding:10px;font-size:11px">
+      <strong>Apple Silicon Regels:</strong><br><br>
+      ✅ Altijd premium — minimum €375 voor M1<br>
+      ✅ RAM/SSD impact WEL toepassen<br>
+      ✅ MacBook Pro 14/16 inch: +5% t.o.v. 13 inch<br><br>
+      🚫 GEEN notebook factor (×0.65) — NOOIT<br>
+      🚫 Intel MacBooks (pre-M1): gebruik CPU Gen tabel + WEL notebook factor<br><br>
+      <strong>12e Gen correctie:</strong><br>
+      Dell 5330/5430/5530: €250–290 (NIET €120–180)<br>
+      HP EliteBook G9: €250–290 — sterke generatie, niet onderwaarderen
+    </div>
+  </div>
+</div>
+
+<!-- B2B CONVERSIE -->
+<div class="section">
+  <div class="section-title green">🔄 B2C → B2B Prijsconversie <span class="tag-updated">JOEP 19/03/26</span></div>
+  <div class="formula-box">B2B ERP = B2C Verkoopprijs ÷ Factor</div>
+  <table>
+    <thead><tr><th>Factor</th><th>Wanneer toepassen</th><th>Voorbeeld</th></tr></thead>
+    <tbody>
+      <tr><td><strong>÷ 1.8</strong></td><td>Premium/werkstation: 9420, 9440, ZBook, XPS, Dell PRO</td><td>€1.341 ÷ 1.8 = €745</td></tr>
+      <tr><td><strong>÷ 2.0</strong></td><td>Standaard Gen10+, 16GB+, Grade A/B, courant model</td><td>€399 ÷ 2.0 = €200</td></tr>
+      <tr><td><strong>÷ 2.2</strong></td><td>Gen9, mix specs, twijfelgeval</td><td>€220 ÷ 2.2 = €100</td></tr>
+      <tr><td><strong>÷ 2.5</strong></td><td>Gen8−, 8GB RAM, Grade C, nichemodel</td><td>€200 ÷ 2.5 = €80</td></tr>
+    </tbody>
+  </table>
+  <div class="warning-box">
+    <strong>Bron voor B2C:</strong> Back Market NL (primair) → IT Gigant → The Broker Site → Amazon Renewed DE<br>
+    <strong>Workflow:</strong> Zoek EERST B2B (Broker Site, BVA). Geen B2B? Dan B2C omrekenen met bovenstaande factor.
+  </div>
+</div>
+
+<!-- STATUS + VOLUME -->
+<div class="two-col">
+  <div class="section">
+    <div class="section-title">🚦 Device Status Regels</div>
+    <table>
+      <thead><tr><th>Status</th><th>Criteria</th><th>Max ERP cap</th></tr></thead>
+      <tbody>
+        <tr><td class="go">✅ GO</td><td>CPU Gen 10+ of Apple Silicon</td><td>Geen cap</td></tr>
+        <tr><td class="watch">⚠️ WATCH</td><td>CPU Gen 8–9</td><td>Gen8: €120 · Gen9: €140</td></tr>
+        <tr><td class="nogo">🚫 NO-GO</td><td>CPU Gen 7 en ouder</td><td>Max €80</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title blue" style="margin-top:8px">📦 New &amp; Boxed Pricing</div>
+    <table>
+      <thead><tr><th>Staat</th><th>Richtprijs</th></tr></thead>
+      <tbody>
+        <tr><td>Original sealed (A1)</td><td>Min 30% onder Dell-adviesprijs</td></tr>
+        <tr><td>Open box (A2/A3)</td><td>~50% van nieuwwaarde</td></tr>
+      </tbody>
+    </table>
+    <div class="warning-box">Joep: "Als de eindklant 30% korting van Dell krijgt, betalen wij niet €900 voor een €1000 machine."</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📊 Volume Korting</div>
+    <table>
+      <thead><tr><th>Volume</th><th>Korting</th></tr></thead>
+      <tbody>
+        <tr><td>1–99</td><td>0%</td></tr>
+        <tr><td>100–499</td><td>0% (standaard)</td></tr>
+        <tr><td>500–999</td><td>−5%</td></tr>
+        <tr><td>1.000–4.999</td><td>−10%</td></tr>
+        <tr><td>5.000+</td><td>−15% tot −20%</td></tr>
+      </tbody>
+    </table>
+    <div class="warning-box">Korting is SUGGESTIE — PlanBit bepaalt de finale korting. ERPIE zit niet op Joep's stoel.</div>
+
+    <div class="section-title blue" style="margin-top:8px">📱 Mobile Phone Status</div>
+    <table>
+      <thead><tr><th>Device</th><th>ERP</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>iPhone 16</td><td>€600</td><td class="go">GO</td></tr>
+        <tr><td>iPhone 15</td><td>€250</td><td class="go">GO</td></tr>
+        <tr><td>iPhone 14</td><td>€350</td><td class="go">GO</td></tr>
+        <tr><td>iPhone 13</td><td>€130</td><td class="go">GO</td></tr>
+        <tr><td>iPhone 12</td><td>€175</td><td class="watch">WATCH</td></tr>
+        <tr><td>Samsung S24</td><td>€400</td><td class="go">GO</td></tr>
+        <tr><td>Samsung S23</td><td>€300</td><td class="go">GO</td></tr>
+        <tr><td>Samsung S22</td><td>€200</td><td class="watch">WATCH</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- KRITIEKE REGELS -->
+<div class="section">
+  <div class="section-title" style="background:#dc2626">🚫 Kritieke Regels — Nooit Overtreden</div>
+  <div style="padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="critical-box">
+      <strong>Joep's correcties zijn FINALE prijzen</strong><br>
+      Als MEMORY.md een specifieke prijs noemt → dat IS de ERP. Pas GEEN notebook factor meer toe.<br>
+      ✅ GOED: Dell 5430 Gen12 → MEMORY zegt €270 → ERP = €270<br>
+      ❌ FOUT: €270 × 0.65 = €175
+    </div>
+    <div class="critical-box">
+      <strong>Elk asset altijd apart in rapport</strong><br>
+      Nooit "Overige Dell" of "Overige HP". Elk serienummer = eigen regel.<br>
+      Onbekend model → WATCH + "Schatting*" + "verificatie vereist"<br>
+      Nieuw model → altijd live search Back Market NL + berekening tonen.
+    </div>
+  </div>
+</div>
+
+
+<!-- COGNIZANT LEARNINGS -->
+<div class="section">
+  <div class="section-title" style="background:#7c3aed">🧠 Cognizant Frankfurt — Geleerde Lessen (20 maart 2026) <span class="tag-new">NEW</span></div>
+  <div class="two-col" style="padding:0">
+    <table>
+      <thead><tr><th>Les</th><th>Correctie</th></tr></thead>
+      <tbody>
+        <tr><td><strong>QWERTZU Windows</strong></td><td>-10% op ERP (DACH markt)</td></tr>
+        <tr><td><strong>QWERTZU Apple</strong></td><td>-20% op ERP (DACH markt)</td></tr>
+        <tr><td><strong>AMD Ryzen DACH</strong></td><td>base ×0.65 (lagere liquiditeit)</td></tr>
+        <tr><td><strong>Lot-caps zijn de korting</strong></td><td>Geen extra lot-factor op gecapte modellen</td></tr>
+        <tr><td><strong>Chromebook met i7</strong></td><td>≠ e-waste, min €50 (Joep: €75)</td></tr>
+        <tr><td><strong>Apple A1278</strong></td><td>Onderdelen-waarde €50-75 (niet €8 e-waste)</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Model (bewezen)</th><th>Joep €</th><th>ERPIE €</th></tr></thead>
+      <tbody>
+        <tr><td>HP 830 G8 i5-1145G7 16/512</td><td class="go">€170</td><td>€153</td></tr>
+        <tr><td>HP 845 G7 Ryzen5 16/512</td><td class="go">€150</td><td>€135</td></tr>
+        <tr><td>HP 640 G8 i5-1135G7</td><td class="go">€190</td><td>€171</td></tr>
+        <tr><td>Dell 5420 i7-1185G7 16/512</td><td class="go">€175</td><td>€173</td></tr>
+        <tr><td>Dell 5410 i5-10210U 16/512</td><td class="go">€185</td><td>€148</td></tr>
+        <tr><td>Lenovo T14 Gen 2i 16/512</td><td class="go">€175</td><td>€173</td></tr>
+        <tr><td>Lenovo T480 i7-8650U 8/256</td><td class="watch">€15</td><td>€18</td></tr>
+        <tr><td>MacBookPro16,1 i7-9750H</td><td class="go">€225</td><td>€176</td></tr>
+      </tbody>
+      <tfoot>
+        <td>SCORE: 20/33 spot on (61%)</td><td>€79.605</td><td>€71.692</td>
+      </tfoot>
+    </table>
+  </div>
+  <div class="warning-box">
+    <strong>Delta ERPIE vs Joep: -9,9%</strong> — ERPIE is conservatief. Joep's DACH-marktkennis geeft hogere prijzen.<br>
+    <strong>Lot is WON</strong> — Joep heeft geoffreerd en deal Cognizant is binnen (bevestigd 20 maart 2026).
+  </div>
+</div>
+
+<!-- WATCH CAP UPDATE -->
+<div class="section">
+  <div class="section-title blue">⏱ Verwerkingssnelheid <span class="tag-new">NEW</span></div>
+  <div class="two-col" style="padding:10px">
+    <div>
+      <strong>19 maart (v8.7):</strong><br>
+      • ERPIE: €111.514 (+40% vs Joep)<br>
+      • Verwerkingstijd: ~6 minuten<br>
+      • Trainingsdata: 0 records
+    </div>
+    <div>
+      <strong>20 maart (v8.8):</strong><br>
+      • ERPIE: €71.692 (-9,9% vs Joep)<br>
+      • Verwerkingstijd: ~5 seconden (72× sneller)<br>
+      • Trainingsdata: 24.826 records
+    </div>
+  </div>
+</div>
+
+
+<!-- ALLE DEALS LESSEN -->
+<div class="section">
+  <div class="section-title" style="background:#7c3aed">📚 Deal History — 18 deals · 16 gewonnen · Lessen per klant <span class="tag-new">COMPLEET</span></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Klant / Deal</th><th>Datum</th><th>Regio</th><th>Type</th><th>Status</th><th>Joep Feedback + Geleerde Lessen</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Freshfields Frankfurt</strong><br><small>1974 — Zones</small></td><td>Jan '26</td><td>DACH DE</td><td>Notebooks</td><td class="go">✅ WON</td><td>Eerste DACH benchmark. Baseline NL/DACH pricing. QWERTZU ×0.90 (Windows).</td></tr>
+      <tr style="background:#f8fafc"><td><strong>Freshfields Berlin</strong><br><small>1970 — Zones</small></td><td>Jan '26</td><td>DACH DE</td><td>Notebooks 98×</td><td class="go">✅ WON</td><td>DACH Berlin = zelfde pricing als Frankfurt. HP/Dell Gen10-11 stabiel.</td></tr>
+      <tr><td><strong>Freshfields Manchester</strong><br><small>1954 — Zones</small></td><td>Jan '26</td><td>UK</td><td>Notebooks</td><td class="go">✅ WON</td><td><strong>UK = GBP, structureel -15% vs EUR (Brexit factor).</strong> eBay UK als primaire bron. Aparte stream van EU.</td></tr>
+      <tr style="background:#f8fafc"><td><strong>Freshfields London</strong><br><small>1957 — Zones</small></td><td>Jan '26</td><td>UK + NL</td><td>Notebooks</td><td class="go">✅ WON</td><td>Deal gesplitst: UK 24× GBP 5.178 (€6.000) + NL deel. Totaal €11k. <strong>UK/NL = aparte PO's, aparte pricing.</strong> Gem. €250/stuk UK.</td></tr>
+      <tr><td><strong>Freshfields Singapore</strong><br><small>1962 — Zones</small></td><td>Jan '26</td><td>APAC</td><td>Notebooks</td><td class="go">✅ WON</td><td>APAC pricing afwijkend. Apple premie hoger dan EU. <strong>Singapore: aparte pricing buiten Eureka regels.</strong></td></tr>
+      <tr style="background:#f8fafc"><td><strong>Freshfields Dusseldorf</strong><br><small>4 RITM — Zones</small></td><td>Mrt '26</td><td>DACH DE</td><td>716× notebooks</td><td class="go">✅ WON</td><td>DACH Dusseldorf = zelfde pricing Frankfurt/Berlin. QWERTZU -10% Windows bevestigd. 716 notebooks, 4 RITM-nummers.</td></tr>
+      <tr><td><strong>Freshfields RITM0081120</strong><br><small>Device Collection</small></td><td>Mei '25</td><td>EU</td><td>Notebooks</td><td class="go">✅ WON</td><td>4 jaar oude assets = Gen8/9 = conservatief. UK deel £4.110 (~€4.890). <strong>Splits UK/EU = aparte bids.</strong></td></tr>
+      <tr style="background:#f8fafc"><td><strong>Freshfields Q2 e-waste</strong><br><small>Lyon/AMS/Parijs</small></td><td>Jul '25</td><td>FR/NL</td><td>Notebooks multi-site</td><td class="go">✅ WON</td><td>Joep: "Lyon en Amsterdam close. <strong>Parijs iets te hoog oi.</strong>" FR markt heeft lagere liquiditeit. Multi-site = per locatie beoordelen.</td></tr>
+      <tr><td><strong>Tencent NL</strong><br><small>ARS Zones</small></td><td>Mrt '26</td><td>NL</td><td>Notebooks mix</td><td class="go">✅ WON</td><td>NL lot = standaard Eureka regels. Mix van merken. Deals geworden.</td></tr>
+      <tr style="background:#f8fafc"><td><strong>Sedgwick Amstelveen</strong><br><small>Redeploy</small></td><td>Feb '26</td><td>NL</td><td>Notebooks 39×</td><td class="go">✅ WON</td><td><strong>Redeploy = hogere waarde dan recycle stream.</strong> NL Amstelveen = geen DACH discount. Asset verification.</td></tr>
+      <tr><td><strong>Scylla Select EU</strong><br><small>OPP1227634</small></td><td>Mrt '26</td><td>EU</td><td>Mixed</td><td class="go">✅ WON</td><td>Klein lot (1 stuk ARS). €120 benchmark enkelstuks. EU ITAD standaard Eureka.</td></tr>
+      <tr style="background:#f8fafc"><td><strong>McDonalds Servers UK + IT</strong><br><small>ARS Zones</small></td><td>Feb '26</td><td>UK / IT</td><td><strong>SERVERS</strong></td><td class="go">✅ WON</td><td>Joep: "Zijn servers." <strong>Servers ≠ notebook pricing. Dell PowerEdge/HP ProLiant = aparte regels buiten Eureka.</strong></td></tr>
+      <tr><td><strong>FIS Netherlands</strong><br><small>OPP0216358 — Zones</small></td><td>Jul '25</td><td>NL Amsterdam</td><td>Notebooks + Desktops</td><td class="go">✅ WON</td><td>Joep: "Wij €10k lager. Tool naast op: <strong>Optiplex 3060 (Gen8 desktop) = €45, NIET €136. Dell 5430 Gen13 = €270, NIET €5.</strong> Dell 7440/7450 ook te hoog." Desktops = aparte regels.</td></tr>
+      <tr style="background:#f8fafc"><td><strong>Atlassian</strong><br><small>OPP0212851 — Zones</small></td><td>Sep '25</td><td>UK + EU</td><td>Apple mix + iPhones</td><td class="go">✅ WON</td><td>Joep: "<strong>A1706/A1707 = te oud, parts value only.</strong> A2141/A2151 close ✓. Dell en HP snap ik ook." <strong>Apple A-code = leeftijdsindicator cruciaal. Pre-2017 MacBooks = parts only.</strong></td></tr>
+      <tr><td><strong>Freshfields RITM0082980</strong><br><small>Mark de Jongh</small></td><td>Jun '25</td><td>EU</td><td>Device bulk</td><td class="watch">⚠️ ONBEKEND</td><td>2 quotes ter kalibratie tool. Bulk device collection = lot-factor toepassen.</td></tr>
+      <tr style="background:#f8fafc"><td><strong>Mender High-End</strong><br><small>Dell Laptops</small></td><td>Jun '25</td><td>EU</td><td>1.110× Dell nb.</td><td class="watch">⚠️ TEST</td><td>Mono-brand Dell lot. 1.110 notebooks, 7th gen+. Volume lot-factor toepassen. MENDER = partner PlanBit.</td></tr>
+      <tr style="background:#fef2f2"><td><strong>Cognizant Frankfurt</strong><br><small>Life bid — Zones</small></td><td>Mrt '26</td><td>DACH Frankfurt</td><td>545× notebooks</td><td class="go" style="font-weight:800">✅ WON 🎉</td><td>Joep: "Life bid. Koste mij 2 uur." €79.605 gewonnen. ERPIE: +40% → -9.9% in 24u. Score 20/33 (61%). <strong>7 kritieke lessen: QWERTZU Win -10%, Apple -20%, AMD DACH ×0.65, lot-caps = de korting, Chromebook i7 ≠ e-waste, A1278 = parts €50-75, T480 bulk = €15.</strong></td></tr>
+      <tr><td><strong>84 Dells</strong><br><small>Zones NL</small></td><td>Okt '25</td><td>NL</td><td>Dell notebooks</td><td class="go">✅ WON</td><td>Joep: "5410, 5420 en 5430 close/spot on." <strong>Dell Gen10-11 NL pricing goed gekalibreerd.</strong> Bevestiging baseline NL.</td></tr>
+    </tbody>
+  </table>
+  <div class="warning-box" style="margin:8px 14px;">
+    <strong>📊 Totaalscores:</strong> 18 deals getraceerd · 16 gewonnen (89%) · 52 unieke lessen geëxtraheerd · Periode: Apr 2025 – Mrt 2026<br>
+    <strong>Regio-lessen:</strong> DACH = QWERTZU -10% Win / -20% Apple / AMD ×0.65 &nbsp;|&nbsp; UK = Brexit -15% / GBP / aparte PO &nbsp;|&nbsp; NL = standaard Eureka &nbsp;|&nbsp; FR = iets lagere liquiditeit &nbsp;|&nbsp; APAC = eigen regels nodig<br>
+    <strong>Asset-lessen:</strong> Servers ≠ notebooks &nbsp;|&nbsp; Desktops = aparte regels &nbsp;|&nbsp; Apple A-code = leeftijdsindicator &nbsp;|&nbsp; Pre-2017 Apple = parts only &nbsp;|&nbsp; Gen8 bulk = caps zwaarder dan solo
+  </div>
+</div>
+
+<!-- LIVE WEBSEARCH VALIDATIE -->
+<div class="section">
+  <div class="section-title green">🌐 Live Websearch Validatie — 20 maart 2026</div>
+  <div class="warning-box" style="margin:8px 14px 4px;">
+    Bronnen: Amazon Renewed US · Back Market UK/NL · eBay UK · Tier1Online UK · DeviceRefresh US<br>
+    Conversie: B2C ÷ 1.21 (BTW) × 0.55–0.65 = B2B lot prijs &nbsp;|&nbsp; Vuistregel: B2B ≈ B2C ÷ 2.0–2.2
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th><th>Bron</th><th>Type</th><th>Gevonden prijs</th><th>B2B bandbreedte</th><th>Joep</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>HP EliteBook 830 G8</strong> i5-1145G7 16/512 QWERTZU</td><td>Amazon Renewed / Back Market DE</td><td style="color:#dc2626;font-weight:700">B2C</td><td style="font-family:monospace">$310–350 / €280–370</td><td style="font-family:monospace;font-weight:700">€140–185</td><td class="go">€170 ✓</td><td class="go">✅ GO</td></tr>
+      <tr><td><strong>HP EliteBook 845 G7</strong> Ryzen 5 4650U 16/512 QWERTZU</td><td>Back Market US / Best Buy Refurb</td><td style="color:#dc2626;font-weight:700">B2C</td><td style="font-family:monospace">$179–230 / €165–240</td><td style="font-family:monospace;font-weight:700">€80–130</td><td class="watch">€150 (cap) ✓</td><td class="watch">⚠️ AMD cap</td></tr>
+      <tr><td><strong>HP EliteBook 640 G8</strong> i5-1135G7 16/256 QWERTZU</td><td>Amazon Renewed / Back Market DE</td><td style="color:#dc2626;font-weight:700">B2C</td><td style="font-family:monospace">$220–290 / €200–270</td><td style="font-family:monospace;font-weight:700">€100–145</td><td class="go">€190 ✓</td><td class="go">✅ GO</td></tr>
+      <tr><td><strong>Dell Latitude 5420</strong> i7-1185G7 16/512</td><td>Tier1Online UK £440 (B2B) · Back Market UK</td><td style="color:#16a34a;font-weight:700">B2B + B2C</td><td style="font-family:monospace">£440 B2B / $329–450 B2C</td><td style="font-family:monospace;font-weight:700">€155–210</td><td class="go">€175 ✓ exact</td><td class="go">✅ GO</td></tr>
+      <tr><td><strong>Dell Latitude 5410</strong> i5-10210U 16/512</td><td>Amazon Renewed / eBay UK</td><td style="color:#dc2626;font-weight:700">B2C</td><td style="font-family:monospace">$199–260 / £129–169</td><td style="font-family:monospace;font-weight:700">€100–155</td><td class="go">€185 — DACH +</td><td class="go">✅ GO</td></tr>
+      <tr><td><strong>Lenovo ThinkPad T480</strong> i7-8650U 8/256 QWERTZU</td><td>eBay UK / Newegg US</td><td style="color:#dc2626;font-weight:700">B2C</td><td style="font-family:monospace">£53–85 / $99–150</td><td style="font-family:monospace;font-weight:700">€10–35 (lot)</td><td class="watch">€15 ✓</td><td class="watch">⚠️ Gen8 cap</td></tr>
+      <tr><td><strong>Apple MacBookPro16,1 A2141</strong> i7-9750H 16/512 QWERTZU</td><td>DeviceRefresh / Wisetek EU / Walmart</td><td style="color:#dc2626;font-weight:700">B2C</td><td style="font-family:monospace">$380–500 / €350–480</td><td style="font-family:monospace;font-weight:700">€200–320</td><td class="go">€225 ✓</td><td class="go">✅ GO</td></tr>
+      <tr><td><strong>Apple MacBook Pro A1278</strong> 2012 Sandy/Ivy Bridge</td><td>eBay.de onderdelen</td><td style="color:#7c3aed;font-weight:700">Parts</td><td style="font-family:monospace">€40–100</td><td style="font-family:monospace;font-weight:700">€50–75 (parts)</td><td class="watch">€75 ✓ parts</td><td class="watch">⚠️ onderdelen</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  PlanBit BV · Eureka Rule Book v8.8 · 20 maart 2026 · Bijgewerkt op basis van feedback Joep van Loon<br>
+  Opgesteld door Henk Jekel / Incredible Projects · Haarlem · ERPIE PriceFinder
+</div>
+</body>
+</html>
