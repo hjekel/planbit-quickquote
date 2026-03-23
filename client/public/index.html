@@ -1344,7 +1344,8 @@ async function doAiQuote() {
   }, 300);
 
   try {
-    const res = await fetch('/api/ai-quote', {
+    const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
+    const res = await fetch(`${apiBase}/api/ai-quote`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
