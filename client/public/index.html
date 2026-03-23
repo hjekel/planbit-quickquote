@@ -1770,7 +1770,8 @@ async function loadLog() {
   const content = document.getElementById("log-content");
   const stats = document.getElementById("log-stats");
   try {
-    const res = await fetch("/api/requests-log");
+    const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
+    const res = await fetch(apiBase + '/api/requests-log');
     const data = await res.json();
     if (!data.length) { content.innerHTML = "<div class=\"log-empty\">Geen requests gevonden.</div>"; stats.innerHTML = ""; return; }
     const totalReqs = data.length;

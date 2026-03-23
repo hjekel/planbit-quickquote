@@ -459,17 +459,25 @@ function calculatePrice(input) {
     { pat: /thinkpad\s*t480\b/i, cap: 65, label: 'ThinkPad T480 lot (actual median €76)' },
     { pat: /thinkpad\s*t490\b/i, cap: 65, label: 'ThinkPad T490 lot (actual median €75)' },
     { pat: /thinkpad\s*t495/i, cap: 25, label: 'ThinkPad T495 AMD lot' },
-    { pat: /latitude\s*(5490|5400|7390)/i, cap: 55, label: 'Dell Latitude Gen8 lot' },
+    { pat: /latitude\s*(5400|7390)/i, cap: 55, label: 'Dell Latitude Gen8 lot' },
+    { pat: /latitude\s*5490/i, cap: 110, capQwertzu: 99, label: 'Dell Latitude 5490 EINDPRIJS', isFinalPrice: true },
     { pat: /latitude\s*7480/i, cap: 25, label: 'Dell Latitude 7480 Gen7 lot' },
     { pat: /thinkpad\s*x1\s*yoga.*g[1-4]/i, cap: 80, label: 'ThinkPad X1 Yoga Gen8 lot' },
     { pat: /macbookpro14[,.]1|a1708/i, cap: 35, label: 'MacBookPro14,1 A1708' },
     { pat: /a1278/i, cap: 75, label: 'MacBook Pro A1278' },
   ];
-  for (const { pat, cap, label } of GEN8_CAPS) {
+  const isQwertzuKb = /qwertz/i.test(rawCpu) || /qwertz/i.test(rawModel) || ['DACH','DE','AT','CH'].includes(region);
+  for (const rule of GEN8_CAPS) {
+    const { pat, cap, label, capQwertzu, isFinalPrice } = rule;
     if (pat.test(rawModel) || pat.test(nm)) {
-      if (advised > cap) {
-        reasoning.push(`Gen8 lot cap: ${label} → MAX €${cap} (was €${advised})`);
-        advised = cap;
+      const effectiveCap = (capQwertzu && isQwertzuKb) ? capQwertzu : cap;
+      if (isFinalPrice) {
+        // EINDPRIJS: override all previous calculations (no RAM/SSD corrections)
+        reasoning.push(`EINDPRIJS: ${label} → €${effectiveCap}${isQwertzuKb ? ' (QWERTZU)' : ' (QWERTY)'} — no RAM/SSD adj`);
+        advised = effectiveCap;
+      } else if (advised > effectiveCap) {
+        reasoning.push(`Gen8 lot cap: ${label} → MAX €${effectiveCap} (was €${advised})`);
+        advised = effectiveCap;
       }
       break;
     }
