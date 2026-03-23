@@ -26,9 +26,17 @@ app.post('/api/ai-quote', async (req, res) => {
       env: { ...process.env, PATH: `${process.env.PATH}:/usr/local/bin:/opt/homebrew/bin` }
     });
     const parsed = JSON.parse(stdout);
-    const raw = parsed?.result?.payloads?.[0]?.text || parsed?.result || null;
-    if (!raw) return res.status(502).json({ ok: false, error: 'No pricing result from AI agent' });
-    const text = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2);
+    // Extract text from openclaw response – try multiple paths
+    const payloads = parsed?.result?.payloads || parsed?.payloads || [];
+    const text = payloads[0]?.text
+      || payloads[0]?.content
+      || (typeof parsed?.result === 'string' ? parsed.result : null)
+      || (typeof parsed?.text === 'string' ? parsed.text : null)
+      || null;
+    if (!text) {
+      console.error('Empty AI response:', JSON.stringify(parsed).slice(0, 500));
+      return res.status(502).json({ ok: false, error: 'AI agent returned no pricing result (empty payloads)' });
+    }
 
     // Log successful request
     const durationMs = Date.now() - startTime;
