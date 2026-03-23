@@ -519,6 +519,7 @@ input, select, button { font-family: inherit; }
             <option value="azerty-fr">AZERTY FR (French)</option>
             <option value="azerty-be">AZERTY BE (Belgian)</option>
             <option value="qwertz-de">QWERTZ DE (German)</option>
+            <option value="qwertzu">QWERTZU (German/Austrian)</option>
             <option value="qwertz-ch">QWERTZ CH (Swiss)</option>
             <option value="nordic">Nordic (Swedish/Danish/Norwegian)</option>
             <option value="other">Other / Unknown</option>
@@ -801,6 +802,7 @@ const MODELS = {
     { value: 'other', label: 'Ander HP model', group: 'Overig' }
   ],
   lenovo: [
+    { value: 'thinkpad-t480', label: 'ThinkPad T480', group: 'ThinkPad T', dtype: 'notebook' },
     { value: 'thinkpad-t14-gen2', label: 'ThinkPad T14 Gen 2', group: 'ThinkPad T', dtype: 'notebook' },
     { value: 'thinkpad-t14-gen3', label: 'ThinkPad T14 Gen 3', group: 'ThinkPad T', dtype: 'notebook' },
     { value: 'thinkpad-t14-gen4', label: 'ThinkPad T14 Gen 4', group: 'ThinkPad T', dtype: 'notebook' },
@@ -999,6 +1001,7 @@ const KEYBOARDS = [
   { value: 'azerty-fr', label: 'AZERTY FR (French)', warning: false },
   { value: 'azerty-be', label: 'AZERTY BE (Belgian)', warning: false },
   { value: 'qwertz-de', label: 'QWERTZ DE (German)', warning: true, warningText: '\u26a0\ufe0f Limited market' },
+  { value: 'qwertzu', label: 'QWERTZU (German/Austrian)', warning: true, warningText: '\u26a0\ufe0f Limited market' },
   { value: 'qwertz-ch', label: 'QWERTZ CH (Swiss)', warning: true, warningText: '\ud83d\udeab NO RESALE VALUE (\u20ac0)' },
   { value: 'nordic', label: 'Nordic (Swedish/Danish/Norwegian)', warning: true, warningText: '\u26a0\ufe0f Limited market' },
   { value: 'other', label: 'Other / Unknown', warning: false }
