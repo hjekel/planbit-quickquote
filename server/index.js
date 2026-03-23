@@ -30,7 +30,6 @@ app.post('/api/ai-quote', async (req, res) => {
     if (stderr) console.log('openclaw stderr:', stderr.slice(0, 500));
     console.log('openclaw stdout (first 300):', stdout.slice(0, 300));
     const parsed = JSON.parse(stdout);
-    // Extract text from openclaw response – try multiple paths
     const payloads = parsed?.result?.payloads || parsed?.payloads || [];
     const text = payloads[0]?.text
       || payloads[0]?.content
@@ -42,7 +41,6 @@ app.post('/api/ai-quote', async (req, res) => {
       return res.status(502).json({ ok: false, error: 'AI agent returned no pricing result (empty payloads)' });
     }
 
-    // Log successful request
     const durationMs = Date.now() - startTime;
     const logEntry = JSON.stringify({
       timestamp: new Date().toISOString(),
@@ -59,6 +57,46 @@ app.post('/api/ai-quote', async (req, res) => {
   } catch (err) {
     if (err.code === 'ENOENT') return res.status(503).json({ ok: false, error: `openclaw not found. Set OPENCLAW_PATH.` });
     res.status(err.killed ? 504 : 500).json({ ok: false, error: err.message });
+  }
+});
+
+// --- Request log viewer API ---
+app.get('/api/requests-log', (req, res) => {
+  try {
+    if (!fs.existsSync(LOG_PATH)) return res.json([]);
+    const raw = fs.readFileSync(LOG_PATH, 'utf8').trim();
+    if (!raw) return res.json([]);
+    const entries = raw.split('\n').map(line => {
+      try { return JSON.parse(line); } catch { return null; }
+    }).filter(Boolean).filter(e => {
+      // Only entries where price contains €
+      return typeof e.price === 'string' && e.price.includes('€');
+    }).map(e => {
+      // Extract ERP per unit price number from price text
+      let erpPrice = null;
+      const m = e.price.match(/ERP\s+per\s+unit[:\s]*€\s*([\d.,]+)/i)
+        || e.price.match(/per\s+unit[:\s]*€\s*([\d.,]+)/i)
+        || e.price.match(/€\s*([\d.,]+)\s*\/?\s*(?:per\s+)?unit/i)
+        || e.price.match(/€\s*([\d.,]+)/);
+      if (m) erpPrice = parseFloat(m[1].replace(',', '.'));
+      return {
+        timestamp: e.timestamp,
+        brand: e.brand || '',
+        model: e.model || '',
+        cpu: e.cpu || '',
+        ram: e.ram || '',
+        storage: e.storage || '',
+        grade: e.grade || '',
+        keyboard: e.keyboard || '',
+        quantity: e.quantity || '',
+        price: erpPrice,
+        duration_ms: e.duration_ms || 0
+      };
+    });
+    // Return newest first
+    res.json(entries.reverse());
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

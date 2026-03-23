@@ -244,6 +244,23 @@ input, select, button { font-family: inherit; }
 }
 
 /* ── Footer ──────────────────────────────────────────────────────── */
+/* ── Log Modal ───────────────────────────────────────────────────── */
+.log-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: background .2s, border-color .2s; flex-shrink: 0; }
+.log-btn:hover { border-color: var(--accent); }
+.log-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; justify-content:center; align-items:center; }
+.log-overlay.active { display:flex; }
+.log-panel { background:var(--surface); border-radius:var(--radius); width:95vw; max-width:1100px; max-height:85vh; overflow:auto; padding:24px; position:relative; box-shadow:0 8px 32px rgba(0,0,0,.3); }
+.log-panel h2 { margin-bottom:16px; font-size:18px; color:var(--accent); }
+.log-close { position:absolute; top:12px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; color:var(--muted); }
+.log-close:hover { color:var(--text); }
+.log-table { width:100%; border-collapse:collapse; font-size:13px; }
+.log-table th { background:var(--surface2); text-align:left; padding:8px 10px; border-bottom:2px solid var(--border); font-weight:700; white-space:nowrap; position:sticky; top:0; }
+.log-table td { padding:6px 10px; border-bottom:1px solid var(--border); }
+.log-table tr:hover td { background:var(--surface2); }
+.log-empty { text-align:center; padding:40px; color:var(--muted); }
+.log-stats { display:flex; gap:16px; margin-bottom:16px; flex-wrap:wrap; }
+.log-stat { background:var(--surface2); border-radius:8px; padding:10px 16px; font-size:13px; }
+.log-stat strong { font-size:18px; display:block; color:var(--accent); }
 .footer {
   padding: 20px 32px;
   border-top: 1px solid var(--border);
@@ -362,6 +379,23 @@ input, select, button { font-family: inherit; }
 .help-content p, .help-content li { font-size: 14px; line-height: 1.6; color: var(--text); }
 .help-content ol, .help-content ul { padding-left: 20px; margin: 0; }
 .help-content li { margin-bottom: 6px; }
+/* ── Log Modal ───────────────────────────────────────────────────── */
+.log-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: background .2s, border-color .2s; flex-shrink: 0; }
+.log-btn:hover { border-color: var(--accent); }
+.log-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; justify-content:center; align-items:center; }
+.log-overlay.active { display:flex; }
+.log-panel { background:var(--surface); border-radius:var(--radius); width:95vw; max-width:1100px; max-height:85vh; overflow:auto; padding:24px; position:relative; box-shadow:0 8px 32px rgba(0,0,0,.3); }
+.log-panel h2 { margin-bottom:16px; font-size:18px; color:var(--accent); }
+.log-close { position:absolute; top:12px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; color:var(--muted); }
+.log-close:hover { color:var(--text); }
+.log-table { width:100%; border-collapse:collapse; font-size:13px; }
+.log-table th { background:var(--surface2); text-align:left; padding:8px 10px; border-bottom:2px solid var(--border); font-weight:700; white-space:nowrap; position:sticky; top:0; }
+.log-table td { padding:6px 10px; border-bottom:1px solid var(--border); }
+.log-table tr:hover td { background:var(--surface2); }
+.log-empty { text-align:center; padding:40px; color:var(--muted); }
+.log-stats { display:flex; gap:16px; margin-bottom:16px; flex-wrap:wrap; }
+.log-stat { background:var(--surface2); border-radius:8px; padding:10px 16px; font-size:13px; }
+.log-stat strong { font-size:18px; display:block; color:var(--accent); }
 .help-footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); text-align: center; }
 .help-footer p { font-size: 12px; color: var(--muted); margin: 4px 0; }
 
@@ -412,6 +446,7 @@ input, select, button { font-family: inherit; }
       <span class="lang-divider">|</span>
       <button class="lang-btn" id="lang-en" onclick="setLanguage('en')" title="English">🇬🇧</button>
     </div>
+    <button class="log-btn" id="log-btn" onclick="toggleLog()" title="Request Log">📊</button>
     <button class="help-btn" id="help-btn" onclick="toggleHelp()" title="Help &amp; Info">?</button>
     <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">&#127769;</button>
   </div>
@@ -640,6 +675,15 @@ input, select, button { font-family: inherit; }
 
 </div>
 
+<!-- Log Modal -->
+<div class="log-overlay" id="log-overlay" onclick="if(event.target===this)toggleLog()">
+  <div class="log-panel">
+    <button class="log-close" onclick="toggleLog()">✕</button>
+    <h2>📊 Request Log</h2>
+    <div id="log-stats" class="log-stats"></div>
+    <div id="log-content"><div class="log-empty">Loading...</div></div>
+  </div>
+</div>
 <!-- Footer -->
 <div class="footer">
   <span data-i18n="footer">PlanBit Quick Quote · Made by Incredible Projects / Henk Jekel</span>
@@ -1715,6 +1759,38 @@ function updateSelectTranslations(lang) {
 
 // Apply saved language on load
 if (currentLang !== 'nl') setLanguage(currentLang);
+
+// ── Request Log Viewer ──────────────────────────────────────────
+function toggleLog() {
+  const el = document.getElementById("log-overlay");
+  const isOpen = el.classList.toggle("active");
+  if (isOpen) loadLog();
+}
+async function loadLog() {
+  const content = document.getElementById("log-content");
+  const stats = document.getElementById("log-stats");
+  try {
+    const res = await fetch("/api/requests-log");
+    const data = await res.json();
+    if (!data.length) { content.innerHTML = "<div class=\"log-empty\">Geen requests gevonden.</div>"; stats.innerHTML = ""; return; }
+    const totalReqs = data.length;
+    const avgPrice = data.filter(d=>d.price).reduce((s,d)=>s+d.price,0) / data.filter(d=>d.price).length;
+    const avgDur = Math.round(data.reduce((s,d)=>s+d.duration_ms,0) / totalReqs / 1000 * 10) / 10;
+    stats.innerHTML = "<div class=\"log-stat\"><strong>" + totalReqs + "</strong>Requests</div>" +
+      "<div class=\"log-stat\"><strong>€" + Math.round(avgPrice) + "</strong>Gem. prijs</div>" +
+      "<div class=\"log-stat\"><strong>" + avgDur + "s</strong>Gem. duur</div>";
+    let html = "<table class=\"log-table\"><thead><tr><th>Datum/Tijd</th><th>Merk</th><th>Model</th><th>CPU</th><th>RAM</th><th>SSD</th><th>Grade</th><th>KB</th><th>Qty</th><th>ERP</th><th>Duur</th></tr></thead><tbody>";
+    data.forEach(d => {
+      const dt = new Date(d.timestamp);
+      const ts = dt.toLocaleDateString("nl-NL",{day:"2-digit",month:"2-digit"}) + " " + dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
+      const dur = (d.duration_ms/1000).toFixed(1) + "s";
+      const price = d.price ? "€" + d.price : "—";
+      html += "<tr><td>" + ts + "</td><td>" + (d.brand||"—") + "</td><td>" + (d.model||"—") + "</td><td>" + (d.cpu||"—") + "</td><td>" + (d.ram||"—") + "</td><td>" + (d.storage||"—") + "</td><td>" + (d.grade||"—") + "</td><td>" + (d.keyboard||"—") + "</td><td>" + (d.quantity||"—") + "</td><td style=\"font-weight:700;color:var(--go)\">" + price + "</td><td>" + dur + "</td></tr>";
+    });
+    html += "</tbody></table>";
+    content.innerHTML = html;
+  } catch(e) { content.innerHTML = "<div class=\"log-empty\">Fout: " + e.message + "</div>"; stats.innerHTML = ""; }
+}
 </script>
 </body>
 </html>
