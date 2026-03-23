@@ -18,13 +18,13 @@ app.post('/api/ai-quote', async (req, res) => {
     const specs = [brand, model, cpu, ram, storage, condition, keyboard && 'Keyboard: ' + keyboard, region && 'Region: ' + region, battery && 'Battery: ' + battery, quantity && 'Quantity: ' + quantity].filter(Boolean).join(', ');
     if (!specs) return res.status(400).json({ ok: false, error: 'No device specs provided' });
 
-    const args = ['agent', '--agent', 'main', '-m', `Price this device: ${specs}`, '--json'];
+    const args = ['agent', '--agent', 'main', '-m', `Price this device: ${specs} [ref:${Date.now()}]`, '--json', ];
     const { stdout } = await execFileAsync(OPENCLAW_BIN, args, {
       timeout: 60000,
       env: { ...process.env, PATH: `${process.env.PATH}:/usr/local/bin:/opt/homebrew/bin` }
     });
     const parsed = JSON.parse(stdout);
-    const text = parsed?.result?.payloads?.[0]?.text || null;
+    const text = parsed?.result?.payloads?.[0]?.text || parsed?.result || null;
     if (!text) return res.status(502).json({ ok: false, error: 'No pricing result from AI agent' });
     res.json({ ok: true, result: text });
   } catch (err) {
