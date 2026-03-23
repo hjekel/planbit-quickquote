@@ -23,7 +23,7 @@ app.post('/api/ai-quote', async (req, res) => {
       env: { ...process.env, PATH: `${process.env.PATH}:/usr/local/bin:/opt/homebrew/bin` }
     });
     const parsed = JSON.parse(stdout);
-    const text = parsed.result?.payloads?.[0]?.text || parsed.result?.text || (typeof parsed.result === 'string' ? parsed.result : null) || parsed.text || parsed.output;
+    const text = parsed?.result?.payloads?.[0]?.text || null;
     if (!text) return res.status(502).json({ ok: false, error: 'No pricing result from AI agent' });
     res.json({ ok: true, result: text });
   } catch (err) {
