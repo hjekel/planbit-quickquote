@@ -1,6 +1,7 @@
 'use strict';
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const { execFile } = require('child_process');
 const { promisify } = require('util');
 const execFileAsync = promisify(execFile);
@@ -29,6 +30,16 @@ app.post('/api/ai-quote', async (req, res) => {
   } catch (err) {
     if (err.code === 'ENOENT') return res.status(503).json({ ok: false, error: `openclaw not found. Set OPENCLAW_PATH.` });
     res.status(err.killed ? 504 : 500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/feedback', (req, res) => {
+  try {
+    const line = JSON.stringify(req.body) + '\n';
+    fs.appendFileSync(path.join(__dirname, '..', 'feedback.jsonl'), line);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 

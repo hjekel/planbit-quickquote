@@ -619,6 +619,16 @@ input, select, button { font-family: inherit; }
       </div>
       <div id="ai-result-text" style="background:var(--surface2);border-radius:8px;padding:16px;font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;font-family:inherit;"></div>
       <div id="ai-result-error" style="display:none;background:#f4433620;border:1px solid var(--nogo);border-radius:8px;padding:14px;font-size:13px;color:var(--nogo);margin-top:12px;"></div>
+      <div id="ai-feedback-row" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Feedback op deze berekening</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button class="btn btn-feedback" onclick="sendFeedback('spot-on')" style="background:#2E7D32;color:white;padding:8px 16px;font-size:13px;">👍 Spot on</button>
+          <button class="btn btn-feedback" onclick="sendFeedback('te-hoog')" style="background:#C62828;color:white;padding:8px 16px;font-size:13px;">⬆️ Te hoog</button>
+          <button class="btn btn-feedback" onclick="sendFeedback('te-laag')" style="background:#1565C0;color:white;padding:8px 16px;font-size:13px;">⬇️ Te laag</button>
+          <input type="text" id="feedback-name" placeholder="Naam (optioneel)" maxlength="30" style="padding:8px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);width:160px;">
+        </div>
+        <div id="feedback-status" style="display:none;margin-top:8px;font-size:13px;color:var(--go);font-weight:600;"></div>
+      </div>
       <div id="ai-export-row" style="display:none;margin-top:14px;gap:8px;flex-wrap:wrap;">
         <button class="btn btn-ghost" onclick="exportAiResult('md')" title="Download als Markdown">📄 .md</button>
         <button class="btn btn-ghost" onclick="exportAiResult('pdf')" title="Download als PDF">📑 .pdf</button>
@@ -1386,6 +1396,9 @@ async function doAiQuote() {
       : elapsed.toFixed(1) + 's';
     textEl.innerHTML = formatAiResult(data.result)
       + '<div style="margin-top:16px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);font-style:italic;text-align:right;">⏱ Generated in ' + timeStr + '</div>';
+    document.getElementById('ai-feedback-row').style.display = 'block';
+    document.querySelectorAll('.btn-feedback').forEach(b => b.disabled = false);
+    document.getElementById('feedback-status').style.display = 'none';
     document.getElementById('ai-export-row').style.display = 'flex';
   } catch (err) {
     clearInterval(progressInterval);
@@ -1529,6 +1542,38 @@ function downloadBlob(blob, filename) {
   document.body.appendChild(a); a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+// ── Feedback ─────────────────────────────────────────────────────
+async function sendFeedback(verdict) {
+  const brandEl = document.getElementById('brand');
+  const modelEl = document.getElementById('model');
+  const brandLabel = brandEl.options[brandEl.selectedIndex]?.text || '';
+  const modelLabel = modelEl.options[modelEl.selectedIndex]?.text || '';
+  const device = `${brandLabel} ${modelLabel}`.trim();
+
+  const erpMatch = _lastAiResultPlainText.match(/ERP per unit:\s*(€[\d.,]+)/);
+  const erp = erpMatch ? erpMatch[1] : '';
+
+  const name = document.getElementById('feedback-name').value.trim();
+  const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
+
+  try {
+    await fetch(`${apiBase}/api/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ verdict, name, device, erp, timestamp: new Date().toISOString() })
+    });
+    document.querySelectorAll('.btn-feedback').forEach(b => b.disabled = true);
+    const status = document.getElementById('feedback-status');
+    status.textContent = '✓ Feedback opgeslagen';
+    status.style.display = 'block';
+  } catch (e) {
+    const status = document.getElementById('feedback-status');
+    status.textContent = 'Feedback opslaan mislukt';
+    status.style.color = 'var(--nogo)';
+    status.style.display = 'block';
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════
