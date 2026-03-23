@@ -8,11 +8,13 @@ const execFileAsync = promisify(execFile);
 
 const app = express();
 const OPENCLAW_BIN = process.env.OPENCLAW_PATH || 'openclaw';
+const LOG_PATH = path.join(__dirname, '..', 'data', 'requests.log');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
 
 app.post('/api/ai-quote', async (req, res) => {
+  const startTime = Date.now();
   try {
     const { brand, model, cpu, ram, storage, condition, keyboard, region, battery, quantity } = req.body;
     const specs = [brand, model, cpu, ram, storage, condition, keyboard && 'Keyboard: ' + keyboard, region && 'Region: ' + region, battery && 'Battery: ' + battery, quantity && 'Quantity: ' + quantity].filter(Boolean).join(', ');
@@ -26,6 +28,20 @@ app.post('/api/ai-quote', async (req, res) => {
     const parsed = JSON.parse(stdout);
     const text = parsed?.result?.payloads?.[0]?.text || parsed?.result || null;
     if (!text) return res.status(502).json({ ok: false, error: 'No pricing result from AI agent' });
+
+    // Log successful request
+    const durationMs = Date.now() - startTime;
+    const logEntry = JSON.stringify({
+      timestamp: new Date().toISOString(),
+      ip: req.headers['x-forwarded-for'] || req.ip,
+      brand, model, cpu, ram, storage, grade: condition, keyboard, quantity,
+      price: text,
+      duration_ms: durationMs
+    }) + '\n';
+    fs.appendFile(LOG_PATH, logEntry, (err) => {
+      if (err) console.error('Failed to write request log:', err.message);
+    });
+
     res.json({ ok: true, result: text });
   } catch (err) {
     if (err.code === 'ENOENT') return res.status(503).json({ ok: false, error: `openclaw not found. Set OPENCLAW_PATH.` });
