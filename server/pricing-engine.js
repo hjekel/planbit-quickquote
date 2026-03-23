@@ -125,7 +125,7 @@ const MODEL_DB = {
   // HP EliteBook 745
   'elitebook 745 g6': 'Gen8',
   // HP EliteBook 845
-  'elitebook 845 g7': 'Gen10', 'elitebook 845 g8': 'Gen11',
+  'elitebook 845 g7': 'Gen10', 'elitebook 845 g8': 'Gen11', 'elitebook 845 g9': 'Gen12', 'elitebook 845 g10': 'Gen13',
 
   // Dell Latitude extra
   'latitude 9420': 'Gen11', 'latitude 9440': 'Gen13',
