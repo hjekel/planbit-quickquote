@@ -502,15 +502,16 @@ function calculatePrice(input) {
   const isDach = ['DE','AT','CH','DACH'].includes(region);
   if (isAmdRyzen && isDach) {
     const AMD_RYZEN_CAPS = [
-      { pat: /845\s*g7|elitebook\s*845.*g7/i, cap: 150 },
-      { pat: /745\s*g6|elitebook\s*745.*g6/i, cap: 75 },
-      { pat: /845\s*g8|elitebook\s*845.*g8/i, cap: 80 },
+      { pat: /845\s*g7|elitebook\s*845.*g7/i, capQwerty: 120, capQwertzu: 108 },
+      { pat: /845\s*g8|elitebook\s*845.*g8/i, capQwerty: 135, capQwertzu: 122 },
+      { pat: /745\s*g6|elitebook\s*745.*g6/i, capQwerty: 75, capQwertzu: 68 },
     ];
     let matched = false;
-    for (const { pat, cap } of AMD_RYZEN_CAPS) {
+    for (const { pat, capQwerty, capQwertzu } of AMD_RYZEN_CAPS) {
       if (pat.test(rawModel) || pat.test(nm)) {
+        const cap = isQwertzu ? capQwertzu : capQwerty;
         if (advised > cap) {
-          reasoning.push(`AMD Ryzen DACH lot cap: MAX €${cap} (was €${advised})`);
+          reasoning.push(`AMD Ryzen DACH lot cap (${isQwertzu ? "QWERTZU" : "QWERTY"}): MAX €${cap} (was €${advised})`);
           advised = cap;
         }
         matched = true;
