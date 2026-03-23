@@ -1362,6 +1362,12 @@ async function doAiQuote() {
         quantity: quantityVal
       }),
     });
+    if (!res.ok) {
+      const text = await res.text();
+      let msg = `Server error ${res.status}`;
+      try { const j = JSON.parse(text); if (j.error) msg = j.error; } catch(_) {}
+      throw new Error(msg);
+    }
     const data = await res.json();
 
     clearInterval(progressInterval);

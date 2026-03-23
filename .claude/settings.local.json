@@ -6,7 +6,22 @@
       "Bash(taskkill:*)",
       "Bash(npm start:*)",
       "Bash(netstat -ano)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote log --all --grep=\"quickquote\\\\|quick quote\\\\|frontend\" --oneline)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote log --all -p --grep=\"quickquote\" | head -100)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote log --all --oneline | grep -i \"quick\\\\|quote\\\\|frontend\\\\|ui\\\\|design\" | head -20)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote show 382c682 --stat)",
+      "Bash(wc -l /Users/henkj/Desktop/planbit-quickquote/client/public/*.html)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote log --all -p --oneline | grep -A 50 \"Quick Quote\\\\|quick quote\\\\|frontend\" | head -100)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote log --all --format=\"%H %s\" | head -30)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote log --all -p --grep=\"Quick Quote\\\\|quick-quote\\\\|frontend\" | head -200)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote show 75d1221 --stat | head -100)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote log --all --pretty=format:\"%h %s\" --all-match --grep=\"frontend\\\\|Quick\\\\|design\\\\|spec\" | head -30)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote log --all -B5 --format='%H %s' | grep -i \"ui\\\\|design\\\\|redesign\\\\|polish\" | head -20)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote show 6a40c41 --stat)",
+      "Bash(git -C /Users/henkj/Desktop/planbit-quickquote show 6a40c41 | head -200)"
     ]
   }
 }
