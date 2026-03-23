@@ -9,6 +9,7 @@ const execFileAsync = promisify(execFile);
 const app = express();
 const OPENCLAW_BIN = process.env.OPENCLAW_PATH || 'openclaw';
 const LOG_PATH = path.join(__dirname, '..', 'data', 'requests.log');
+const FEEDBACK_PATH = path.join(__dirname, '..', 'data', 'feedback.jsonl');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
@@ -100,10 +101,26 @@ app.get('/api/requests-log', (req, res) => {
   }
 });
 
+
+// --- Feedback log viewer API ---
+app.get('/api/feedback-log', (req, res) => {
+  try {
+    if (!fs.existsSync(FEEDBACK_PATH)) return res.json([]);
+    const raw = fs.readFileSync(FEEDBACK_PATH, 'utf8').trim();
+    if (!raw) return res.json([]);
+    const entries = raw.split('\n').map(line => {
+      try { return JSON.parse(line); } catch { return null; }
+    }).filter(Boolean).reverse();
+    res.json(entries);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/feedback', (req, res) => {
   try {
     const line = JSON.stringify(req.body) + '\n';
-    fs.appendFileSync(path.join(__dirname, '..', 'feedback.jsonl'), line);
+    fs.appendFile(FEEDBACK_PATH, line, (err) => { if (err) console.error('Feedback write error:', err.message); });
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });

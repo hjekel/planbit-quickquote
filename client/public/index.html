@@ -664,6 +664,15 @@ input, select, button { font-family: inherit; }
           <input type="text" id="feedback-name" data-i18n-placeholder="feedbackNamePlaceholder" placeholder="Jouw naam (optioneel)" maxlength="30" style="padding:8px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);width:160px;">
         </div>
         <div id="feedback-status" style="display:none;margin-top:8px;font-size:13px;color:var(--go);font-weight:600;"></div>
+        <div id="feedback-form" style="display:none;margin-top:12px;padding:12px;background:var(--surface2);border-radius:8px;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
+            <label style="font-size:12px;color:var(--muted);white-space:nowrap;">Jouw prijs (optioneel):</label>
+            <input type="text" id="feedback-price" placeholder="€___" maxlength="10" style="padding:6px 10px;font-size:13px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);width:90px;">
+            <label style="font-size:12px;color:var(--muted);white-space:nowrap;">Opmerking:</label>
+            <input type="text" id="feedback-comment" placeholder="Optioneel..." maxlength="200" style="padding:6px 10px;font-size:13px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);flex:1;min-width:120px;">
+          </div>
+          <button class="btn" id="feedback-submit-btn" onclick="submitFeedbackForm()" style="background:var(--accent);color:white;padding:6px 18px;font-size:13px;border-radius:8px;">✓ Verstuur</button>
+        </div>
       </div>
       <div id="ai-export-row" style="display:none;margin-top:14px;gap:8px;flex-wrap:wrap;">
         <button class="btn btn-ghost" onclick="exportAiResult('md')" title="Download als Markdown">📄 .md</button>
@@ -1597,35 +1606,43 @@ function downloadBlob(blob, filename) {
 }
 
 // ── Feedback ─────────────────────────────────────────────────────
+let _pendingVerdict = null;
 async function sendFeedback(verdict) {
+  _pendingVerdict = verdict;
+  // Highlight selected button
+  document.querySelectorAll('.btn-feedback').forEach(b => b.style.opacity = '0.5');
+  event.target.style.opacity = '1';
+  // Show expanded form
+  document.getElementById('feedback-form').style.display = 'block';
+}
+async function submitFeedbackForm() {
+  const verdict = _pendingVerdict;
   const brandEl = document.getElementById('brand');
   const modelEl = document.getElementById('model');
   const brandLabel = brandEl.options[brandEl.selectedIndex]?.text || '';
   const modelLabel = modelEl.options[modelEl.selectedIndex]?.text || '';
   const device = `${brandLabel} ${modelLabel}`.trim();
-
   const erpMatch = _lastAiResultPlainText.match(/ERP per unit:\s*(€[\d.,]+)/);
   const erp = erpMatch ? erpMatch[1] : '';
-
   const name = document.getElementById('feedback-name').value.trim();
+  const userPrice = document.getElementById('feedback-price').value.trim();
+  const comment = document.getElementById('feedback-comment').value.trim();
   const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
-
   try {
     await fetch(`${apiBase}/api/feedback`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ verdict, name, device, erp, timestamp: new Date().toISOString() })
+      body: JSON.stringify({ verdict, name, device, erp, userPrice, comment, timestamp: new Date().toISOString() })
     });
-    document.querySelectorAll('.btn-feedback').forEach(b => b.disabled = true);
-    const t = TRANSLATIONS[currentLang];
+    document.querySelectorAll('.btn-feedback').forEach(b => { b.disabled = true; b.style.opacity = '1'; });
+    document.getElementById('feedback-submit-btn').disabled = true;
     const status = document.getElementById('feedback-status');
-    status.textContent = t.feedbackSaved;
+    status.textContent = TRANSLATIONS[currentLang].feedbackSaved;
     status.style.color = 'var(--go)';
     status.style.display = 'block';
   } catch (e) {
-    const t = TRANSLATIONS[currentLang];
     const status = document.getElementById('feedback-status');
-    status.textContent = t.feedbackFailed;
+    status.textContent = TRANSLATIONS[currentLang].feedbackFailed;
     status.style.color = 'var(--nogo)';
     status.style.display = 'block';
   }
@@ -1761,36 +1778,119 @@ function updateSelectTranslations(lang) {
 if (currentLang !== 'nl') setLanguage(currentLang);
 
 // ── Request Log Viewer ──────────────────────────────────────────
+let _logData = null;
+let _currentLogTab = 'log';
 function toggleLog() {
   const el = document.getElementById("log-overlay");
   const isOpen = el.classList.toggle("active");
-  if (isOpen) loadLog();
+  if (isOpen) { _logData = null; switchLogTab('log'); }
 }
-async function loadLog() {
+function switchLogTab(tab) {
+  _currentLogTab = tab;
+  document.querySelectorAll('.log-tab').forEach(b => {
+    const active = b.dataset.tab === tab;
+    b.style.borderBottomColor = active ? 'var(--accent)' : 'transparent';
+    b.style.color = active ? 'var(--text)' : 'var(--muted)';
+    b.classList.toggle('active', active);
+  });
+  if (tab === 'log') loadLogTab();
+  else if (tab === 'top10') loadTop10Tab();
+  else if (tab === 'feedback') loadFeedbackTab();
+}
+async function fetchLogData() {
+  if (_logData) return _logData;
+  const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
+  const res = await fetch(apiBase + '/api/requests-log');
+  _logData = await res.json();
+  return _logData;
+}
+async function loadLogTab() {
   const content = document.getElementById("log-content");
   const stats = document.getElementById("log-stats");
   try {
-    const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
-    const res = await fetch(apiBase + '/api/requests-log');
-    const data = await res.json();
-    if (!data.length) { content.innerHTML = "<div class=\"log-empty\">Geen requests gevonden.</div>"; stats.innerHTML = ""; return; }
+    const data = await fetchLogData();
+    if (!data.length) { content.innerHTML = '<div class="log-empty">Geen requests gevonden.</div>'; stats.innerHTML = ""; return; }
     const totalReqs = data.length;
-    const avgPrice = data.filter(d=>d.price).reduce((s,d)=>s+d.price,0) / data.filter(d=>d.price).length;
+    const withPrice = data.filter(d=>d.price);
+    const avgPrice = withPrice.length ? withPrice.reduce((s,d)=>s+d.price,0) / withPrice.length : 0;
     const avgDur = Math.round(data.reduce((s,d)=>s+d.duration_ms,0) / totalReqs / 1000 * 10) / 10;
-    stats.innerHTML = "<div class=\"log-stat\"><strong>" + totalReqs + "</strong>Requests</div>" +
-      "<div class=\"log-stat\"><strong>€" + Math.round(avgPrice) + "</strong>Gem. prijs</div>" +
-      "<div class=\"log-stat\"><strong>" + avgDur + "s</strong>Gem. duur</div>";
-    let html = "<table class=\"log-table\"><thead><tr><th>Datum/Tijd</th><th>Merk</th><th>Model</th><th>CPU</th><th>RAM</th><th>SSD</th><th>Grade</th><th>KB</th><th>Qty</th><th>ERP</th><th>Duur</th></tr></thead><tbody>";
+    stats.innerHTML = '<div class="log-stat"><strong>' + totalReqs + '</strong>Requests</div>' +
+      '<div class="log-stat"><strong>\u20ac' + Math.round(avgPrice) + '</strong>Gem. prijs</div>' +
+      '<div class="log-stat"><strong>' + avgDur + 's</strong>Gem. duur</div>';
+    let h = '<table class="log-table"><thead><tr><th>Datum/Tijd</th><th>Merk</th><th>Model</th><th>CPU</th><th>RAM</th><th>SSD</th><th>Grade</th><th>KB</th><th>Qty</th><th>ERP</th><th>Duur</th></tr></thead><tbody>';
     data.forEach(d => {
       const dt = new Date(d.timestamp);
       const ts = dt.toLocaleDateString("nl-NL",{day:"2-digit",month:"2-digit"}) + " " + dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
-      const dur = (d.duration_ms/1000).toFixed(1) + "s";
-      const price = d.price ? "€" + d.price : "—";
-      html += "<tr><td>" + ts + "</td><td>" + (d.brand||"—") + "</td><td>" + (d.model||"—") + "</td><td>" + (d.cpu||"—") + "</td><td>" + (d.ram||"—") + "</td><td>" + (d.storage||"—") + "</td><td>" + (d.grade||"—") + "</td><td>" + (d.keyboard||"—") + "</td><td>" + (d.quantity||"—") + "</td><td style=\"font-weight:700;color:var(--go)\">" + price + "</td><td>" + dur + "</td></tr>";
+      h += '<tr><td>' + ts + '</td><td>' + (d.brand||'\u2014') + '</td><td>' + (d.model||'\u2014') + '</td><td>' + (d.cpu||'\u2014') + '</td><td>' + (d.ram||'\u2014') + '</td><td>' + (d.storage||'\u2014') + '</td><td>' + (d.grade||'\u2014') + '</td><td>' + (d.keyboard||'\u2014') + '</td><td>' + (d.quantity||'\u2014') + '</td><td style="font-weight:700;color:var(--go)">' + (d.price ? '\u20ac'+d.price : '\u2014') + '</td><td>' + (d.duration_ms/1000).toFixed(1) + 's</td></tr>';
     });
-    html += "</tbody></table>";
-    content.innerHTML = html;
-  } catch(e) { content.innerHTML = "<div class=\"log-empty\">Fout: " + e.message + "</div>"; stats.innerHTML = ""; }
+    content.innerHTML = h + '</tbody></table>';
+  } catch(e) { content.innerHTML = '<div class="log-empty">Fout: ' + e.message + '</div>'; stats.innerHTML = ""; }
+}
+async function loadTop10Tab() {
+  const content = document.getElementById("log-content");
+  const stats = document.getElementById("log-stats");
+  stats.innerHTML = "";
+  try {
+    const data = await fetchLogData();
+    if (!data.length) { content.innerHTML = '<div class="log-empty">Geen data.</div>'; return; }
+    function buildTop(items) {
+      const groups = {};
+      items.forEach(d => {
+        const key = (d.brand + ' ' + d.model).trim() || 'Onbekend';
+        if (!groups[key]) groups[key] = { count: 0, totalPrice: 0, withPrice: 0 };
+        groups[key].count++;
+        if (d.price) { groups[key].totalPrice += d.price; groups[key].withPrice++; }
+      });
+      return Object.entries(groups).map(([model, g]) => ({
+        model, count: g.count, avgPrice: g.withPrice ? Math.round(g.totalPrice / g.withPrice) : null
+      })).sort((a,b) => b.count - a.count).slice(0, 10);
+    }
+    const allTop = buildTop(data);
+    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+    const weekData = data.filter(d => new Date(d.timestamp) >= weekAgo);
+    const weekTop = buildTop(weekData);
+    function renderTable(title, rows) {
+      if (!rows.length) return '<p style="color:var(--muted);font-size:13px;">Geen data</p>';
+      let h = '<h3 style="font-size:14px;margin-bottom:8px;color:var(--accent);">' + title + '</h3>';
+      h += '<table class="log-table"><thead><tr><th>#</th><th>Model</th><th>Quotes</th><th>Gem. prijs</th></tr></thead><tbody>';
+      rows.forEach((r, i) => {
+        const medal = i < 3 ? ['\ud83e\udd47','\ud83e\udd48','\ud83e\udd49'][i] : (i+1);
+        h += '<tr><td>' + medal + '</td><td>' + r.model + '</td><td style="font-weight:700">' + r.count + '</td><td style="color:var(--go);font-weight:600">' + (r.avgPrice ? '\u20ac'+r.avgPrice : '\u2014') + '</td></tr>';
+      });
+      return h + '</tbody></table>';
+    }
+    content.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">' +
+      '<div>' + renderTable('\ud83c\udfc6 All Time Top 10', allTop) + '</div>' +
+      '<div>' + renderTable('\ud83d\udcc5 Deze Week Top 10', weekTop) + '</div></div>';
+  } catch(e) { content.innerHTML = '<div class="log-empty">Fout: ' + e.message + '</div>'; }
+}
+async function loadFeedbackTab() {
+  const content = document.getElementById("log-content");
+  const stats = document.getElementById("log-stats");
+  stats.innerHTML = "";
+  try {
+    const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
+    const res = await fetch(apiBase + '/api/feedback-log');
+    const data = await res.json();
+    if (!data.length) { content.innerHTML = '<div class="log-empty">Geen feedback gevonden.</div>'; return; }
+    const spotOn = data.filter(d=>d.verdict==='spot-on').length;
+    const tooHigh = data.filter(d=>d.verdict==='te-hoog').length;
+    const tooLow = data.filter(d=>d.verdict==='te-laag').length;
+    stats.innerHTML = '<div class="log-stat"><strong>' + data.length + '</strong>Totaal</div>' +
+      '<div class="log-stat"><strong style="color:var(--go)">' + spotOn + '</strong>\ud83d\udc4d Spot on</div>' +
+      '<div class="log-stat"><strong style="color:var(--nogo)">' + tooHigh + '</strong>\u2b06\ufe0f Te hoog</div>' +
+      '<div class="log-stat"><strong style="color:#1565C0">' + tooLow + '</strong>\u2b07\ufe0f Te laag</div>';
+    let h = '<table class="log-table"><thead><tr><th>Datum</th><th>Naam</th><th>Model</th><th>ERPIE</th><th>Gebruiker</th><th>Type</th><th>Opmerking</th></tr></thead><tbody>';
+    data.forEach(d => {
+      const dt = new Date(d.timestamp);
+      const ts = dt.toLocaleDateString("nl-NL",{day:"2-digit",month:"2-digit"}) + " " + dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
+      const verdictBadge = d.verdict === 'spot-on' ? '<span style="background:#2E7D32;color:white;padding:2px 8px;border-radius:4px;font-size:11px;">\ud83d\udc4d</span>'
+        : d.verdict === 'te-hoog' ? '<span style="background:#C62828;color:white;padding:2px 8px;border-radius:4px;font-size:11px;">\u2b06\ufe0f</span>'
+        : '<span style="background:#1565C0;color:white;padding:2px 8px;border-radius:4px;font-size:11px;">\u2b07\ufe0f</span>';
+      h += '<tr><td>' + ts + '</td><td>' + (d.name||'\u2014') + '</td><td>' + (d.device||'\u2014') + '</td><td style="font-weight:600">' + (d.erp||'\u2014') + '</td><td style="font-weight:600;color:var(--accent)">' + (d.userPrice||'\u2014') + '</td><td>' + verdictBadge + '</td><td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (d.comment||'\u2014') + '</td></tr>';
+    });
+    content.innerHTML = h + '</tbody></table>';
+  } catch(e) { content.innerHTML = '<div class="log-empty">Fout: ' + e.message + '</div>'; }
 }
 </script>
 </body>
