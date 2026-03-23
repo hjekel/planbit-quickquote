@@ -21,7 +21,7 @@ app.post('/api/ai-quote', async (req, res) => {
     if (!specs) return res.status(400).json({ ok: false, error: 'No device specs provided' });
 
     const sessionId = `quickquote-${Date.now()}`;
-    const args = ['agent', '--agent', 'main', '--session-id', sessionId, '-m', `Price this device: ${specs}`, '--json', '--thinking', 'medium'];
+    const args = ['agent', '--agent', 'main', '--session-id', sessionId, '-m', `Price this device: ${specs}. Respond with ONLY the ERPIE PRICING REPORT block. Do NOT use tools.`, '--json', '--thinking', 'medium'];
     const { stdout } = await execFileAsync(OPENCLAW_BIN, args, {
       timeout: 60000,
       env: { ...process.env, PATH: `${process.env.PATH}:/usr/local/bin:/opt/homebrew/bin` }
