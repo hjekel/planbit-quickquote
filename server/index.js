@@ -26,8 +26,9 @@ app.post('/api/ai-quote', async (req, res) => {
       env: { ...process.env, PATH: `${process.env.PATH}:/usr/local/bin:/opt/homebrew/bin` }
     });
     const parsed = JSON.parse(stdout);
-    const text = parsed?.result?.payloads?.[0]?.text || parsed?.result || null;
-    if (!text) return res.status(502).json({ ok: false, error: 'No pricing result from AI agent' });
+    const raw = parsed?.result?.payloads?.[0]?.text || parsed?.result || null;
+    if (!raw) return res.status(502).json({ ok: false, error: 'No pricing result from AI agent' });
+    const text = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2);
 
     // Log successful request
     const durationMs = Date.now() - startTime;
