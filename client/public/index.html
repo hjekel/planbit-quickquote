@@ -620,12 +620,12 @@ input, select, button { font-family: inherit; }
       <div id="ai-result-text" style="background:var(--surface2);border-radius:8px;padding:16px;font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;font-family:inherit;"></div>
       <div id="ai-result-error" style="display:none;background:#f4433620;border:1px solid var(--nogo);border-radius:8px;padding:14px;font-size:13px;color:var(--nogo);margin-top:12px;"></div>
       <div id="ai-feedback-row" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
-        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Feedback op deze berekening</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;" data-i18n="feedbackLabel">Feedback op deze berekening</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-          <button class="btn btn-feedback" onclick="sendFeedback('spot-on')" style="background:#2E7D32;color:white;padding:8px 16px;font-size:13px;">👍 Spot on</button>
-          <button class="btn btn-feedback" onclick="sendFeedback('te-hoog')" style="background:#C62828;color:white;padding:8px 16px;font-size:13px;">⬆️ Te hoog</button>
-          <button class="btn btn-feedback" onclick="sendFeedback('te-laag')" style="background:#1565C0;color:white;padding:8px 16px;font-size:13px;">⬇️ Te laag</button>
-          <input type="text" id="feedback-name" placeholder="Naam (optioneel)" maxlength="30" style="padding:8px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);width:160px;">
+          <button class="btn btn-feedback" onclick="sendFeedback('spot-on')" style="background:#2E7D32;color:white;padding:8px 16px;font-size:13px;" data-i18n="fbSpotOn">👍 Spot on</button>
+          <button class="btn btn-feedback" onclick="sendFeedback('te-hoog')" style="background:#C62828;color:white;padding:8px 16px;font-size:13px;" data-i18n="fbTooHigh">⬆️ Te hoog</button>
+          <button class="btn btn-feedback" onclick="sendFeedback('te-laag')" style="background:#1565C0;color:white;padding:8px 16px;font-size:13px;" data-i18n="fbTooLow">⬇️ Te laag</button>
+          <input type="text" id="feedback-name" data-i18n-placeholder="feedbackNamePlaceholder" placeholder="Jouw naam (optioneel)" maxlength="30" style="padding:8px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);width:160px;">
         </div>
         <div id="feedback-status" style="display:none;margin-top:8px;font-size:13px;color:var(--go);font-weight:600;"></div>
       </div>
@@ -1565,12 +1565,15 @@ async function sendFeedback(verdict) {
       body: JSON.stringify({ verdict, name, device, erp, timestamp: new Date().toISOString() })
     });
     document.querySelectorAll('.btn-feedback').forEach(b => b.disabled = true);
+    const t = TRANSLATIONS[currentLang];
     const status = document.getElementById('feedback-status');
-    status.textContent = '✓ Feedback opgeslagen';
+    status.textContent = t.feedbackSaved;
+    status.style.color = 'var(--go)';
     status.style.display = 'block';
   } catch (e) {
+    const t = TRANSLATIONS[currentLang];
     const status = document.getElementById('feedback-status');
-    status.textContent = 'Feedback opslaan mislukt';
+    status.textContent = t.feedbackFailed;
     status.style.color = 'var(--nogo)';
     status.style.display = 'block';
   }
@@ -1611,6 +1614,10 @@ const TRANSLATIONS = {
     footer: 'PlanBit Quick Quote \u00b7 Made by Incredible Projects / Henk Jekel',
     selectBrand: 'Selecteer merk...', selectModel: 'Selecteer eerst merk...',
     selectCpu: 'Selecteer CPU familie...', selectGen: 'Selecteer eerst CPU...',
+    feedbackLabel: 'FEEDBACK OP DEZE BEREKENING',
+    fbSpotOn: '👍 Spot on', fbTooHigh: '⬆️ Te hoog', fbTooLow: '⬇️ Te laag',
+    feedbackNamePlaceholder: 'Jouw naam (optioneel)',
+    feedbackSaved: '✓ Feedback opgeslagen', feedbackFailed: 'Feedback opslaan mislukt',
   },
   en: {
     madeBy: 'by',
@@ -1630,6 +1637,10 @@ const TRANSLATIONS = {
     footer: 'PlanBit Quick Quote \u00b7 Made by Incredible Projects / Henk Jekel',
     selectBrand: 'Select brand...', selectModel: 'Select brand first...',
     selectCpu: 'Select CPU family...', selectGen: 'Select CPU first...',
+    feedbackLabel: 'FEEDBACK ON THIS CALCULATION',
+    fbSpotOn: '👍 Spot on', fbTooHigh: '⬆️ Too high', fbTooLow: '⬇️ Too low',
+    feedbackNamePlaceholder: 'Your name (optional)',
+    feedbackSaved: '✓ Feedback saved', feedbackFailed: 'Failed to save feedback',
   }
 };
 
