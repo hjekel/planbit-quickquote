@@ -20,12 +20,15 @@ app.post('/api/ai-quote', async (req, res) => {
     const specs = [brand, model, cpu, ram, storage, condition, keyboard && 'Keyboard: ' + keyboard, region && 'Region: ' + region, battery && 'Battery: ' + battery, quantity && 'Quantity: ' + quantity].filter(Boolean).join(', ');
     if (!specs) return res.status(400).json({ ok: false, error: 'No device specs provided' });
 
-    const sessionId = `quickquote-${Date.now()}`;
-    const args = ['agent', '--agent', 'main', '--session-id', sessionId, '-m', `Price this device: ${specs}`, '--json', '--thinking', 'medium'];
-    const { stdout } = await execFileAsync(OPENCLAW_BIN, args, {
+    const sessionId = `qq-${Date.now()}`;
+    const prompt = `Price this device: ${specs}. IMPORTANT: Return your pricing analysis as plain text in your response. Do NOT use any tools — use your loaded knowledge from TOOLS.md and SOUL.md directly.`;
+    const args = ['agent', '--agent', 'main', '--session-id', sessionId, '-m', prompt, '--json', '--thinking', 'medium'];
+    const { stdout, stderr } = await execFileAsync(OPENCLAW_BIN, args, {
       timeout: 60000,
       env: { ...process.env, PATH: `${process.env.PATH}:/usr/local/bin:/opt/homebrew/bin` }
     });
+    if (stderr) console.log('openclaw stderr:', stderr.slice(0, 500));
+    console.log('openclaw stdout (first 300):', stdout.slice(0, 300));
     const parsed = JSON.parse(stdout);
     // Extract text from openclaw response – try multiple paths
     const payloads = parsed?.result?.payloads || parsed?.payloads || [];
@@ -35,7 +38,7 @@ app.post('/api/ai-quote', async (req, res) => {
       || (typeof parsed?.text === 'string' ? parsed.text : null)
       || null;
     if (!text) {
-      console.error('Empty AI response:', JSON.stringify(parsed).slice(0, 500));
+      console.error('Empty AI response, full JSON:', JSON.stringify(parsed, null, 2).slice(0, 2000));
       return res.status(502).json({ ok: false, error: 'AI agent returned no pricing result (empty payloads)' });
     }
 
