@@ -32,4 +32,5 @@ app.post('/api/ai-quote', async (req, res) => {
   }
 });
 
-app.listen(3002, () => console.log('QuickQuote running on http://localhost:3002'));
+const PORT = process.env.PORT || 3002;
+app.listen(PORT, () => console.log(`QuickQuote running on http://localhost:${PORT}`));
