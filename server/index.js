@@ -52,7 +52,30 @@ app.post('/api/ai-quote', async (req, res) => {
       if (err) console.error('Failed to write request log:', err.message);
     });
 
-    res.json({ ok: true, result: text });
+    // Strip verbose reasoning — only show final pricing report
+    let cleanText = text;
+    const reportIdx = text.indexOf('ERPIE PRICING REPORT');
+    if (reportIdx >= 0) {
+      // Find the separator line (━━━) before the header
+      let start = reportIdx;
+      const before = text.slice(0, reportIdx);
+      const lastNewline = before.lastIndexOf('\n');
+      if (lastNewline >= 0) {
+        const lineAbove = before.slice(before.lastIndexOf('\n', lastNewline - 1) + 1, lastNewline).trim();
+        if (/^[━─═]{3,}$/.test(lineAbove)) {
+          start = before.lastIndexOf('\n', lastNewline - 1) + 1;
+        } else {
+          start = lastNewline + 1;
+        }
+      }
+      cleanText = text.slice(start).trim();
+    } else {
+      // No report header — take last 15 lines
+      const lines = text.split('\n');
+      cleanText = lines.slice(-15).join('\n').trim();
+    }
+
+    res.json({ ok: true, result: cleanText });
   } catch (err) {
     if (err.code === 'ENOENT') return res.status(503).json({ ok: false, error: `openclaw not found. Set OPENCLAW_PATH.` });
     res.status(err.killed ? 504 : 500).json({ ok: false, error: err.message });
