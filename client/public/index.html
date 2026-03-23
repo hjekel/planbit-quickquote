@@ -1271,15 +1271,17 @@ function showExampleAsus() {
 // THEME TOGGLE
 // ══════════════════════════════════════════════════════════════════════
 const themeToggle = document.getElementById('theme-toggle');
-const savedTheme  = localStorage.getItem('erpie-theme') || 'dark';
+const savedTheme  = localStorage.getItem('theme') || 'light';
 if (savedTheme === 'light') {
   document.documentElement.classList.add('light');
   themeToggle.textContent = '\u2600\ufe0f';
+} else {
+  themeToggle.textContent = '\ud83c\udf19';
 }
 themeToggle.addEventListener('click', () => {
   const isLight = document.documentElement.classList.toggle('light');
   themeToggle.textContent = isLight ? '\u2600\ufe0f' : '\ud83c\udf19';
-  localStorage.setItem('erpie-theme', isLight ? 'light' : 'dark');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
 });
 
 // ══════════════════════════════════════════════════════════════════════
