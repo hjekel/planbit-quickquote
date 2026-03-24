@@ -1,5 +1,6 @@
 'use strict';
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
 const { execFile } = require('child_process');
@@ -13,9 +14,18 @@ const FEEDBACK_PATH = path.join(__dirname, '..', 'data', 'feedback.jsonl');
 
 app.set('trust proxy', true);
 app.use(express.json());
+
+// Rate limiting: max 10 AI quotes per IP per minute
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: { ok: false, error: 'Te veel requests — probeer het over een minuut opnieuw.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 app.use(express.static(path.join(__dirname, '../client/public')));
 
-app.post('/api/ai-quote', async (req, res) => {
+app.post('/api/ai-quote', aiLimiter, async (req, res) => {
   const startTime = Date.now();
   try {
     const { brand, model, cpu, ram, storage, condition, keyboard, region, battery, quantity } = req.body;
@@ -137,7 +147,7 @@ app.get('/api/feedback-log', (req, res) => {
 app.post('/api/feedback', (req, res) => {
   try {
     const line = JSON.stringify(req.body) + '\n';
-    fs.appendFileSync(path.join(__dirname, '..', 'feedback.jsonl'), line);
+    fs.appendFileSync(path.join(__dirname, '..', 'data', 'feedback.jsonl'), line);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
