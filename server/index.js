@@ -9,6 +9,7 @@ const execFileAsync = promisify(execFile);
 const app = express();
 const OPENCLAW_BIN = process.env.OPENCLAW_PATH || 'openclaw';
 const LOG_PATH = path.join(__dirname, '..', 'data', 'requests.log');
+const FEEDBACK_PATH = path.join(__dirname, '..', 'data', 'feedback.jsonl');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
@@ -79,6 +80,56 @@ app.post('/api/ai-quote', async (req, res) => {
   } catch (err) {
     if (err.code === 'ENOENT') return res.status(503).json({ ok: false, error: `openclaw not found. Set OPENCLAW_PATH.` });
     res.status(err.killed ? 504 : 500).json({ ok: false, error: err.message });
+  }
+});
+
+
+
+// --- Request log viewer API ---
+app.get('/api/requests-log', (req, res) => {
+  try {
+    if (!fs.existsSync(LOG_PATH)) return res.json([]);
+    const raw = fs.readFileSync(LOG_PATH, 'utf8').trim();
+    if (!raw) return res.json([]);
+    const entries = raw.split('\n').map(line => {
+      try { return JSON.parse(line); } catch { return null; }
+    }).filter(Boolean).filter(e => {
+      return typeof e.price === 'string' && e.price.includes('€');
+    }).map(e => {
+      let erpPrice = null;
+      const m = e.price.match(/ERP\s+per\s+unit[:\s]*€\s*([\d.,]+)/i)
+        || e.price.match(/per\s+unit[:\s]*€\s*([\d.,]+)/i)
+        || e.price.match(/€\s*([\d.,]+)\s*\/?\s*(?:per\s+)?unit/i)
+        || e.price.match(/€\s*([\d.,]+)/);
+      if (m) erpPrice = parseFloat(m[1].replace(',', '.'));
+      return {
+        timestamp: e.timestamp, brand: e.brand || '', model: e.model || '',
+        cpu: e.cpu || '', ram: e.ram || '', storage: e.storage || '',
+        grade: e.grade || '', keyboard: e.keyboard || '', quantity: e.quantity || '',
+        price: erpPrice, duration_ms: e.duration_ms || 0
+      };
+    });
+    res.json(entries.reverse());
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- Feedback log viewer API ---
+app.get('/api/feedback-log', (req, res) => {
+  try {
+    const fbPath = path.join(__dirname, '..', 'data', 'feedback.jsonl');
+    const legacyPath = path.join(__dirname, '..', 'feedback.jsonl');
+    let raw = '';
+    if (fs.existsSync(fbPath)) raw += fs.readFileSync(fbPath, 'utf8');
+    if (fs.existsSync(legacyPath)) raw += fs.readFileSync(legacyPath, 'utf8');
+    if (!raw.trim()) return res.json([]);
+    const entries = raw.trim().split('\n').map(line => {
+      try { return JSON.parse(line); } catch { return null; }
+    }).filter(Boolean);
+    res.json(entries.reverse());
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
