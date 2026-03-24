@@ -1817,7 +1817,7 @@ async function loadLogTab() {
     stats.innerHTML = '<div class="log-stat"><strong>' + totalReqs + '</strong>Requests</div>' +
       '<div class="log-stat"><strong>\u20ac' + Math.round(avgPrice) + '</strong>Gem. prijs</div>' +
       '<div class="log-stat"><strong>' + avgDur + 's</strong>Gem. duur</div>';
-    let h = '<table class="log-table"><thead><tr><th>Datum/Tijd</th><th>Merk</th><th>Model</th><th>CPU</th><th>RAM</th><th>SSD</th><th>Grade</th><th>KB</th><th>Qty</th><th>ERP</th><th>Duur</th></tr></thead><tbody>';
+    let h = '<table class="log-table"><thead><tr><th>Datum/Tijd</th><th>IP</th><th>Merk</th><th>Model</th><th>CPU</th><th>RAM</th><th>SSD</th><th>Grade</th><th>KB</th><th>Qty</th><th>ERP</th><th>Duur</th></tr></thead><tbody>';
     data.forEach(d => {
       const dt = new Date(d.timestamp);
       const ts = dt.toLocaleDateString("nl-NL",{day:"2-digit",month:"2-digit"}) + " " + dt.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});

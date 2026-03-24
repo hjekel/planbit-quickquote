@@ -11,6 +11,7 @@ const OPENCLAW_BIN = process.env.OPENCLAW_PATH || 'openclaw';
 const LOG_PATH = path.join(__dirname, '..', 'data', 'requests.log');
 const FEEDBACK_PATH = path.join(__dirname, '..', 'data', 'feedback.jsonl');
 
+app.set('trust proxy', true);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/public')));
 
@@ -103,7 +104,7 @@ app.get('/api/requests-log', (req, res) => {
         || e.price.match(/€\s*([\d.,]+)/);
       if (m) erpPrice = parseFloat(m[1].replace(',', '.'));
       return {
-        timestamp: e.timestamp, brand: e.brand || '', model: e.model || '',
+        timestamp: e.timestamp, ip: e.ip || '', brand: e.brand || '', model: e.model || '',
         cpu: e.cpu || '', ram: e.ram || '', storage: e.storage || '',
         grade: e.grade || '', keyboard: e.keyboard || '', quantity: e.quantity || '',
         price: erpPrice, duration_ms: e.duration_ms || 0
