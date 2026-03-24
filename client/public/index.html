@@ -688,7 +688,15 @@ input, select, button { font-family: inherit; }
 <div class="log-overlay" id="log-overlay" onclick="if(event.target===this)toggleLog()">
   <div class="log-panel">
     <button class="log-close" onclick="toggleLog()">✕</button>
-    <h2>📊 Request Log</h2>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+      <h2 style="margin:0;">📊 Request Log</h2>
+      <button onclick="_logData=null;loadLogTab()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--text);" title="Refresh">🔄 Refresh</button>
+      <div style="margin-left:auto;display:flex;gap:6px;">
+        <button onclick="exportLog('csv')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;color:var(--text);" title="Export CSV">📄 CSV</button>
+        <button onclick="exportLog('json')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;color:var(--text);" title="Export JSON">📋 JSON</button>
+        <button onclick="exportLog('md')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;color:var(--text);" title="Export Markdown">📝 MD</button>
+      </div>
+    </div>
     <div id="log-stats" class="log-stats"></div>
     <div id="log-content"><div class="log-empty">Loading...</div></div>
   </div>
@@ -1780,6 +1788,37 @@ if (currentLang !== 'nl') setLanguage(currentLang);
 // ── Request Log Viewer ──────────────────────────────────────────
 let _logData = null;
 let _currentLogTab = 'log';
+
+// ── Log Export ──────────────────────────────────────────────────
+async function exportLog(fmt) {
+  const data = await fetchLogData();
+  if (!data || !data.length) return alert('Geen data om te exporteren.');
+  const cols = ['timestamp','ip','brand','model','cpu','ram','storage','grade','keyboard','quantity','price','duration_ms'];
+  const headers = ['Datum/Tijd','IP','Merk','Model','CPU','RAM','SSD','Grade','KB','Qty','ERP','Duur (ms)'];
+  let blob, filename;
+  if (fmt === 'csv') {
+    const lines = [headers.join(',')];
+    data.forEach(d => lines.push(cols.map(c => '"'+(d[c]!=null?d[c]:'')+'"').join(',')));
+    blob = new Blob([lines.join('\n')], {type:'text/csv'});
+    filename = 'quickquote-log-' + new Date().toISOString().slice(0,10) + '.csv';
+  } else if (fmt === 'json') {
+    blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    filename = 'quickquote-log-' + new Date().toISOString().slice(0,10) + '.json';
+  } else if (fmt === 'md') {
+    let md = '# QuickQuote Request Log\n\n';
+    md += '| ' + headers.join(' | ') + ' |\n';
+    md += '| ' + headers.map(() => '---').join(' | ') + ' |\n';
+    data.forEach(d => { md += '| ' + cols.map(c => d[c]!=null?d[c]:'').join(' | ') + ' |\n'; });
+    blob = new Blob([md], {type:'text/markdown'});
+    filename = 'quickquote-log-' + new Date().toISOString().slice(0,10) + '.md';
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 function toggleLog() {
   const el = document.getElementById("log-overlay");
   const isOpen = el.classList.toggle("active");
