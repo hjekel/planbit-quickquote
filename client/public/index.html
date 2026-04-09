@@ -1065,20 +1065,62 @@ const KEYBOARDS = [
 // INIT — Populate brand and CPU family dropdowns
 // ══════════════════════════════════════════════════════════════════════
 (function init() {
+  // ── Brand dropdown with optgroup separators ──
   const brandSel = document.getElementById('brand');
-  BRANDS.forEach(b => {
-    const opt = document.createElement('option');
-    opt.value = b.value;
-    opt.textContent = b.label;
-    brandSel.appendChild(opt);
+  const brandGroups = [
+    { label: 'Consumer / Mixed', items: ['acer', 'apple', 'asus'] },
+    { label: 'Business', items: ['dell', 'fujitsu', 'hp', 'lenovo', 'microsoft'] },
+    { label: 'Overig', items: ['other'] }
+  ];
+  brandGroups.forEach(g => {
+    const og = document.createElement('optgroup');
+    og.label = g.label;
+    g.items.forEach(val => {
+      const b = BRANDS.find(x => x.value === val);
+      if (b) {
+        const opt = document.createElement('option');
+        opt.value = b.value;
+        opt.textContent = b.label;
+        og.appendChild(opt);
+      }
+    });
+    brandSel.appendChild(og);
   });
 
+  // ── CPU Family dropdown with optgroup separators ──
   const cpuSel = document.getElementById('cpuFamily');
-  CPU_FAMILIES.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c.value;
-    opt.textContent = c.label;
-    cpuSel.appendChild(opt);
+  const cpuGroups = [
+    { label: 'Intel', items: ['i3','i5','i7','i9','celeron','pentium','xeon'] },
+    { label: 'Apple', items: ['apple-silicon'] },
+    { label: 'AMD', items: ['amd-ryzen','ryzen3','ryzen5','ryzen7','ryzen9'] },
+    { label: '', items: ['unknown'] }
+  ];
+  cpuGroups.forEach(g => {
+    if (g.label === '') {
+      // No optgroup for "Other" — just append directly
+      g.items.forEach(val => {
+        const c = CPU_FAMILIES.find(x => x.value === val);
+        if (c) {
+          const opt = document.createElement('option');
+          opt.value = c.value;
+          opt.textContent = c.label;
+          cpuSel.appendChild(opt);
+        }
+      });
+    } else {
+      const og = document.createElement('optgroup');
+      og.label = g.label;
+      g.items.forEach(val => {
+        const c = CPU_FAMILIES.find(x => x.value === val);
+        if (c) {
+          const opt = document.createElement('option');
+          opt.value = c.value;
+          opt.textContent = c.label;
+          og.appendChild(opt);
+        }
+      });
+      cpuSel.appendChild(og);
+    }
   });
 })();
 
@@ -1159,7 +1201,42 @@ document.getElementById('brand').addEventListener('change', function() {
 document.getElementById('model').addEventListener('change', function() {
   const brand = document.getElementById('brand').value;
   autoSetDeviceType(brand, this.value);
+  autoDetectAppleChip(this);
 });
+
+function autoDetectAppleChip(modelSelect) {
+  const label = (modelSelect.selectedOptions[0]?.text || '').toUpperCase();
+  // Check longest matches first to avoid partial hits
+  const chipPatterns = [
+    'M4 PRO', 'M4 MAX', 'M4',
+    'M3 PRO', 'M3 MAX', 'M3',
+    'M2 PRO', 'M2 MAX', 'M2',
+    'M1 PRO', 'M1 MAX', 'M1'
+  ];
+  // Map of uppercase pattern → exact Apple Chip dropdown value
+  const chipMap = {
+    'M1': 'M1', 'M1 PRO': 'M1 Pro', 'M1 MAX': 'M1 Max',
+    'M2': 'M2', 'M2 PRO': 'M2 Pro', 'M2 MAX': 'M2 Max',
+    'M3': 'M3', 'M3 PRO': 'M3 Pro', 'M3 MAX': 'M3 Max',
+    'M4': 'M4', 'M4 PRO': 'M4 Pro', 'M4 MAX': 'M4 Max'
+  };
+  let detected = null;
+  for (const pat of chipPatterns) {
+    if (label.includes(pat)) { detected = chipMap[pat]; break; }
+  }
+  if (detected) {
+    // Set CPU Family to Apple Silicon and trigger its change handler
+    const cpuFamilySel = document.getElementById('cpuFamily');
+    if (cpuFamilySel.value !== 'apple-silicon') {
+      cpuFamilySel.value = 'apple-silicon';
+      cpuFamilySel.dispatchEvent(new Event('change'));
+    }
+    // Set the Apple Chip dropdown
+    document.getElementById('appleChip').value = detected;
+    // Hide the orange hint
+    document.getElementById('apple-chip-hint').style.display = 'none';
+  }
+}
 
 function autoSetDeviceType(brand, modelValue) {
   const brandModels = MODELS[brand] || [];
