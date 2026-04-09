@@ -1005,10 +1005,6 @@ const CPU_FAMILIES = [
   { value: 'pentium', label: 'Intel Pentium', brand: 'intel' },
   { value: 'xeon', label: 'Intel Xeon', brand: 'intel' },
   { value: 'apple-silicon', label: 'Apple Silicon', brand: 'apple' },
-  { value: 'm1', label: 'Apple M1', brand: 'apple' },
-  { value: 'm2', label: 'Apple M2', brand: 'apple' },
-  { value: 'm3', label: 'Apple M3', brand: 'apple' },
-  { value: 'm4', label: 'Apple M4', brand: 'apple' },
   { value: 'amd-ryzen', label: 'AMD Ryzen', brand: 'amd' },
   { value: 'ryzen3', label: 'AMD Ryzen 3', brand: 'amd' },
   { value: 'ryzen5', label: 'AMD Ryzen 5', brand: 'amd' },
@@ -1043,28 +1039,6 @@ const CPU_GENERATIONS = {
   i3: INTEL_GENS, i5: INTEL_GENS, i7: INTEL_GENS, i9: INTEL_GENS,
   'apple-silicon': [{ value: 'apple-chip', label: 'See Apple Chip dropdown' }],
   'amd-ryzen': AMD_SERIES,
-  m1: [
-    { value: 'base', label: 'M1 (Base)' },
-    { value: 'pro', label: 'M1 Pro' },
-    { value: 'max', label: 'M1 Max' },
-    { value: 'ultra', label: 'M1 Ultra' }
-  ],
-  m2: [
-    { value: 'base', label: 'M2 (Base)' },
-    { value: 'pro', label: 'M2 Pro' },
-    { value: 'max', label: 'M2 Max' },
-    { value: 'ultra', label: 'M2 Ultra' }
-  ],
-  m3: [
-    { value: 'base', label: 'M3 (Base)' },
-    { value: 'pro', label: 'M3 Pro' },
-    { value: 'max', label: 'M3 Max' }
-  ],
-  m4: [
-    { value: 'base', label: 'M4 (Base)' },
-    { value: 'pro', label: 'M4 Pro' },
-    { value: 'max', label: 'M4 Max' }
-  ],
   ryzen3: AMD_SERIES, ryzen5: AMD_SERIES, ryzen7: AMD_SERIES, ryzen9: AMD_SERIES,
   celeron: [{ value: 'any', label: 'Any Generation' }],
   pentium: [{ value: 'any', label: 'Any Generation' }],
@@ -1206,7 +1180,7 @@ document.getElementById('cpuFamily').addEventListener('change', function() {
   const genField = document.getElementById('cpuGen-field');
   const appleField = document.getElementById('appleChip-field');
   const genSelect = document.getElementById('cpuGen');
-  const isAppleSilicon = family === 'apple-silicon' || ['m1','m2','m3','m4'].includes(family);
+  const isAppleSilicon = family === 'apple-silicon';
 
   if (isAppleSilicon) {
     genField.style.display = 'none';
@@ -1406,7 +1380,7 @@ async function doAiQuote() {
   const modelVal      = document.getElementById('model').value;
   const deviceTypeVal = document.getElementById('deviceType').value;
   const cpuFamilyVal  = document.getElementById('cpuFamily').value;
-  const isApple = cpuFamilyVal === 'apple-silicon' || ['m1','m2','m3','m4'].includes(cpuFamilyVal);
+  const isApple = cpuFamilyVal === 'apple-silicon';
   const cpuGenVal     = isApple ? document.getElementById('appleChip').value : document.getElementById('cpuGen').value;
   const cpuModelVal   = document.getElementById('cpuModel').value.trim();
   const ramVal        = document.getElementById('ram').value;
@@ -1660,7 +1634,7 @@ async function sendFeedback(verdict) {
   const modelLabel = modelEl.options[modelEl.selectedIndex]?.text || '';
   const gradeLabel = document.getElementById('grade').selectedOptions[0]?.text || '';
   const cpuFamilyVal = document.getElementById('cpuFamily').value;
-  const isAppleFb = cpuFamilyVal === 'apple-silicon' || ['m1','m2','m3','m4'].includes(cpuFamilyVal);
+  const isAppleFb = cpuFamilyVal === 'apple-silicon';
   const cpuGen = isAppleFb
     ? document.getElementById('appleChip').value
     : (document.getElementById('cpuGen').selectedOptions[0]?.text || '');
