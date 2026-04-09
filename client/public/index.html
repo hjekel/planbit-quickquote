@@ -446,6 +446,7 @@ input, select, button { font-family: inherit; }
       <span class="lang-divider">|</span>
       <button class="lang-btn" id="lang-en" onclick="setLanguage('en')" title="English">🇬🇧</button>
     </div>
+    <a href="https://bulk.89.167.28.106.nip.io?theme=light" target="_blank" title="ERPIE Bulk Finder" style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:999px;border:1px solid #B8860B;background:#B8860B15;color:#B8860B;font-size:13px;font-weight:700;text-decoration:none;transition:all .15s ease;white-space:nowrap;" onmouseover="this.style.background='#B8860B25';this.style.borderColor='#B8860B'" onmouseout="this.style.background='#B8860B15';this.style.borderColor='#B8860B'">🦞 Bulk Finder</a>
     <button class="log-btn" id="log-btn" onclick="toggleLog()" title="Request Log">📊</button>
     <button class="help-btn" id="help-btn" onclick="toggleHelp()" title="Help &amp; Info">?</button>
     <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">&#127769;</button>
@@ -1456,6 +1457,9 @@ themeToggle.addEventListener('click', () => {
   const isLight = document.documentElement.classList.toggle('light');
   themeToggle.textContent = isLight ? '\u2600\ufe0f' : '\ud83c\udf19';
   localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  // Update Bulk Finder link to match current theme
+  const bulkLink = document.querySelector('a[href*="bulk.89.167.28.106"]');
+  if (bulkLink) bulkLink.href = 'https://bulk.89.167.28.106.nip.io?theme=' + (isLight ? 'light' : 'dark');
 });
 
 // ══════════════════════════════════════════════════════════════════════
