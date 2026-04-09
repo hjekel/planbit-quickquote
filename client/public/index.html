@@ -495,6 +495,7 @@ input, select, button { font-family: inherit; }
           <select id="cpuFamily">
             <option value="" data-i18n="selectCpu">Select CPU family...</option>
           </select>
+          <div id="apple-chip-hint" style="display:none;font-size:12px;color:#E07000;font-weight:600;margin-top:4px;">👆 Selecteer het Apple chip-type hieronder</div>
         </div>
         <div class="field" id="cpuGen-field">
           <label data-i18n="generation">Generatie</label>
@@ -761,14 +762,14 @@ input, select, button { font-family: inherit; }
 // ══════════════════════════════════════════════════════════════════════
 
 const BRANDS = [
+  { value: 'acer', label: 'Acer' },
+  { value: 'apple', label: 'Apple' },
+  { value: 'asus', label: 'Asus' },
   { value: 'dell', label: 'Dell' },
+  { value: 'fujitsu', label: 'Fujitsu' },
   { value: 'hp', label: 'HP' },
   { value: 'lenovo', label: 'Lenovo' },
-  { value: 'apple', label: 'Apple' },
   { value: 'microsoft', label: 'Microsoft' },
-  { value: 'asus', label: 'Asus' },
-  { value: 'acer', label: 'Acer' },
-  { value: 'fujitsu', label: 'Fujitsu' },
   { value: 'other', label: 'Other' }
 ];
 
@@ -1182,13 +1183,16 @@ document.getElementById('cpuFamily').addEventListener('change', function() {
   const genSelect = document.getElementById('cpuGen');
   const isAppleSilicon = family === 'apple-silicon';
 
+  const hint = document.getElementById('apple-chip-hint');
   if (isAppleSilicon) {
     genField.style.display = 'none';
     appleField.style.display = '';
     genSelect.innerHTML = '<option value="">N/A</option>';
+    hint.style.display = document.getElementById('appleChip').value ? 'none' : '';
   } else {
     genField.style.display = '';
     appleField.style.display = 'none';
+    hint.style.display = 'none';
     document.getElementById('appleChip').value = '';
     genSelect.innerHTML = '<option value="">Select generation...</option>';
     const gens = CPU_GENERATIONS[family] || CPU_GENERATIONS['unknown'];
@@ -1201,6 +1205,11 @@ document.getElementById('cpuFamily').addEventListener('change', function() {
       });
     }
   }
+});
+
+document.getElementById('appleChip').addEventListener('change', function() {
+  const hint = document.getElementById('apple-chip-hint');
+  hint.style.display = this.value ? 'none' : '';
 });
 
 document.getElementById('keyboard').addEventListener('change', function() {
@@ -1292,6 +1301,7 @@ function clearForm() {
   document.getElementById('keyboard-warning').style.display = 'none';
   document.getElementById('appleChip').value = '';
   document.getElementById('appleChip-field').style.display = 'none';
+  document.getElementById('apple-chip-hint').style.display = 'none';
   document.getElementById('cpuGen-field').style.display = '';
   document.getElementById('serialNumber').value = '';
   document.querySelectorAll('#serial-buttons .serial-btn').forEach(btn => btn.classList.remove('primary'));
