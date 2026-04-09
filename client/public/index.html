@@ -1597,8 +1597,6 @@ function fetchBenchmark(brand, genLabel, grade, isApple) {
   benchEl.style.display = 'none';
   benchEl.innerHTML = '';
 
-  // Convert frontend gen format to benchmark format
-  // Frontend: "Gen 13 (2023)" or "M1 Pro" — Benchmark: "13th Gen" or "M1 Pro"
   let gen = genLabel;
   if (!isApple) {
     const m = genLabel.match(/Gen\s+(\d+)/);
@@ -1609,7 +1607,6 @@ function fetchBenchmark(brand, genLabel, grade, isApple) {
     }
   }
 
-  // Normalize grade: just the first letter (A, B, C, D) or 'Unknown'
   const gradeNorm = grade && grade.length === 1 ? grade : (grade || '').split(/[^A-Za-z]/)[0] || grade;
   console.log('[Benchmark] Lookup:', { brand, gen, grade: gradeNorm, isApple });
   const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
@@ -1618,19 +1615,52 @@ function fetchBenchmark(brand, genLabel, grade, isApple) {
     .then(r => r.json())
     .then(data => {
       if (!data.ok || !data.found) return;
-      const bt = TRANSLATIONS[currentLang];
-      const bLabel = bt.benchHistorical || 'Historisch';
-      const bSales = bt.benchSales || 'vergelijkbare verkopen';
-      const bMedian = bt.benchMedian || 'mediaan';
-      benchEl.innerHTML = '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);line-height:1.6;">'
-        + '<span style="font-weight:600;">📊 ' + bLabel + ':</span> '
-        + data.count + ' ' + bSales + ' — ' + bMedian + ' <strong style="color:var(--text);">€' + data.median + '</strong>, '
-        + 'range €' + data.min + '–€' + data.max
-        + ' <span style="opacity:0.7;">(' + (currentLang === 'en' ? data.period.replace('historisch', 'historical') : data.period) + ')</span>'
-        + '</div>';
+      window._benchData = data;
+      renderBenchmarkCard(data, 'all');
       benchEl.style.display = 'block';
     })
-    .catch(() => {}); // silently ignore errors
+    .catch(() => {});
+}
+
+function renderBenchmarkCard(data, activeTab) {
+  const benchEl = document.getElementById('ai-benchmark-row');
+  const bt = TRANSLATIONS[currentLang];
+  const bLabel = bt.benchHistorical || 'Historisch';
+  const bSales = bt.benchSales || 'vergelijkbare verkopen';
+  const bMedian = bt.benchMedian || 'mediaan';
+  const bAll = bt.benchAll || 'Alles';
+  const bInsuf = bt.benchInsufficient || 'Onvoldoende data';
+
+  const tabBase = 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);margin-left:4px;transition:all .15s;';
+  const onStyle = 'background:var(--text);color:var(--bg);border-color:var(--text);';
+  const offStyle = 'background:transparent;color:var(--muted);';
+
+  function tabBtn(label, key) {
+    const s = key === activeTab ? onStyle : offStyle;
+    return '<span onclick="renderBenchmarkCard(window._benchData,\'' + key + '\')" style="' + tabBase + s + '">' + label + '</span>';
+  }
+
+  let d;
+  if (activeTab === 'all') {
+    d = { count: data.count, median: data.median, min: data.min, max: data.max };
+  } else {
+    d = data.by_year && data.by_year[activeTab] ? data.by_year[activeTab] : null;
+  }
+
+  let h = '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);line-height:1.6;">';
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
+  h += '<span style="font-weight:600;">📊 ' + bLabel + '</span>';
+  h += '<div>' + tabBtn(bAll, 'all') + tabBtn('2025', '2025') + tabBtn('2026', '2026') + '</div>';
+  h += '</div>';
+
+  if (d) {
+    h += '<div>' + d.count + ' ' + bSales + ' — ' + bMedian + ' <strong style="color:var(--text);">€' + d.median + '</strong>, range €' + d.min + '–€' + d.max + '</div>';
+  } else {
+    h += '<div style="font-style:italic;opacity:0.7;">' + bInsuf + '</div>';
+  }
+
+  h += '</div>';
+  benchEl.innerHTML = h;
 }
 
 // ── AI Result Formatter ─────────────────────────────────────────

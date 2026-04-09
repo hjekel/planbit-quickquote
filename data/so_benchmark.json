@@ -4,867 +4,2583 @@
     "median": 15.0,
     "min": 15.0,
     "max": 15.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 15.0,
+        "count": 10,
+        "min": 15.0,
+        "max": 15.0
+      }
+    }
   },
   "APPLE|10th Gen|B": {
-    "count": 95,
-    "median": 325.0,
+    "count": 89,
+    "median": 270.0,
     "min": 170.0,
     "max": 525.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 400.0,
+        "count": 53,
+        "min": 175.0,
+        "max": 525.0
+      },
+      "2025": {
+        "median": 270.0,
+        "count": 25,
+        "min": 230.0,
+        "max": 385.0
+      },
+      "2026": {
+        "median": 170.0,
+        "count": 11,
+        "min": 170.0,
+        "max": 225.0
+      }
+    }
   },
   "APPLE|10th Gen|C": {
-    "count": 69,
+    "count": 61,
     "median": 190.0,
     "min": 120.0,
     "max": 225.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 188.0,
+        "count": 34,
+        "min": 120.0,
+        "max": 225.0
+      },
+      "2025": {
+        "median": 205.0,
+        "count": 27,
+        "min": 125.0,
+        "max": 220.0
+      }
+    }
   },
   "APPLE|3rd Gen|C": {
     "count": 4,
     "median": 20.0,
     "min": 20.0,
     "max": 20.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 20.0,
+        "count": 4,
+        "min": 20.0,
+        "max": 20.0
+      }
+    }
   },
   "APPLE|4th Gen|B": {
-    "count": 7,
+    "count": 6,
     "median": 35.0,
     "min": 30.0,
     "max": 40.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 35.0,
+        "count": 3,
+        "min": 30.0,
+        "max": 35.0
+      },
+      "2025": {
+        "median": 40.0,
+        "count": 3,
+        "min": 30.0,
+        "max": 40.0
+      }
+    }
   },
   "APPLE|4th Gen|C": {
-    "count": 20,
+    "count": 19,
     "median": 30.0,
     "min": 20.0,
     "max": 40.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 30.0,
+        "count": 14,
+        "min": 20.0,
+        "max": 40.0
+      },
+      "2025": {
+        "median": 30.0,
+        "count": 5,
+        "min": 25.0,
+        "max": 40.0
+      }
+    }
   },
   "APPLE|5th Gen|B": {
-    "count": 15,
+    "count": 14,
     "median": 40.0,
     "min": 25.0,
     "max": 50.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 40.0,
+        "count": 12,
+        "min": 40.0,
+        "max": 50.0
+      }
+    }
   },
   "APPLE|5th Gen|C": {
-    "count": 33,
-    "median": 30.0,
+    "count": 31,
+    "median": 25.0,
     "min": 20.0,
     "max": 50.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 32.0,
+        "count": 24,
+        "min": 20.0,
+        "max": 50.0
+      },
+      "2025": {
+        "median": 25.0,
+        "count": 7,
+        "min": 20.0,
+        "max": 30.0
+      }
+    }
   },
   "APPLE|6th Gen|C": {
     "count": 9,
     "median": 55.0,
     "min": 30.0,
     "max": 80.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 62.0,
+        "count": 4,
+        "min": 30.0,
+        "max": 80.0
+      },
+      "2025": {
+        "median": 55.0,
+        "count": 5,
+        "min": 30.0,
+        "max": 60.0
+      }
+    }
   },
   "APPLE|7th Gen|B": {
-    "count": 32,
+    "count": 28,
     "median": 180.0,
     "min": 125.0,
     "max": 230.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 190.0,
+        "count": 23,
+        "min": 140.0,
+        "max": 230.0
+      },
+      "2025": {
+        "median": 145.0,
+        "count": 4,
+        "min": 125.0,
+        "max": 165.0
+      }
+    }
   },
   "APPLE|7th Gen|C": {
-    "count": 91,
-    "median": 90.0,
+    "count": 84,
+    "median": 80.0,
     "min": 50.0,
     "max": 130.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 100.0,
+        "count": 68,
+        "min": 50.0,
+        "max": 130.0
+      },
+      "2025": {
+        "median": 75.0,
+        "count": 16,
+        "min": 50.0,
+        "max": 95.0
+      }
+    }
   },
   "APPLE|8th Gen|B": {
-    "count": 155,
+    "count": 144,
     "median": 260.0,
     "min": 155.0,
     "max": 345.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 262.0,
+        "count": 128,
+        "min": 155.0,
+        "max": 345.0
+      },
+      "2025": {
+        "median": 225.0,
+        "count": 13,
+        "min": 155.0,
+        "max": 275.0
+      },
+      "2026": {
+        "median": 200.0,
+        "count": 3,
+        "min": 185.0,
+        "max": 200.0
+      }
+    }
   },
   "APPLE|8th Gen|C": {
-    "count": 179,
+    "count": 164,
     "median": 140.0,
     "min": 70.0,
     "max": 210.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 150.0,
+        "count": 138,
+        "min": 75.0,
+        "max": 210.0
+      },
+      "2025": {
+        "median": 125.0,
+        "count": 22,
+        "min": 75.0,
+        "max": 190.0
+      },
+      "2026": {
+        "median": 75.0,
+        "count": 4,
+        "min": 70.0,
+        "max": 80.0
+      }
+    }
   },
   "APPLE|9th Gen|B": {
-    "count": 350,
-    "median": 375.0,
+    "count": 315,
+    "median": 360.0,
     "min": 275.0,
     "max": 560.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 400.0,
+        "count": 219,
+        "min": 275.0,
+        "max": 560.0
+      },
+      "2025": {
+        "median": 325.0,
+        "count": 92,
+        "min": 275.0,
+        "max": 380.0
+      },
+      "2026": {
+        "median": 280.0,
+        "count": 4,
+        "min": 280.0,
+        "max": 400.0
+      }
+    }
   },
   "APPLE|9th Gen|C": {
-    "count": 224,
+    "count": 203,
     "median": 180.0,
     "min": 125.0,
     "max": 280.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 185.0,
+        "count": 124,
+        "min": 125.0,
+        "max": 280.0
+      },
+      "2025": {
+        "median": 160.0,
+        "count": 79,
+        "min": 125.0,
+        "max": 235.0
+      }
+    }
   },
   "APPLE|M1|A": {
-    "count": 35,
-    "median": 568.0,
+    "count": 32,
+    "median": 575.0,
     "min": 450.0,
     "max": 650.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 560.0,
+        "count": 29,
+        "min": 450.0,
+        "max": 650.0
+      },
+      "2025": {
+        "median": 575.0,
+        "count": 3,
+        "min": 575.0,
+        "max": 575.0
+      }
+    }
   },
   "APPLE|M1|B": {
-    "count": 135,
-    "median": 625.0,
+    "count": 129,
+    "median": 600.0,
     "min": 300.0,
     "max": 900.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 650.0,
+        "count": 66,
+        "min": 330.0,
+        "max": 900.0
+      },
+      "2025": {
+        "median": 625.0,
+        "count": 49,
+        "min": 300.0,
+        "max": 750.0
+      },
+      "2026": {
+        "median": 400.0,
+        "count": 14,
+        "min": 300.0,
+        "max": 405.0
+      }
+    }
   },
   "APPLE|M1|C": {
-    "count": 121,
+    "count": 115,
     "median": 200.0,
     "min": 110.0,
     "max": 300.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 235.0,
+        "count": 61,
+        "min": 115.0,
+        "max": 300.0
+      },
+      "2025": {
+        "median": 170.0,
+        "count": 45,
+        "min": 110.0,
+        "max": 300.0
+      },
+      "2026": {
+        "median": 140.0,
+        "count": 9,
+        "min": 110.0,
+        "max": 140.0
+      }
+    }
   },
   "APPLE|M1|Unknown": {
     "count": 9,
     "median": 15.0,
     "min": 15.0,
     "max": 15.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 15.0,
+        "count": 9,
+        "min": 15.0,
+        "max": 15.0
+      }
+    }
   },
   "APPLE|M1 Pro|B": {
-    "count": 15,
+    "count": 14,
     "median": 440.0,
     "min": 410.0,
     "max": 470.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2026": {
+        "median": 440.0,
+        "count": 14,
+        "min": 410.0,
+        "max": 470.0
+      }
+    }
   },
   "APPLE|M1 Pro|C": {
-    "count": 6,
+    "count": 4,
     "median": 160.0,
     "min": 140.0,
     "max": 160.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2026": {
+        "median": 160.0,
+        "count": 4,
+        "min": 140.0,
+        "max": 160.0
+      }
+    }
   },
   "APPLE|M3|A": {
-    "count": 17,
+    "count": 16,
     "median": 935.0,
     "min": 935.0,
     "max": 975.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 935.0,
+        "count": 16,
+        "min": 935.0,
+        "max": 975.0
+      }
+    }
   },
   "ASUS|8th Gen|C": {
     "count": 8,
     "median": 40.0,
     "min": 40.0,
     "max": 40.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 40.0,
+        "count": 8,
+        "min": 40.0,
+        "max": 40.0
+      }
+    }
   },
   "DELL|10th Gen|B": {
-    "count": 708,
-    "median": 220.0,
+    "count": 642,
+    "median": 215.0,
     "min": 160.0,
     "max": 295.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 225.0,
+        "count": 382,
+        "min": 160.0,
+        "max": 295.0
+      },
+      "2025": {
+        "median": 210.0,
+        "count": 223,
+        "min": 160.0,
+        "max": 290.0
+      },
+      "2026": {
+        "median": 210.0,
+        "count": 37,
+        "min": 160.0,
+        "max": 290.0
+      }
+    }
   },
   "DELL|10th Gen|C": {
-    "count": 936,
+    "count": 869,
     "median": 90.0,
     "min": 65.0,
     "max": 150.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 90.0,
+        "count": 406,
+        "min": 65.0,
+        "max": 150.0
+      },
+      "2025": {
+        "median": 85.0,
+        "count": 366,
+        "min": 65.0,
+        "max": 145.0
+      },
+      "2026": {
+        "median": 85.0,
+        "count": 97,
+        "min": 65.0,
+        "max": 150.0
+      }
+    }
   },
   "DELL|11th Gen|A": {
-    "count": 10,
+    "count": 8,
     "median": 700.0,
     "min": 270.0,
     "max": 780.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 700.0,
+        "count": 8,
+        "min": 270.0,
+        "max": 780.0
+      }
+    }
   },
   "DELL|11th Gen|B": {
-    "count": 817,
-    "median": 235.0,
+    "count": 744,
+    "median": 225.0,
     "min": 170.0,
     "max": 310.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 255.0,
+        "count": 168,
+        "min": 170.0,
+        "max": 310.0
+      },
+      "2025": {
+        "median": 235.0,
+        "count": 439,
+        "min": 170.0,
+        "max": 290.0
+      },
+      "2026": {
+        "median": 200.0,
+        "count": 137,
+        "min": 170.0,
+        "max": 300.0
+      }
+    }
   },
   "DELL|11th Gen|C": {
-    "count": 1039,
+    "count": 944,
     "median": 105.0,
     "min": 75.0,
     "max": 180.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 95.0,
+        "count": 242,
+        "min": 75.0,
+        "max": 180.0
+      },
+      "2025": {
+        "median": 105.0,
+        "count": 443,
+        "min": 75.0,
+        "max": 180.0
+      },
+      "2026": {
+        "median": 110.0,
+        "count": 259,
+        "min": 75.0,
+        "max": 175.0
+      }
+    }
   },
   "DELL|12th Gen|B": {
-    "count": 104,
-    "median": 295.0,
+    "count": 99,
+    "median": 255.0,
     "min": 230.0,
     "max": 490.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 470.0,
+        "count": 46,
+        "min": 250.0,
+        "max": 490.0
+      },
+      "2025": {
+        "median": 270.0,
+        "count": 17,
+        "min": 240.0,
+        "max": 380.0
+      },
+      "2026": {
+        "median": 240.0,
+        "count": 36,
+        "min": 230.0,
+        "max": 275.0
+      }
+    }
   },
   "DELL|12th Gen|C": {
-    "count": 104,
+    "count": 92,
     "median": 125.0,
     "min": 80.0,
     "max": 175.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 135.0,
+        "count": 17,
+        "min": 80.0,
+        "max": 175.0
+      },
+      "2025": {
+        "median": 112.0,
+        "count": 28,
+        "min": 80.0,
+        "max": 165.0
+      },
+      "2026": {
+        "median": 125.0,
+        "count": 47,
+        "min": 88.0,
+        "max": 170.0
+      }
+    }
   },
   "DELL|13th Gen|A": {
-    "count": 355,
-    "median": 365.0,
+    "count": 353,
+    "median": 360.0,
     "min": 355.0,
     "max": 950.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 950.0,
+        "count": 100,
+        "min": 950.0,
+        "max": 950.0
+      },
+      "2025": {
+        "median": 370.0,
+        "count": 35,
+        "min": 370.0,
+        "max": 370.0
+      },
+      "2026": {
+        "median": 360.0,
+        "count": 218,
+        "min": 355.0,
+        "max": 385.0
+      }
+    }
   },
   "DELL|13th Gen|B": {
-    "count": 23,
+    "count": 19,
     "median": 290.0,
     "min": 265.0,
     "max": 390.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 300.0,
+        "count": 4,
+        "min": 280.0,
+        "max": 390.0
+      },
+      "2025": {
+        "median": 290.0,
+        "count": 6,
+        "min": 265.0,
+        "max": 335.0
+      },
+      "2026": {
+        "median": 290.0,
+        "count": 9,
+        "min": 280.0,
+        "max": 335.0
+      }
+    }
   },
   "DELL|13th Gen|C": {
-    "count": 28,
+    "count": 24,
     "median": 125.0,
     "min": 100.0,
     "max": 170.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 110.0,
+        "count": 4,
+        "min": 100.0,
+        "max": 170.0
+      },
+      "2025": {
+        "median": 120.0,
+        "count": 12,
+        "min": 100.0,
+        "max": 145.0
+      },
+      "2026": {
+        "median": 125.0,
+        "count": 8,
+        "min": 110.0,
+        "max": 160.0
+      }
+    }
   },
   "DELL|3rd Gen|C": {
     "count": 5,
     "median": 24.0,
     "min": 24.0,
     "max": 25.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 24.0,
+        "count": 5,
+        "min": 24.0,
+        "max": 25.0
+      }
+    }
   },
   "DELL|4th Gen|B": {
-    "count": 12,
+    "count": 11,
     "median": 50.0,
     "min": 20.0,
     "max": 50.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 50.0,
+        "count": 11,
+        "min": 20.0,
+        "max": 50.0
+      }
+    }
   },
   "DELL|4th Gen|C": {
-    "count": 75,
+    "count": 70,
     "median": 20.0,
     "min": 15.0,
     "max": 35.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 20.0,
+        "count": 62,
+        "min": 15.0,
+        "max": 35.0
+      },
+      "2025": {
+        "median": 20.0,
+        "count": 8,
+        "min": 15.0,
+        "max": 29.0
+      }
+    }
   },
   "DELL|5th Gen|B": {
-    "count": 23,
+    "count": 21,
     "median": 20.0,
     "min": 18.0,
     "max": 40.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 20.0,
+        "count": 21,
+        "min": 18.0,
+        "max": 40.0
+      }
+    }
   },
   "DELL|5th Gen|C": {
-    "count": 184,
+    "count": 181,
     "median": 20.0,
     "min": 15.0,
     "max": 40.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 20.0,
+        "count": 142,
+        "min": 15.0,
+        "max": 40.0
+      },
+      "2025": {
+        "median": 20.0,
+        "count": 39,
+        "min": 15.0,
+        "max": 40.0
+      }
+    }
   },
   "DELL|6th Gen|B": {
-    "count": 236,
+    "count": 220,
     "median": 80.0,
     "min": 20.0,
     "max": 135.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 80.0,
+        "count": 175,
+        "min": 20.0,
+        "max": 135.0
+      },
+      "2025": {
+        "median": 80.0,
+        "count": 45,
+        "min": 25.0,
+        "max": 110.0
+      }
+    }
   },
   "DELL|6th Gen|C": {
-    "count": 1366,
+    "count": 1293,
     "median": 25.0,
     "min": 15.0,
     "max": 50.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 25.0,
+        "count": 900,
+        "min": 15.0,
+        "max": 50.0
+      },
+      "2025": {
+        "median": 20.0,
+        "count": 330,
+        "min": 15.0,
+        "max": 45.0
+      },
+      "2026": {
+        "median": 20.0,
+        "count": 63,
+        "min": 15.0,
+        "max": 40.0
+      }
+    }
   },
   "DELL|7th Gen|B": {
-    "count": 107,
+    "count": 95,
     "median": 115.0,
     "min": 70.0,
     "max": 155.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 115.0,
+        "count": 79,
+        "min": 70.0,
+        "max": 155.0
+      },
+      "2025": {
+        "median": 100.0,
+        "count": 12,
+        "min": 80.0,
+        "max": 130.0
+      },
+      "2026": {
+        "median": 135.0,
+        "count": 4,
+        "min": 135.0,
+        "max": 135.0
+      }
+    }
   },
   "DELL|7th Gen|C": {
-    "count": 768,
+    "count": 711,
     "median": 40.0,
     "min": 20.0,
     "max": 70.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 40.0,
+        "count": 544,
+        "min": 20.0,
+        "max": 70.0
+      },
+      "2025": {
+        "median": 35.0,
+        "count": 132,
+        "min": 20.0,
+        "max": 60.0
+      },
+      "2026": {
+        "median": 50.0,
+        "count": 35,
+        "min": 20.0,
+        "max": 55.0
+      }
+    }
   },
   "DELL|8th Gen|A": {
     "count": 4,
-    "median": 250.0,
+    "median": 245.0,
     "min": 245.0,
     "max": 255.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 250.0,
+        "count": 4,
+        "min": 245.0,
+        "max": 255.0
+      }
+    }
   },
   "DELL|8th Gen|B": {
-    "count": 1453,
-    "median": 165.0,
+    "count": 1318,
+    "median": 160.0,
     "min": 110.0,
     "max": 210.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 170.0,
+        "count": 945,
+        "min": 110.0,
+        "max": 210.0
+      },
+      "2025": {
+        "median": 165.0,
+        "count": 216,
+        "min": 125.0,
+        "max": 210.0
+      },
+      "2026": {
+        "median": 130.0,
+        "count": 157,
+        "min": 110.0,
+        "max": 190.0
+      }
+    }
   },
   "DELL|8th Gen|C": {
-    "count": 4088,
+    "count": 3755,
     "median": 50.0,
     "min": 35.0,
     "max": 95.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 60.0,
+        "count": 1768,
+        "min": 35.0,
+        "max": 95.0
+      },
+      "2025": {
+        "median": 50.0,
+        "count": 980,
+        "min": 35.0,
+        "max": 95.0
+      },
+      "2026": {
+        "median": 50.0,
+        "count": 1007,
+        "min": 35.0,
+        "max": 95.0
+      }
+    }
   },
   "DELL|9th Gen|B": {
-    "count": 79,
+    "count": 71,
     "median": 230.0,
     "min": 170.0,
     "max": 325.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 235.0,
+        "count": 42,
+        "min": 170.0,
+        "max": 325.0
+      },
+      "2025": {
+        "median": 210.0,
+        "count": 19,
+        "min": 170.0,
+        "max": 300.0
+      },
+      "2026": {
+        "median": 235.0,
+        "count": 10,
+        "min": 180.0,
+        "max": 275.0
+      }
+    }
   },
   "DELL|9th Gen|C": {
-    "count": 126,
+    "count": 113,
     "median": 100.0,
     "min": 75.0,
     "max": 155.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 110.0,
+        "count": 71,
+        "min": 80.0,
+        "max": 155.0
+      },
+      "2025": {
+        "median": 90.0,
+        "count": 27,
+        "min": 79.0,
+        "max": 150.0
+      },
+      "2026": {
+        "median": 100.0,
+        "count": 15,
+        "min": 75.0,
+        "max": 135.0
+      }
+    }
   },
   "FUJITSU|3rd Gen|C": {
     "count": 8,
     "median": 18.0,
     "min": 15.0,
     "max": 18.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 18.0,
+        "count": 8,
+        "min": 15.0,
+        "max": 18.0
+      }
+    }
   },
   "FUJITSU|4th Gen|C": {
     "count": 3,
     "median": 15.0,
     "min": 15.0,
     "max": 15.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 15.0,
+        "count": 3,
+        "min": 15.0,
+        "max": 15.0
+      }
+    }
   },
   "HP||B": {
-    "count": 5,
+    "count": 3,
     "median": 165.0,
     "min": 150.0,
     "max": 165.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2026": {
+        "median": 165.0,
+        "count": 3,
+        "min": 150.0,
+        "max": 165.0
+      }
+    }
   },
   "HP||C": {
-    "count": 6,
+    "count": 5,
     "median": 40.0,
     "min": 35.0,
     "max": 45.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2026": {
+        "median": 40.0,
+        "count": 5,
+        "min": 35.0,
+        "max": 45.0
+      }
+    }
   },
   "HP|10th Gen|B": {
-    "count": 424,
+    "count": 388,
     "median": 210.0,
     "min": 150.0,
     "max": 255.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 245.0,
+        "count": 42,
+        "min": 170.0,
+        "max": 255.0
+      },
+      "2025": {
+        "median": 210.0,
+        "count": 291,
+        "min": 165.0,
+        "max": 255.0
+      },
+      "2026": {
+        "median": 175.0,
+        "count": 55,
+        "min": 150.0,
+        "max": 240.0
+      }
+    }
   },
   "HP|10th Gen|C": {
-    "count": 409,
+    "count": 387,
     "median": 80.0,
     "min": 50.0,
     "max": 120.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 95.0,
+        "count": 82,
+        "min": 50.0,
+        "max": 120.0
+      },
+      "2025": {
+        "median": 90.0,
+        "count": 176,
+        "min": 60.0,
+        "max": 120.0
+      },
+      "2026": {
+        "median": 60.0,
+        "count": 129,
+        "min": 50.0,
+        "max": 115.0
+      }
+    }
   },
   "HP|11th Gen|A": {
-    "count": 19,
+    "count": 18,
     "median": 300.0,
     "min": 300.0,
     "max": 360.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 300.0,
+        "count": 18,
+        "min": 300.0,
+        "max": 360.0
+      }
+    }
   },
   "HP|11th Gen|B": {
-    "count": 272,
+    "count": 251,
     "median": 195.0,
     "min": 175.0,
     "max": 280.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 220.0,
+        "count": 31,
+        "min": 185.0,
+        "max": 280.0
+      },
+      "2025": {
+        "median": 230.0,
+        "count": 70,
+        "min": 175.0,
+        "max": 280.0
+      },
+      "2026": {
+        "median": 190.0,
+        "count": 150,
+        "min": 175.0,
+        "max": 235.0
+      }
+    }
   },
   "HP|11th Gen|C": {
-    "count": 315,
+    "count": 289,
     "median": 80.0,
     "min": 70.0,
     "max": 110.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 85.0,
+        "count": 34,
+        "min": 70.0,
+        "max": 110.0
+      },
+      "2025": {
+        "median": 90.0,
+        "count": 79,
+        "min": 70.0,
+        "max": 110.0
+      },
+      "2026": {
+        "median": 80.0,
+        "count": 176,
+        "min": 75.0,
+        "max": 110.0
+      }
+    }
   },
   "HP|12th Gen|B": {
-    "count": 32,
-    "median": 278.0,
+    "count": 28,
+    "median": 270.0,
     "min": 255.0,
     "max": 310.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 300.0,
+        "count": 6,
+        "min": 300.0,
+        "max": 310.0
+      },
+      "2025": {
+        "median": 270.0,
+        "count": 8,
+        "min": 260.0,
+        "max": 310.0
+      },
+      "2026": {
+        "median": 270.0,
+        "count": 14,
+        "min": 255.0,
+        "max": 300.0
+      }
+    }
   },
   "HP|12th Gen|C": {
-    "count": 34,
+    "count": 33,
     "median": 105.0,
     "min": 90.0,
     "max": 150.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 130.0,
+        "count": 3,
+        "min": 95.0,
+        "max": 145.0
+      },
+      "2025": {
+        "median": 120.0,
+        "count": 5,
+        "min": 90.0,
+        "max": 145.0
+      },
+      "2026": {
+        "median": 100.0,
+        "count": 25,
+        "min": 90.0,
+        "max": 150.0
+      }
+    }
   },
   "HP|13th Gen|B": {
-    "count": 12,
+    "count": 11,
     "median": 420.0,
     "min": 300.0,
     "max": 420.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2026": {
+        "median": 420.0,
+        "count": 11,
+        "min": 300.0,
+        "max": 420.0
+      }
+    }
   },
   "HP|13th Gen|C": {
-    "count": 5,
+    "count": 4,
     "median": 220.0,
     "min": 210.0,
     "max": 220.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2026": {
+        "median": 220.0,
+        "count": 4,
+        "min": 210.0,
+        "max": 220.0
+      }
+    }
   },
   "HP|1st Gen|B": {
-    "count": 4,
+    "count": 3,
     "median": 15.0,
     "min": 15.0,
     "max": 19.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 15.0,
+        "count": 3,
+        "min": 15.0,
+        "max": 19.0
+      }
+    }
   },
   "HP|2nd Gen|B": {
-    "count": 11,
+    "count": 10,
     "median": 70.0,
     "min": 40.0,
     "max": 70.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 70.0,
+        "count": 9,
+        "min": 40.0,
+        "max": 70.0
+      }
+    }
   },
   "HP|2nd Gen|C": {
-    "count": 22,
+    "count": 21,
     "median": 20.0,
     "min": 15.0,
     "max": 30.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 20.0,
+        "count": 16,
+        "min": 15.0,
+        "max": 30.0
+      },
+      "2026": {
+        "median": 20.0,
+        "count": 3,
+        "min": 20.0,
+        "max": 20.0
+      }
+    }
   },
   "HP|3rd Gen|B": {
-    "count": 113,
+    "count": 108,
     "median": 125.0,
     "min": 60.0,
     "max": 140.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 125.0,
+        "count": 88,
+        "min": 60.0,
+        "max": 140.0
+      },
+      "2025": {
+        "median": 125.0,
+        "count": 20,
+        "min": 60.0,
+        "max": 130.0
+      }
+    }
   },
   "HP|3rd Gen|C": {
-    "count": 187,
+    "count": 184,
     "median": 40.0,
     "min": 20.0,
     "max": 50.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 40.0,
+        "count": 164,
+        "min": 20.0,
+        "max": 50.0
+      },
+      "2025": {
+        "median": 40.0,
+        "count": 18,
+        "min": 35.0,
+        "max": 45.0
+      }
+    }
   },
   "HP|4th Gen|B": {
-    "count": 269,
+    "count": 250,
     "median": 200.0,
     "min": 120.0,
     "max": 205.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 200.0,
+        "count": 162,
+        "min": 120.0,
+        "max": 205.0
+      },
+      "2025": {
+        "median": 195.0,
+        "count": 88,
+        "min": 150.0,
+        "max": 205.0
+      }
+    }
   },
   "HP|4th Gen|C": {
-    "count": 396,
+    "count": 387,
     "median": 60.0,
     "min": 15.0,
     "max": 75.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 65.0,
+        "count": 236,
+        "min": 15.0,
+        "max": 75.0
+      },
+      "2025": {
+        "median": 60.0,
+        "count": 149,
+        "min": 15.0,
+        "max": 65.0
+      }
+    }
   },
   "HP|5th Gen|A": {
     "count": 4,
     "median": 200.0,
     "min": 200.0,
     "max": 200.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 200.0,
+        "count": 4,
+        "min": 200.0,
+        "max": 200.0
+      }
+    }
   },
   "HP|5th Gen|B": {
-    "count": 17,
-    "median": 92.0,
+    "count": 16,
+    "median": 75.0,
     "min": 13.0,
     "max": 180.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 125.0,
+        "count": 10,
+        "min": 20.0,
+        "max": 180.0
+      },
+      "2025": {
+        "median": 45.0,
+        "count": 6,
+        "min": 13.0,
+        "max": 175.0
+      }
+    }
   },
   "HP|5th Gen|C": {
-    "count": 77,
+    "count": 74,
     "median": 15.0,
     "min": 13.0,
     "max": 70.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 20.0,
+        "count": 39,
+        "min": 15.0,
+        "max": 70.0
+      },
+      "2025": {
+        "median": 15.0,
+        "count": 34,
+        "min": 13.0,
+        "max": 66.0
+      }
+    }
   },
   "HP|6th Gen|B": {
-    "count": 189,
-    "median": 75.0,
+    "count": 175,
+    "median": 70.0,
     "min": 20.0,
     "max": 115.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 75.0,
+        "count": 160,
+        "min": 20.0,
+        "max": 115.0
+      },
+      "2025": {
+        "median": 75.0,
+        "count": 11,
+        "min": 50.0,
+        "max": 110.0
+      },
+      "2026": {
+        "median": 20.0,
+        "count": 4,
+        "min": 20.0,
+        "max": 30.0
+      }
+    }
   },
   "HP|6th Gen|C": {
-    "count": 675,
+    "count": 657,
     "median": 30.0,
     "min": 15.0,
     "max": 50.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 30.0,
+        "count": 566,
+        "min": 15.0,
+        "max": 50.0
+      },
+      "2025": {
+        "median": 30.0,
+        "count": 74,
+        "min": 15.0,
+        "max": 45.0
+      },
+      "2026": {
+        "median": 20.0,
+        "count": 17,
+        "min": 15.0,
+        "max": 45.0
+      }
+    }
   },
   "HP|7th Gen|B": {
-    "count": 144,
-    "median": 100.0,
+    "count": 133,
+    "median": 105.0,
     "min": 20.0,
     "max": 150.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 100.0,
+        "count": 101,
+        "min": 20.0,
+        "max": 150.0
+      },
+      "2025": {
+        "median": 105.0,
+        "count": 32,
+        "min": 45.0,
+        "max": 150.0
+      }
+    }
   },
   "HP|7th Gen|C": {
-    "count": 283,
+    "count": 277,
     "median": 45.0,
     "min": 20.0,
     "max": 70.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 55.0,
+        "count": 187,
+        "min": 20.0,
+        "max": 70.0
+      },
+      "2025": {
+        "median": 40.0,
+        "count": 84,
+        "min": 20.0,
+        "max": 70.0
+      },
+      "2026": {
+        "median": 30.0,
+        "count": 6,
+        "min": 30.0,
+        "max": 40.0
+      }
+    }
   },
   "HP|8th Gen|B": {
-    "count": 652,
+    "count": 601,
     "median": 160.0,
     "min": 120.0,
     "max": 200.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 160.0,
+        "count": 333,
+        "min": 120.0,
+        "max": 200.0
+      },
+      "2025": {
+        "median": 175.0,
+        "count": 203,
+        "min": 120.0,
+        "max": 195.0
+      },
+      "2026": {
+        "median": 130.0,
+        "count": 65,
+        "min": 130.0,
+        "max": 170.0
+      }
+    }
   },
   "HP|8th Gen|C": {
-    "count": 1887,
-    "median": 60.0,
+    "count": 1775,
+    "median": 55.0,
     "min": 40.0,
     "max": 80.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 70.0,
+        "count": 987,
+        "min": 40.0,
+        "max": 80.0
+      },
+      "2025": {
+        "median": 60.0,
+        "count": 384,
+        "min": 40.0,
+        "max": 80.0
+      },
+      "2026": {
+        "median": 45.0,
+        "count": 404,
+        "min": 40.0,
+        "max": 75.0
+      }
+    }
   },
   "HP|9th Gen|B": {
-    "count": 14,
+    "count": 13,
     "median": 65.0,
     "min": 60.0,
     "max": 65.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 65.0,
+        "count": 13,
+        "min": 60.0,
+        "max": 65.0
+      }
+    }
   },
   "HP|9th Gen|C": {
-    "count": 41,
+    "count": 40,
     "median": 15.0,
     "min": 15.0,
     "max": 110.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 30.0,
+        "count": 14,
+        "min": 15.0,
+        "max": 105.0
+      },
+      "2025": {
+        "median": 15.0,
+        "count": 24,
+        "min": 15.0,
+        "max": 20.0
+      }
+    }
   },
   "LENOVO|10th Gen|A": {
-    "count": 11,
+    "count": 10,
     "median": 265.0,
     "min": 265.0,
     "max": 300.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 265.0,
+        "count": 10,
+        "min": 265.0,
+        "max": 300.0
+      }
+    }
   },
   "LENOVO|10th Gen|B": {
-    "count": 425,
+    "count": 394,
     "median": 210.0,
     "min": 170.0,
     "max": 235.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 192.0,
+        "count": 70,
+        "min": 170.0,
+        "max": 235.0
+      },
+      "2025": {
+        "median": 210.0,
+        "count": 293,
+        "min": 170.0,
+        "max": 235.0
+      },
+      "2026": {
+        "median": 180.0,
+        "count": 31,
+        "min": 175.0,
+        "max": 215.0
+      }
+    }
   },
   "LENOVO|10th Gen|C": {
-    "count": 589,
+    "count": 550,
     "median": 95.0,
     "min": 75.0,
     "max": 150.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 90.0,
+        "count": 83,
+        "min": 75.0,
+        "max": 120.0
+      },
+      "2025": {
+        "median": 95.0,
+        "count": 421,
+        "min": 75.0,
+        "max": 150.0
+      },
+      "2026": {
+        "median": 95.0,
+        "count": 46,
+        "min": 75.0,
+        "max": 125.0
+      }
+    }
   },
   "LENOVO|11th Gen|A": {
     "count": 26,
     "median": 340.0,
     "min": 300.0,
     "max": 360.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 340.0,
+        "count": 26,
+        "min": 300.0,
+        "max": 360.0
+      }
+    }
   },
   "LENOVO|11th Gen|B": {
-    "count": 141,
-    "median": 222.0,
+    "count": 132,
+    "median": 220.0,
     "min": 175.0,
     "max": 325.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 270.0,
+        "count": 21,
+        "min": 175.0,
+        "max": 325.0
+      },
+      "2025": {
+        "median": 220.0,
+        "count": 63,
+        "min": 175.0,
+        "max": 275.0
+      },
+      "2026": {
+        "median": 200.0,
+        "count": 48,
+        "min": 180.0,
+        "max": 230.0
+      }
+    }
   },
   "LENOVO|11th Gen|C": {
-    "count": 87,
+    "count": 85,
     "median": 100.0,
     "min": 80.0,
     "max": 130.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 105.0,
+        "count": 11,
+        "min": 85.0,
+        "max": 125.0
+      },
+      "2025": {
+        "median": 105.0,
+        "count": 58,
+        "min": 80.0,
+        "max": 130.0
+      },
+      "2026": {
+        "median": 100.0,
+        "count": 16,
+        "min": 85.0,
+        "max": 120.0
+      }
+    }
   },
   "LENOVO|12th Gen|B": {
-    "count": 22,
+    "count": 20,
     "median": 265.0,
     "min": 220.0,
     "max": 295.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 295.0,
+        "count": 4,
+        "min": 295.0,
+        "max": 295.0
+      },
+      "2026": {
+        "median": 260.0,
+        "count": 16,
+        "min": 220.0,
+        "max": 270.0
+      }
+    }
   },
   "LENOVO|2nd Gen|B": {
-    "count": 8,
+    "count": 7,
     "median": 80.0,
     "min": 80.0,
     "max": 80.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 80.0,
+        "count": 7,
+        "min": 80.0,
+        "max": 80.0
+      }
+    }
   },
   "LENOVO|2nd Gen|C": {
     "count": 15,
     "median": 15.0,
     "min": 15.0,
     "max": 20.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 18.0,
+        "count": 3,
+        "min": 18.0,
+        "max": 18.0
+      },
+      "2025": {
+        "median": 15.0,
+        "count": 12,
+        "min": 15.0,
+        "max": 20.0
+      }
+    }
   },
   "LENOVO|3rd Gen|B": {
     "count": 9,
-    "median": 105.0,
+    "median": 90.0,
     "min": 70.0,
     "max": 105.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 105.0,
+        "count": 7,
+        "min": 70.0,
+        "max": 105.0
+      }
+    }
   },
   "LENOVO|3rd Gen|C": {
     "count": 28,
-    "median": 20.0,
+    "median": 15.0,
     "min": 15.0,
     "max": 40.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 40.0,
+        "count": 21,
+        "min": 15.0,
+        "max": 40.0
+      },
+      "2025": {
+        "median": 15.0,
+        "count": 7,
+        "min": 15.0,
+        "max": 15.0
+      }
+    }
   },
   "LENOVO|4th Gen|B": {
     "count": 14,
     "median": 50.0,
     "min": 40.0,
     "max": 135.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 50.0,
+        "count": 14,
+        "min": 40.0,
+        "max": 135.0
+      }
+    }
   },
   "LENOVO|4th Gen|C": {
     "count": 52,
     "median": 20.0,
     "min": 15.0,
     "max": 40.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 20.0,
+        "count": 47,
+        "min": 15.0,
+        "max": 40.0
+      },
+      "2025": {
+        "median": 30.0,
+        "count": 5,
+        "min": 15.0,
+        "max": 40.0
+      }
+    }
   },
   "LENOVO|5th Gen|A": {
     "count": 5,
     "median": 350.0,
     "min": 350.0,
     "max": 350.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 350.0,
+        "count": 5,
+        "min": 350.0,
+        "max": 350.0
+      }
+    }
   },
   "LENOVO|5th Gen|B": {
-    "count": 36,
+    "count": 35,
     "median": 40.0,
     "min": 18.0,
     "max": 130.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 40.0,
+        "count": 30,
+        "min": 18.0,
+        "max": 50.0
+      },
+      "2025": {
+        "median": 130.0,
+        "count": 5,
+        "min": 130.0,
+        "max": 130.0
+      }
+    }
   },
   "LENOVO|5th Gen|C": {
-    "count": 72,
+    "count": 70,
     "median": 20.0,
     "min": 15.0,
     "max": 35.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 25.0,
+        "count": 37,
+        "min": 15.0,
+        "max": 35.0
+      },
+      "2025": {
+        "median": 30.0,
+        "count": 23,
+        "min": 15.0,
+        "max": 35.0
+      },
+      "2026": {
+        "median": 18.0,
+        "count": 10,
+        "min": 15.0,
+        "max": 20.0
+      }
+    }
   },
   "LENOVO|6th Gen|B": {
-    "count": 220,
+    "count": 203,
     "median": 80.0,
     "min": 19.0,
     "max": 130.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 85.0,
+        "count": 152,
+        "min": 40.0,
+        "max": 130.0
+      },
+      "2025": {
+        "median": 65.0,
+        "count": 48,
+        "min": 19.0,
+        "max": 110.0
+      },
+      "2026": {
+        "median": 130.0,
+        "count": 3,
+        "min": 130.0,
+        "max": 130.0
+      }
+    }
   },
   "LENOVO|6th Gen|C": {
-    "count": 634,
-    "median": 35.0,
+    "count": 602,
+    "median": 25.0,
     "min": 15.0,
     "max": 55.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 40.0,
+        "count": 353,
+        "min": 15.0,
+        "max": 55.0
+      },
+      "2025": {
+        "median": 30.0,
+        "count": 122,
+        "min": 15.0,
+        "max": 55.0
+      },
+      "2026": {
+        "median": 15.0,
+        "count": 127,
+        "min": 15.0,
+        "max": 45.0
+      }
+    }
   },
   "LENOVO|7th Gen|B": {
-    "count": 44,
-    "median": 110.0,
+    "count": 41,
+    "median": 105.0,
     "min": 70.0,
     "max": 170.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 110.0,
+        "count": 37,
+        "min": 70.0,
+        "max": 170.0
+      },
+      "2025": {
+        "median": 150.0,
+        "count": 3,
+        "min": 70.0,
+        "max": 150.0
+      }
+    }
   },
   "LENOVO|7th Gen|C": {
-    "count": 195,
-    "median": 45.0,
+    "count": 177,
+    "median": 40.0,
     "min": 25.0,
     "max": 75.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 50.0,
+        "count": 144,
+        "min": 25.0,
+        "max": 75.0
+      },
+      "2025": {
+        "median": 40.0,
+        "count": 28,
+        "min": 25.0,
+        "max": 70.0
+      },
+      "2026": {
+        "median": 25.0,
+        "count": 5,
+        "min": 25.0,
+        "max": 25.0
+      }
+    }
   },
   "LENOVO|8th Gen|A": {
     "count": 15,
     "median": 145.0,
     "min": 115.0,
     "max": 150.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 145.0,
+        "count": 15,
+        "min": 115.0,
+        "max": 150.0
+      }
+    }
   },
   "LENOVO|8th Gen|B": {
-    "count": 964,
+    "count": 905,
     "median": 160.0,
     "min": 100.0,
     "max": 245.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 160.0,
+        "count": 621,
+        "min": 100.0,
+        "max": 245.0
+      },
+      "2025": {
+        "median": 160.0,
+        "count": 161,
+        "min": 110.0,
+        "max": 185.0
+      },
+      "2026": {
+        "median": 165.0,
+        "count": 123,
+        "min": 110.0,
+        "max": 200.0
+      }
+    }
   },
   "LENOVO|8th Gen|C": {
-    "count": 1118,
+    "count": 1013,
     "median": 65.0,
     "min": 40.0,
     "max": 90.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 65.0,
+        "count": 673,
+        "min": 40.0,
+        "max": 90.0
+      },
+      "2025": {
+        "median": 60.0,
+        "count": 215,
+        "min": 40.0,
+        "max": 90.0
+      },
+      "2026": {
+        "median": 65.0,
+        "count": 125,
+        "min": 40.0,
+        "max": 85.0
+      }
+    }
   },
   "LENOVO|8th Gen|Unknown": {
-    "count": 6,
+    "count": 5,
     "median": 40.0,
     "min": 40.0,
     "max": 40.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 40.0,
+        "count": 5,
+        "min": 40.0,
+        "max": 40.0
+      }
+    }
   },
   "LENOVO|9th Gen|B": {
-    "count": 13,
+    "count": 12,
     "median": 270.0,
     "min": 35.0,
     "max": 310.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 225.0,
+        "count": 8,
+        "min": 35.0,
+        "max": 310.0
+      },
+      "2026": {
+        "median": 270.0,
+        "count": 4,
+        "min": 270.0,
+        "max": 270.0
+      }
+    }
   },
   "LENOVO|9th Gen|C": {
-    "count": 4,
+    "count": 3,
     "median": 40.0,
     "min": 40.0,
     "max": 90.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {}
   },
   "MICROSOFT|10th Gen|B": {
-    "count": 43,
+    "count": 38,
     "median": 180.0,
     "min": 145.0,
     "max": 225.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 225.0,
+        "count": 11,
+        "min": 210.0,
+        "max": 225.0
+      },
+      "2025": {
+        "median": 180.0,
+        "count": 26,
+        "min": 145.0,
+        "max": 220.0
+      }
+    }
   },
   "MICROSOFT|10th Gen|C": {
-    "count": 15,
-    "median": 190.0,
+    "count": 13,
+    "median": 125.0,
     "min": 70.0,
     "max": 190.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 190.0,
+        "count": 10,
+        "min": 70.0,
+        "max": 190.0
+      }
+    }
   },
   "MICROSOFT|11th Gen|A": {
     "count": 18,
     "median": 630.0,
     "min": 630.0,
     "max": 630.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 630.0,
+        "count": 18,
+        "min": 630.0,
+        "max": 630.0
+      }
+    }
   },
   "MICROSOFT|11th Gen|B": {
-    "count": 34,
+    "count": 33,
     "median": 250.0,
     "min": 245.0,
     "max": 325.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 245.0,
+        "count": 8,
+        "min": 245.0,
+        "max": 245.0
+      },
+      "2026": {
+        "median": 250.0,
+        "count": 25,
+        "min": 250.0,
+        "max": 325.0
+      }
+    }
   },
   "MICROSOFT|11th Gen|C": {
-    "count": 22,
+    "count": 19,
     "median": 145.0,
     "min": 110.0,
     "max": 170.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 145.0,
+        "count": 12,
+        "min": 145.0,
+        "max": 145.0
+      },
+      "2026": {
+        "median": 170.0,
+        "count": 6,
+        "min": 110.0,
+        "max": 170.0
+      }
+    }
   },
   "MICROSOFT|12th Gen|C": {
     "count": 4,
-    "median": 160.0,
+    "median": 190.0,
     "min": 130.0,
     "max": 190.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {}
   },
   "MICROSOFT|7th Gen|B": {
     "count": 5,
     "median": 60.0,
     "min": 60.0,
     "max": 65.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 60.0,
+        "count": 5,
+        "min": 60.0,
+        "max": 65.0
+      }
+    }
   },
   "MICROSOFT|8th Gen|B": {
-    "count": 12,
+    "count": 10,
     "median": 140.0,
     "min": 135.0,
     "max": 160.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 140.0,
+        "count": 9,
+        "min": 140.0,
+        "max": 160.0
+      }
+    }
   },
   "MICROSOFT|8th Gen|C": {
-    "count": 32,
-    "median": 135.0,
+    "count": 30,
+    "median": 60.0,
     "min": 40.0,
     "max": 160.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 135.0,
+        "count": 27,
+        "min": 40.0,
+        "max": 160.0
+      },
+      "2025": {
+        "median": 45.0,
+        "count": 3,
+        "min": 45.0,
+        "max": 45.0
+      }
+    }
   },
   "PANASONIC|7th Gen|C": {
     "count": 13,
     "median": 45.0,
     "min": 30.0,
     "max": 45.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 45.0,
+        "count": 9,
+        "min": 45.0,
+        "max": 45.0
+      },
+      "2025": {
+        "median": 30.0,
+        "count": 4,
+        "min": 30.0,
+        "max": 30.0
+      }
+    }
   },
   "TERRA|6th Gen|C": {
     "count": 7,
     "median": 20.0,
     "min": 20.0,
     "max": 20.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 20.0,
+        "count": 7,
+        "min": 20.0,
+        "max": 20.0
+      }
+    }
   },
   "TERRA|8th Gen|C": {
-    "count": 7,
+    "count": 6,
     "median": 45.0,
     "min": 45.0,
     "max": 45.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2025": {
+        "median": 45.0,
+        "count": 6,
+        "min": 45.0,
+        "max": 45.0
+      }
+    }
   },
   "TOSHIBA|10th Gen|C": {
-    "count": 12,
+    "count": 10,
     "median": 90.0,
     "min": 20.0,
     "max": 90.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 35.0,
+        "count": 4,
+        "min": 20.0,
+        "max": 75.0
+      },
+      "2025": {
+        "median": 90.0,
+        "count": 6,
+        "min": 90.0,
+        "max": 90.0
+      }
+    }
   },
   "TOSHIBA|11th Gen|B": {
     "count": 6,
     "median": 210.0,
     "min": 190.0,
     "max": 220.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 210.0,
+        "count": 6,
+        "min": 190.0,
+        "max": 220.0
+      }
+    }
   },
   "TOSHIBA|11th Gen|C": {
-    "count": 4,
+    "count": 3,
     "median": 80.0,
     "min": 80.0,
     "max": 90.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 80.0,
+        "count": 3,
+        "min": 80.0,
+        "max": 90.0
+      }
+    }
   },
   "TOSHIBA|4th Gen|C": {
-    "count": 11,
+    "count": 10,
     "median": 15.0,
     "min": 15.0,
     "max": 20.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 15.0,
+        "count": 8,
+        "min": 15.0,
+        "max": 20.0
+      }
+    }
   },
   "TOSHIBA|6th Gen|B": {
-    "count": 21,
+    "count": 20,
     "median": 80.0,
     "min": 80.0,
     "max": 100.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 80.0,
+        "count": 20,
+        "min": 80.0,
+        "max": 100.0
+      }
+    }
   },
   "TOSHIBA|6th Gen|C": {
-    "count": 72,
+    "count": 68,
     "median": 25.0,
     "min": 15.0,
     "max": 40.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 40.0,
+        "count": 27,
+        "min": 15.0,
+        "max": 40.0
+      },
+      "2025": {
+        "median": 20.0,
+        "count": 41,
+        "min": 15.0,
+        "max": 35.0
+      }
+    }
   },
   "TOSHIBA|8th Gen|B": {
-    "count": 198,
+    "count": 183,
     "median": 130.0,
     "min": 100.0,
     "max": 150.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 130.0,
+        "count": 175,
+        "min": 100.0,
+        "max": 150.0
+      },
+      "2025": {
+        "median": 140.0,
+        "count": 8,
+        "min": 130.0,
+        "max": 150.0
+      }
+    }
   },
   "TOSHIBA|8th Gen|C": {
-    "count": 216,
+    "count": 206,
     "median": 65.0,
     "min": 50.0,
     "max": 85.0,
-    "period": "historisch + 2026 YTD"
+    "period": "gewogen mediaan (2024-2026)",
+    "by_year": {
+      "2024": {
+        "median": 65.0,
+        "count": 191,
+        "min": 50.0,
+        "max": 85.0
+      },
+      "2025": {
+        "median": 65.0,
+        "count": 13,
+        "min": 60.0,
+        "max": 75.0
+      }
+    }
   }
 }
