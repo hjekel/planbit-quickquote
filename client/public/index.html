@@ -1650,7 +1650,7 @@ function renderBenchmarkCard(data, activeTab) {
   let h = '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);line-height:1.6;">';
   h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
   h += '<span style="font-weight:600;">📊 ' + bLabel + '</span>';
-  h += '<div>' + tabBtn(bAll, 'all') + tabBtn('2025', '2025') + tabBtn('2026', '2026') + '</div>';
+  h += '<div>' + tabBtn(bAll, 'all') + tabBtn('2025', '2025') + tabBtn('2026 YTD', '2026') + '</div>';
   h += '</div>';
 
   if (d) {
@@ -1659,6 +1659,7 @@ function renderBenchmarkCard(data, activeTab) {
     h += '<div style="font-style:italic;opacity:0.7;">' + bInsuf + '</div>';
   }
 
+  h += '<div style="font-size:10px;color:var(--muted);margin-top:4px;">' + (currentLang === 'en' ? 'Updated through 2 Apr 2026' : 'Bijgewerkt t/m 2 apr 2026') + '</div>';
   h += '</div>';
   benchEl.innerHTML = h;
 }
