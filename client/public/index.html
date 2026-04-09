@@ -665,10 +665,10 @@ input, select, button { font-family: inherit; }
     <div id="ai-result-card" style="display:none;background:var(--surface);border:2px solid #B8860B;border-radius:var(--radius);padding:28px;margin-top:24px;margin-bottom:24px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B8860B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
-        <h2 style="font-size:16px;font-weight:700;color:#B8860B;margin:0;">ERP Berekening</h2>
+        <h2 style="font-size:16px;font-weight:700;color:#B8860B;margin:0;" data-i18n="erpCalcTitle">ERP Berekening</h2>
         <span id="ai-loading" class="ai-spinner-wrap">
           <span class="ai-spinner"></span>
-          <span class="ai-spinner-text">ERP wordt berekend...</span>
+          <span class="ai-spinner-text" data-i18n="erpLoading">ERP wordt berekend...</span>
           <div class="ai-progress-wrap"><div class="ai-progress-bar" id="ai-progress-bar"></div></div>
         </span>
       </div>
@@ -1626,7 +1626,7 @@ function fetchBenchmark(brand, genLabel, grade, isApple) {
         + '<span style="font-weight:600;">📊 ' + bLabel + ':</span> '
         + data.count + ' ' + bSales + ' — ' + bMedian + ' <strong style="color:var(--text);">€' + data.median + '</strong>, '
         + 'range €' + data.min + '–€' + data.max
-        + ' <span style="opacity:0.7;">(' + data.period + ')</span>'
+        + ' <span style="opacity:0.7;">(' + (currentLang === 'en' ? data.period.replace('historisch', 'historical') : data.period) + ')</span>'
         + '</div>';
       benchEl.style.display = 'block';
     })
@@ -1665,13 +1665,15 @@ function formatAiResult(text) {
     }
     if (/^Bron(nen)?:/.test(trimmed)) {
       const key = trimmed.match(/^Bron(nen)?:/)[0];
-      html += '<div style="margin-top:18px;font-weight:800;font-size:14px;color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:4px;margin-bottom:8px;">📚 Bronnen</div>';
+      const sourcesLabel = (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'Sources' : 'Bronnen';
+      html += '<div style="margin-top:18px;font-weight:800;font-size:14px;color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:4px;margin-bottom:8px;">📚 ' + sourcesLabel + '</div>';
       const rest = trimmed.slice(key.length).trim();
       if (rest) html += '<div style="font-size:13px;line-height:1.8;color:var(--text);">' + escHtml(rest) + '</div>';
       lastWasEmpty = false; continue;
     }
     if (trimmed.startsWith('Toelichting:')) {
-      html += '<div style="margin-top:18px;font-weight:800;font-size:14px;color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:4px;margin-bottom:8px;">💡 Toelichting</div>';
+      const explLabel = (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'Explanation' : 'Toelichting';
+      html += '<div style="margin-top:18px;font-weight:800;font-size:14px;color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:4px;margin-bottom:8px;">💡 ' + explLabel + '</div>';
       const rest = trimmed.slice('Toelichting:'.length).trim();
       if (rest) html += '<div style="font-size:13px;line-height:1.8;color:var(--text);">' + escHtml(rest) + '</div>';
       lastWasEmpty = false; continue;
@@ -1849,6 +1851,7 @@ const TRANSLATIONS = {
     feedbackThanks: 'Bedankt voor je feedback!', clearForm: 'Formulier Wissen', getAiAnalysis: 'ERP Berekenen',
     modelSearchPlaceholder: '🔍 Zoek model...',
     appleChipHint: '👆 Selecteer het Apple chip-type hieronder',
+    erpCalcTitle: 'ERP Berekening', erpLoading: 'ERP wordt berekend...',
     benchHistorical: 'Historisch', benchSales: 'vergelijkbare verkopen', benchMedian: 'mediaan',
     livePriceCheck: '🔍 LIVE PRIJS CHECK',
     serialCheck: '🔢 SERIENUMMER CHECK',
@@ -1876,6 +1879,7 @@ const TRANSLATIONS = {
     feedbackThanks: 'Thanks for your feedback!', clearForm: 'Clear Form', getAiAnalysis: 'Calculate ERP',
     modelSearchPlaceholder: '🔍 Search model...',
     appleChipHint: '👆 Select the Apple chip type below',
+    erpCalcTitle: 'ERP Calculation', erpLoading: 'Calculating ERP...',
     benchHistorical: 'Historical', benchSales: 'comparable sales', benchMedian: 'median',
     livePriceCheck: '🔍 LIVE PRICE CHECK',
     serialCheck: '🔢 SERIAL NUMBER CHECK',
