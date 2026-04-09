@@ -1402,6 +1402,7 @@ function fillExample(opts) {
     setTimeout(() => {
       if (opts.appleChip) {
         document.getElementById('appleChip').value = opts.appleChip;
+        document.getElementById('apple-chip-hint').style.display = 'none';
       } else {
         document.getElementById('cpuGen').value = opts.cpuGen || '';
       }
@@ -1608,8 +1609,11 @@ function fetchBenchmark(brand, genLabel, grade, isApple) {
     }
   }
 
+  // Normalize grade: just the first letter (A, B, C, D) or 'Unknown'
+  const gradeNorm = grade && grade.length === 1 ? grade : (grade || '').split(/[^A-Za-z]/)[0] || grade;
+  console.log('[Benchmark] Lookup:', { brand, gen, grade: gradeNorm, isApple });
   const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
-  const params = new URLSearchParams({ brand, gen, grade });
+  const params = new URLSearchParams({ brand, gen, grade: gradeNorm });
   fetch(`${apiBase}/api/benchmark?${params}`)
     .then(r => r.json())
     .then(data => {
