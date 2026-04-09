@@ -468,7 +468,7 @@ input, select, button { font-family: inherit; }
         </div>
         <div class="field">
           <label data-i18n="model">Model</label>
-          <input type="text" id="model-search" placeholder="🔍 Zoek model..." style="padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text);margin-bottom:4px;width:100%;box-sizing:border-box;display:none;" autocomplete="off">
+          <input type="text" id="model-search" data-i18n-placeholder="modelSearchPlaceholder" placeholder="🔍 Zoek model..." style="padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text);margin-bottom:4px;width:100%;box-sizing:border-box;display:none;" autocomplete="off">
           <select id="model">
             <option value="" data-i18n="selectModel">Selecteer eerst een merk...</option>
           </select>
@@ -496,7 +496,7 @@ input, select, button { font-family: inherit; }
           <select id="cpuFamily">
             <option value="" data-i18n="selectCpu">Select CPU family...</option>
           </select>
-          <div id="apple-chip-hint" style="display:none;font-size:12px;color:#E07000;font-weight:600;margin-top:4px;">👆 Selecteer het Apple chip-type hieronder</div>
+          <div id="apple-chip-hint" data-i18n="appleChipHint" style="display:none;font-size:12px;color:#E07000;font-weight:600;margin-top:4px;">👆 Selecteer het Apple chip-type hieronder</div>
         </div>
         <div class="field" id="cpuGen-field">
           <label data-i18n="generation">Generatie</label>
@@ -1618,9 +1618,13 @@ function fetchBenchmark(brand, genLabel, grade, isApple) {
     .then(r => r.json())
     .then(data => {
       if (!data.ok || !data.found) return;
+      const bt = TRANSLATIONS[currentLang];
+      const bLabel = bt.benchHistorical || 'Historisch';
+      const bSales = bt.benchSales || 'vergelijkbare verkopen';
+      const bMedian = bt.benchMedian || 'mediaan';
       benchEl.innerHTML = '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);line-height:1.6;">'
-        + '<span style="font-weight:600;">📊 Historisch:</span> '
-        + data.count + ' vergelijkbare verkopen — mediaan <strong style="color:var(--text);">€' + data.median + '</strong>, '
+        + '<span style="font-weight:600;">📊 ' + bLabel + ':</span> '
+        + data.count + ' ' + bSales + ' — ' + bMedian + ' <strong style="color:var(--text);">€' + data.median + '</strong>, '
         + 'range €' + data.min + '–€' + data.max
         + ' <span style="opacity:0.7;">(' + data.period + ')</span>'
         + '</div>';
@@ -1805,7 +1809,7 @@ async function sendFeedback(verdict) {
       })
     });
     const status = document.getElementById('feedback-status');
-    status.textContent = 'Bedankt voor je feedback!';
+    status.textContent = TRANSLATIONS[currentLang].feedbackThanks;
     status.style.color = 'var(--go)';
     status.style.display = 'block';
   } catch (e) {
@@ -1843,6 +1847,9 @@ const TRANSLATIONS = {
     context: 'CONTEXT', region: 'REGIO', battery: 'BATTERIJ (NOTEBOOK)', quantity: 'AANTAL',
     quickChoice: 'SNELKEUZE', exampleAssets: 'VOORBEELD ASSETS', appleChip: 'APPLE CHIP',
     feedbackThanks: 'Bedankt voor je feedback!', clearForm: 'Formulier Wissen', getAiAnalysis: 'ERP Berekenen',
+    modelSearchPlaceholder: '🔍 Zoek model...',
+    appleChipHint: '👆 Selecteer het Apple chip-type hieronder',
+    benchHistorical: 'Historisch', benchSales: 'vergelijkbare verkopen', benchMedian: 'mediaan',
     livePriceCheck: '🔍 LIVE PRIJS CHECK',
     serialCheck: '🔢 SERIENUMMER CHECK',
     serialPlaceholder: 'Voer serienummer in (optioneel)...',
@@ -1865,8 +1872,11 @@ const TRANSLATIONS = {
     cpu: 'CPU', family: 'FAMILY', generation: 'GENERATION', fullModel: 'FULL MODEL (OPTIONAL)',
     specs: 'SPECS', ram: 'RAM', ssd: 'SSD', grade: 'GRADE', keyboard: 'KEYBOARD',
     context: 'CONTEXT', region: 'REGION', battery: 'BATTERY (NOTEBOOK)', quantity: 'QUANTITY',
-    quickChoice: 'QUICK CHOICE', exampleAssets: 'EXAMPLE ASSETS', appleChip: 'APPLE CHIP',
+    quickChoice: 'QUICK SELECT', exampleAssets: 'EXAMPLE ASSETS', appleChip: 'APPLE CHIP',
     feedbackThanks: 'Thanks for your feedback!', clearForm: 'Clear Form', getAiAnalysis: 'Calculate ERP',
+    modelSearchPlaceholder: '🔍 Search model...',
+    appleChipHint: '👆 Select the Apple chip type below',
+    benchHistorical: 'Historical', benchSales: 'comparable sales', benchMedian: 'median',
     livePriceCheck: '🔍 LIVE PRICE CHECK',
     serialCheck: '🔢 SERIAL NUMBER CHECK',
     serialPlaceholder: 'Enter serial number (optional)...',
