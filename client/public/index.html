@@ -674,6 +674,7 @@ input, select, button { font-family: inherit; }
       </div>
       <div id="ai-result-text" style="background:var(--surface2);border-radius:8px;padding:16px;font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;font-family:inherit;"></div>
       <div id="ai-result-error" style="display:none;background:#f4433620;border:1px solid var(--nogo);border-radius:8px;padding:14px;font-size:13px;color:var(--nogo);margin-top:12px;"></div>
+      <div id="ai-benchmark-row" style="display:none;margin-top:12px;"></div>
       <div id="ai-feedback-row" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
         <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;" data-i18n="feedbackLabel">Feedback op deze berekening</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
@@ -1508,6 +1509,7 @@ async function doAiQuote() {
   textEl.classList.add('ai-result-shimmer');
   errorEl.style.display = 'none';
   document.getElementById('ai-export-row').style.display = 'none';
+  document.getElementById('ai-benchmark-row').style.display = 'none';
   loadEl.classList.add('active');
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -1569,6 +1571,9 @@ async function doAiQuote() {
     document.querySelectorAll('.btn-feedback').forEach(b => b.disabled = false);
     document.getElementById('feedback-status').style.display = 'none';
     document.getElementById('ai-export-row').style.display = 'flex';
+
+    // ── Fetch historical benchmark ──
+    fetchBenchmark(brandLabel, cpuGenLabel, gradeVal, isApple);
   } catch (err) {
     clearInterval(progressInterval);
     progressBar.classList.add('error');
@@ -1583,6 +1588,41 @@ async function doAiQuote() {
       progressBar.classList.remove('done', 'error');
     }, 1500);
   }
+}
+
+// ── Historical Benchmark Lookup ─────────────────────────────────
+function fetchBenchmark(brand, genLabel, grade, isApple) {
+  const benchEl = document.getElementById('ai-benchmark-row');
+  benchEl.style.display = 'none';
+  benchEl.innerHTML = '';
+
+  // Convert frontend gen format to benchmark format
+  // Frontend: "Gen 13 (2023)" or "M1 Pro" — Benchmark: "13th Gen" or "M1 Pro"
+  let gen = genLabel;
+  if (!isApple) {
+    const m = genLabel.match(/Gen\s+(\d+)/);
+    if (m) {
+      const n = parseInt(m[1]);
+      const suffix = n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th';
+      gen = n + suffix + ' Gen';
+    }
+  }
+
+  const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
+  const params = new URLSearchParams({ brand, gen, grade });
+  fetch(`${apiBase}/api/benchmark?${params}`)
+    .then(r => r.json())
+    .then(data => {
+      if (!data.ok || !data.found) return;
+      benchEl.innerHTML = '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);line-height:1.6;">'
+        + '<span style="font-weight:600;">📊 Historisch:</span> '
+        + data.count + ' vergelijkbare verkopen — mediaan <strong style="color:var(--text);">€' + data.median + '</strong>, '
+        + 'range €' + data.min + '–€' + data.max
+        + ' <span style="opacity:0.7;">(' + data.period + ')</span>'
+        + '</div>';
+      benchEl.style.display = 'block';
+    })
+    .catch(() => {}); // silently ignore errors
 }
 
 // ── AI Result Formatter ─────────────────────────────────────────

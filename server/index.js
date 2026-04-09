@@ -154,5 +154,31 @@ app.post('/api/feedback', (req, res) => {
   }
 });
 
+// ── Benchmark lookup ──
+app.get('/api/benchmark', (req, res) => {
+  try {
+    const benchmarkPath = path.join(__dirname, '..', 'data', 'so_benchmark.json');
+    if (!fs.existsSync(benchmarkPath)) {
+      return res.json({ ok: true, found: false });
+    }
+    const benchmark = JSON.parse(fs.readFileSync(benchmarkPath, 'utf8'));
+    const { brand, gen, grade } = req.query;
+    // Build lookup key — try exact first, then case-insensitive
+    const rawKey = [brand, gen, grade].map(v => (v || '').trim()).join('|');
+    let result = benchmark[rawKey];
+    if (!result) {
+      const upperKey = rawKey.toUpperCase();
+      const match = Object.keys(benchmark).find(k => k.toUpperCase() === upperKey);
+      result = match ? benchmark[match] : null;
+    }
+    if (!result) {
+      return res.json({ ok: true, found: false, key_tried: rawKey });
+    }
+    res.json({ ok: true, found: true, ...result });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => console.log(`QuickQuote running on http://localhost:${PORT}`));

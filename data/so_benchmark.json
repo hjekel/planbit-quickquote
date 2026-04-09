@@ -1,0 +1,870 @@
+{
+  "ACER|6th Gen|C": {
+    "count": 10,
+    "median": 15.0,
+    "min": 15.0,
+    "max": 15.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|10th Gen|B": {
+    "count": 95,
+    "median": 325.0,
+    "min": 170.0,
+    "max": 525.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|10th Gen|C": {
+    "count": 69,
+    "median": 190.0,
+    "min": 120.0,
+    "max": 225.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|3rd Gen|C": {
+    "count": 4,
+    "median": 20.0,
+    "min": 20.0,
+    "max": 20.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|4th Gen|B": {
+    "count": 7,
+    "median": 35.0,
+    "min": 30.0,
+    "max": 40.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|4th Gen|C": {
+    "count": 20,
+    "median": 30.0,
+    "min": 20.0,
+    "max": 40.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|5th Gen|B": {
+    "count": 15,
+    "median": 40.0,
+    "min": 25.0,
+    "max": 50.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|5th Gen|C": {
+    "count": 33,
+    "median": 30.0,
+    "min": 20.0,
+    "max": 50.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|6th Gen|C": {
+    "count": 9,
+    "median": 55.0,
+    "min": 30.0,
+    "max": 80.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|7th Gen|B": {
+    "count": 32,
+    "median": 180.0,
+    "min": 125.0,
+    "max": 230.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|7th Gen|C": {
+    "count": 91,
+    "median": 90.0,
+    "min": 50.0,
+    "max": 130.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|8th Gen|B": {
+    "count": 155,
+    "median": 260.0,
+    "min": 155.0,
+    "max": 345.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|8th Gen|C": {
+    "count": 179,
+    "median": 140.0,
+    "min": 70.0,
+    "max": 210.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|9th Gen|B": {
+    "count": 350,
+    "median": 375.0,
+    "min": 275.0,
+    "max": 560.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|9th Gen|C": {
+    "count": 224,
+    "median": 180.0,
+    "min": 125.0,
+    "max": 280.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|M1|A": {
+    "count": 35,
+    "median": 568.0,
+    "min": 450.0,
+    "max": 650.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|M1|B": {
+    "count": 135,
+    "median": 625.0,
+    "min": 300.0,
+    "max": 900.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|M1|C": {
+    "count": 121,
+    "median": 200.0,
+    "min": 110.0,
+    "max": 300.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|M1|Unknown": {
+    "count": 9,
+    "median": 15.0,
+    "min": 15.0,
+    "max": 15.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|M1 Pro|B": {
+    "count": 15,
+    "median": 440.0,
+    "min": 410.0,
+    "max": 470.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|M1 Pro|C": {
+    "count": 6,
+    "median": 160.0,
+    "min": 140.0,
+    "max": 160.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "APPLE|M3|A": {
+    "count": 17,
+    "median": 935.0,
+    "min": 935.0,
+    "max": 975.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "ASUS|8th Gen|C": {
+    "count": 8,
+    "median": 40.0,
+    "min": 40.0,
+    "max": 40.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|10th Gen|B": {
+    "count": 708,
+    "median": 220.0,
+    "min": 160.0,
+    "max": 295.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|10th Gen|C": {
+    "count": 936,
+    "median": 90.0,
+    "min": 65.0,
+    "max": 150.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|11th Gen|A": {
+    "count": 10,
+    "median": 700.0,
+    "min": 270.0,
+    "max": 780.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|11th Gen|B": {
+    "count": 817,
+    "median": 235.0,
+    "min": 170.0,
+    "max": 310.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|11th Gen|C": {
+    "count": 1039,
+    "median": 105.0,
+    "min": 75.0,
+    "max": 180.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|12th Gen|B": {
+    "count": 104,
+    "median": 295.0,
+    "min": 230.0,
+    "max": 490.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|12th Gen|C": {
+    "count": 104,
+    "median": 125.0,
+    "min": 80.0,
+    "max": 175.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|13th Gen|A": {
+    "count": 355,
+    "median": 365.0,
+    "min": 355.0,
+    "max": 950.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|13th Gen|B": {
+    "count": 23,
+    "median": 290.0,
+    "min": 265.0,
+    "max": 390.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|13th Gen|C": {
+    "count": 28,
+    "median": 125.0,
+    "min": 100.0,
+    "max": 170.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|3rd Gen|C": {
+    "count": 5,
+    "median": 24.0,
+    "min": 24.0,
+    "max": 25.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|4th Gen|B": {
+    "count": 12,
+    "median": 50.0,
+    "min": 20.0,
+    "max": 50.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|4th Gen|C": {
+    "count": 75,
+    "median": 20.0,
+    "min": 15.0,
+    "max": 35.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|5th Gen|B": {
+    "count": 23,
+    "median": 20.0,
+    "min": 18.0,
+    "max": 40.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|5th Gen|C": {
+    "count": 184,
+    "median": 20.0,
+    "min": 15.0,
+    "max": 40.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|6th Gen|B": {
+    "count": 236,
+    "median": 80.0,
+    "min": 20.0,
+    "max": 135.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|6th Gen|C": {
+    "count": 1366,
+    "median": 25.0,
+    "min": 15.0,
+    "max": 50.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|7th Gen|B": {
+    "count": 107,
+    "median": 115.0,
+    "min": 70.0,
+    "max": 155.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|7th Gen|C": {
+    "count": 768,
+    "median": 40.0,
+    "min": 20.0,
+    "max": 70.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|8th Gen|A": {
+    "count": 4,
+    "median": 250.0,
+    "min": 245.0,
+    "max": 255.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|8th Gen|B": {
+    "count": 1453,
+    "median": 165.0,
+    "min": 110.0,
+    "max": 210.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|8th Gen|C": {
+    "count": 4088,
+    "median": 50.0,
+    "min": 35.0,
+    "max": 95.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|9th Gen|B": {
+    "count": 79,
+    "median": 230.0,
+    "min": 170.0,
+    "max": 325.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "DELL|9th Gen|C": {
+    "count": 126,
+    "median": 100.0,
+    "min": 75.0,
+    "max": 155.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "FUJITSU|3rd Gen|C": {
+    "count": 8,
+    "median": 18.0,
+    "min": 15.0,
+    "max": 18.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "FUJITSU|4th Gen|C": {
+    "count": 3,
+    "median": 15.0,
+    "min": 15.0,
+    "max": 15.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP||B": {
+    "count": 5,
+    "median": 165.0,
+    "min": 150.0,
+    "max": 165.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP||C": {
+    "count": 6,
+    "median": 40.0,
+    "min": 35.0,
+    "max": 45.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|10th Gen|B": {
+    "count": 424,
+    "median": 210.0,
+    "min": 150.0,
+    "max": 255.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|10th Gen|C": {
+    "count": 409,
+    "median": 80.0,
+    "min": 50.0,
+    "max": 120.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|11th Gen|A": {
+    "count": 19,
+    "median": 300.0,
+    "min": 300.0,
+    "max": 360.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|11th Gen|B": {
+    "count": 272,
+    "median": 195.0,
+    "min": 175.0,
+    "max": 280.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|11th Gen|C": {
+    "count": 315,
+    "median": 80.0,
+    "min": 70.0,
+    "max": 110.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|12th Gen|B": {
+    "count": 32,
+    "median": 278.0,
+    "min": 255.0,
+    "max": 310.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|12th Gen|C": {
+    "count": 34,
+    "median": 105.0,
+    "min": 90.0,
+    "max": 150.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|13th Gen|B": {
+    "count": 12,
+    "median": 420.0,
+    "min": 300.0,
+    "max": 420.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|13th Gen|C": {
+    "count": 5,
+    "median": 220.0,
+    "min": 210.0,
+    "max": 220.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|1st Gen|B": {
+    "count": 4,
+    "median": 15.0,
+    "min": 15.0,
+    "max": 19.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|2nd Gen|B": {
+    "count": 11,
+    "median": 70.0,
+    "min": 40.0,
+    "max": 70.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|2nd Gen|C": {
+    "count": 22,
+    "median": 20.0,
+    "min": 15.0,
+    "max": 30.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|3rd Gen|B": {
+    "count": 113,
+    "median": 125.0,
+    "min": 60.0,
+    "max": 140.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|3rd Gen|C": {
+    "count": 187,
+    "median": 40.0,
+    "min": 20.0,
+    "max": 50.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|4th Gen|B": {
+    "count": 269,
+    "median": 200.0,
+    "min": 120.0,
+    "max": 205.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|4th Gen|C": {
+    "count": 396,
+    "median": 60.0,
+    "min": 15.0,
+    "max": 75.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|5th Gen|A": {
+    "count": 4,
+    "median": 200.0,
+    "min": 200.0,
+    "max": 200.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|5th Gen|B": {
+    "count": 17,
+    "median": 92.0,
+    "min": 13.0,
+    "max": 180.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|5th Gen|C": {
+    "count": 77,
+    "median": 15.0,
+    "min": 13.0,
+    "max": 70.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|6th Gen|B": {
+    "count": 189,
+    "median": 75.0,
+    "min": 20.0,
+    "max": 115.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|6th Gen|C": {
+    "count": 675,
+    "median": 30.0,
+    "min": 15.0,
+    "max": 50.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|7th Gen|B": {
+    "count": 144,
+    "median": 100.0,
+    "min": 20.0,
+    "max": 150.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|7th Gen|C": {
+    "count": 283,
+    "median": 45.0,
+    "min": 20.0,
+    "max": 70.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|8th Gen|B": {
+    "count": 652,
+    "median": 160.0,
+    "min": 120.0,
+    "max": 200.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|8th Gen|C": {
+    "count": 1887,
+    "median": 60.0,
+    "min": 40.0,
+    "max": 80.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|9th Gen|B": {
+    "count": 14,
+    "median": 65.0,
+    "min": 60.0,
+    "max": 65.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "HP|9th Gen|C": {
+    "count": 41,
+    "median": 15.0,
+    "min": 15.0,
+    "max": 110.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|10th Gen|A": {
+    "count": 11,
+    "median": 265.0,
+    "min": 265.0,
+    "max": 300.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|10th Gen|B": {
+    "count": 425,
+    "median": 210.0,
+    "min": 170.0,
+    "max": 235.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|10th Gen|C": {
+    "count": 589,
+    "median": 95.0,
+    "min": 75.0,
+    "max": 150.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|11th Gen|A": {
+    "count": 26,
+    "median": 340.0,
+    "min": 300.0,
+    "max": 360.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|11th Gen|B": {
+    "count": 141,
+    "median": 222.0,
+    "min": 175.0,
+    "max": 325.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|11th Gen|C": {
+    "count": 87,
+    "median": 100.0,
+    "min": 80.0,
+    "max": 130.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|12th Gen|B": {
+    "count": 22,
+    "median": 265.0,
+    "min": 220.0,
+    "max": 295.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|2nd Gen|B": {
+    "count": 8,
+    "median": 80.0,
+    "min": 80.0,
+    "max": 80.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|2nd Gen|C": {
+    "count": 15,
+    "median": 15.0,
+    "min": 15.0,
+    "max": 20.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|3rd Gen|B": {
+    "count": 9,
+    "median": 105.0,
+    "min": 70.0,
+    "max": 105.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|3rd Gen|C": {
+    "count": 28,
+    "median": 20.0,
+    "min": 15.0,
+    "max": 40.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|4th Gen|B": {
+    "count": 14,
+    "median": 50.0,
+    "min": 40.0,
+    "max": 135.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|4th Gen|C": {
+    "count": 52,
+    "median": 20.0,
+    "min": 15.0,
+    "max": 40.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|5th Gen|A": {
+    "count": 5,
+    "median": 350.0,
+    "min": 350.0,
+    "max": 350.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|5th Gen|B": {
+    "count": 36,
+    "median": 40.0,
+    "min": 18.0,
+    "max": 130.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|5th Gen|C": {
+    "count": 72,
+    "median": 20.0,
+    "min": 15.0,
+    "max": 35.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|6th Gen|B": {
+    "count": 220,
+    "median": 80.0,
+    "min": 19.0,
+    "max": 130.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|6th Gen|C": {
+    "count": 634,
+    "median": 35.0,
+    "min": 15.0,
+    "max": 55.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|7th Gen|B": {
+    "count": 44,
+    "median": 110.0,
+    "min": 70.0,
+    "max": 170.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|7th Gen|C": {
+    "count": 195,
+    "median": 45.0,
+    "min": 25.0,
+    "max": 75.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|8th Gen|A": {
+    "count": 15,
+    "median": 145.0,
+    "min": 115.0,
+    "max": 150.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|8th Gen|B": {
+    "count": 964,
+    "median": 160.0,
+    "min": 100.0,
+    "max": 245.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|8th Gen|C": {
+    "count": 1118,
+    "median": 65.0,
+    "min": 40.0,
+    "max": 90.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|8th Gen|Unknown": {
+    "count": 6,
+    "median": 40.0,
+    "min": 40.0,
+    "max": 40.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|9th Gen|B": {
+    "count": 13,
+    "median": 270.0,
+    "min": 35.0,
+    "max": 310.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "LENOVO|9th Gen|C": {
+    "count": 4,
+    "median": 40.0,
+    "min": 40.0,
+    "max": 90.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "MICROSOFT|10th Gen|B": {
+    "count": 43,
+    "median": 180.0,
+    "min": 145.0,
+    "max": 225.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "MICROSOFT|10th Gen|C": {
+    "count": 15,
+    "median": 190.0,
+    "min": 70.0,
+    "max": 190.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "MICROSOFT|11th Gen|A": {
+    "count": 18,
+    "median": 630.0,
+    "min": 630.0,
+    "max": 630.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "MICROSOFT|11th Gen|B": {
+    "count": 34,
+    "median": 250.0,
+    "min": 245.0,
+    "max": 325.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "MICROSOFT|11th Gen|C": {
+    "count": 22,
+    "median": 145.0,
+    "min": 110.0,
+    "max": 170.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "MICROSOFT|12th Gen|C": {
+    "count": 4,
+    "median": 160.0,
+    "min": 130.0,
+    "max": 190.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "MICROSOFT|7th Gen|B": {
+    "count": 5,
+    "median": 60.0,
+    "min": 60.0,
+    "max": 65.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "MICROSOFT|8th Gen|B": {
+    "count": 12,
+    "median": 140.0,
+    "min": 135.0,
+    "max": 160.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "MICROSOFT|8th Gen|C": {
+    "count": 32,
+    "median": 135.0,
+    "min": 40.0,
+    "max": 160.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "PANASONIC|7th Gen|C": {
+    "count": 13,
+    "median": 45.0,
+    "min": 30.0,
+    "max": 45.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TERRA|6th Gen|C": {
+    "count": 7,
+    "median": 20.0,
+    "min": 20.0,
+    "max": 20.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TERRA|8th Gen|C": {
+    "count": 7,
+    "median": 45.0,
+    "min": 45.0,
+    "max": 45.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TOSHIBA|10th Gen|C": {
+    "count": 12,
+    "median": 90.0,
+    "min": 20.0,
+    "max": 90.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TOSHIBA|11th Gen|B": {
+    "count": 6,
+    "median": 210.0,
+    "min": 190.0,
+    "max": 220.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TOSHIBA|11th Gen|C": {
+    "count": 4,
+    "median": 80.0,
+    "min": 80.0,
+    "max": 90.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TOSHIBA|4th Gen|C": {
+    "count": 11,
+    "median": 15.0,
+    "min": 15.0,
+    "max": 20.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TOSHIBA|6th Gen|B": {
+    "count": 21,
+    "median": 80.0,
+    "min": 80.0,
+    "max": 100.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TOSHIBA|6th Gen|C": {
+    "count": 72,
+    "median": 25.0,
+    "min": 15.0,
+    "max": 40.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TOSHIBA|8th Gen|B": {
+    "count": 198,
+    "median": 130.0,
+    "min": 100.0,
+    "max": 150.0,
+    "period": "historisch + 2026 YTD"
+  },
+  "TOSHIBA|8th Gen|C": {
+    "count": 216,
+    "median": 65.0,
+    "min": 50.0,
+    "max": 85.0,
+    "period": "historisch + 2026 YTD"
+  }
+}
