@@ -681,15 +681,7 @@ input, select, button { font-family: inherit; }
           <input type="text" id="feedback-name" data-i18n-placeholder="feedbackNamePlaceholder" placeholder="Jouw naam (optioneel)" maxlength="30" style="padding:8px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text);width:160px;">
         </div>
         <div id="feedback-status" style="display:none;margin-top:8px;font-size:13px;color:var(--go);font-weight:600;"></div>
-        <div id="feedback-form" style="display:none;margin-top:12px;padding:12px;background:var(--surface2);border-radius:8px;">
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
-            <label style="font-size:12px;color:var(--muted);white-space:nowrap;">Jouw prijs (optioneel):</label>
-            <input type="text" id="feedback-price" placeholder="€___" maxlength="10" style="padding:6px 10px;font-size:13px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);width:90px;">
-            <label style="font-size:12px;color:var(--muted);white-space:nowrap;">Opmerking:</label>
-            <input type="text" id="feedback-comment" placeholder="Optioneel..." maxlength="200" style="padding:6px 10px;font-size:13px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);flex:1;min-width:120px;">
-          </div>
-          <button class="btn" id="feedback-submit-btn" onclick="submitFeedbackForm()" style="background:var(--accent);color:white;padding:6px 18px;font-size:13px;border-radius:8px;">✓ Verstuur</button>
-        </div>
+
       </div>
       <div id="ai-export-row" style="display:none;margin-top:14px;gap:8px;flex-wrap:wrap;">
         <button class="btn btn-ghost" onclick="exportAiResult('md')" title="Download als Markdown">📄 .md</button>
@@ -1656,38 +1648,54 @@ function downloadBlob(blob, filename) {
 }
 
 // ── Feedback ─────────────────────────────────────────────────────
-let _pendingVerdict = null;
 async function sendFeedback(verdict) {
-  _pendingVerdict = verdict;
-  // Highlight selected button
-  document.querySelectorAll('.btn-feedback').forEach(b => b.style.opacity = '0.5');
-  event.target.style.opacity = '1';
-  // Show expanded form
-  document.getElementById('feedback-form').style.display = 'block';
-}
-async function submitFeedbackForm() {
-  const verdict = _pendingVerdict;
+  // Map UI verdicts to API values
+  const verdictMap = { 'spot-on': 'spot_on', 'te-hoog': 'too_high', 'te-laag': 'too_low' };
+  const mappedVerdict = verdictMap[verdict] || verdict;
+
+  // Read form values
   const brandEl = document.getElementById('brand');
   const modelEl = document.getElementById('model');
   const brandLabel = brandEl.options[brandEl.selectedIndex]?.text || '';
   const modelLabel = modelEl.options[modelEl.selectedIndex]?.text || '';
-  const device = `${brandLabel} ${modelLabel}`.trim();
+  const gradeLabel = document.getElementById('grade').selectedOptions[0]?.text || '';
+  const cpuFamilyVal = document.getElementById('cpuFamily').value;
+  const isAppleFb = cpuFamilyVal === 'apple-silicon' || ['m1','m2','m3','m4'].includes(cpuFamilyVal);
+  const cpuGen = isAppleFb
+    ? document.getElementById('appleChip').value
+    : (document.getElementById('cpuGen').selectedOptions[0]?.text || '');
+
+  // Extract ERP price from the result text
   const erpMatch = _lastAiResultPlainText.match(/ERP per unit:\s*(€[\d.,]+)/);
-  const erp = erpMatch ? erpMatch[1] : '';
-  const name = document.getElementById('feedback-name').value.trim();
-  const userPrice = document.getElementById('feedback-price').value.trim();
-  const comment = document.getElementById('feedback-comment').value.trim();
+  const price = erpMatch ? erpMatch[1] : '';
+
+  const name = document.getElementById('feedback-name').value.trim() || 'anonymous';
+
+  // Disable buttons immediately
+  document.querySelectorAll('.btn-feedback').forEach(b => {
+    b.disabled = true;
+    b.style.opacity = '0.5';
+  });
+  event.target.style.opacity = '1';
+
   const apiBase = window.location.pathname.startsWith('/quickquote') ? '/quickquote' : '';
   try {
     await fetch(`${apiBase}/api/feedback`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ verdict, name, device, erp, userPrice, comment, timestamp: new Date().toISOString() })
+      body: JSON.stringify({
+        verdict: mappedVerdict,
+        price: price,
+        brand: brandLabel,
+        model: modelLabel,
+        cpu_gen: cpuGen,
+        grade: gradeLabel,
+        name: name,
+        timestamp: new Date().toISOString()
+      })
     });
-    document.querySelectorAll('.btn-feedback').forEach(b => { b.disabled = true; b.style.opacity = '1'; });
-    document.getElementById('feedback-submit-btn').disabled = true;
     const status = document.getElementById('feedback-status');
-    status.textContent = TRANSLATIONS[currentLang].feedbackSaved;
+    status.textContent = 'Bedankt voor je feedback!';
     status.style.color = 'var(--go)';
     status.style.display = 'block';
   } catch (e) {
@@ -1695,6 +1703,8 @@ async function submitFeedbackForm() {
     status.textContent = TRANSLATIONS[currentLang].feedbackFailed;
     status.style.color = 'var(--nogo)';
     status.style.display = 'block';
+    // Re-enable on error
+    document.querySelectorAll('.btn-feedback').forEach(b => { b.disabled = false; b.style.opacity = '1'; });
   }
 }
 
